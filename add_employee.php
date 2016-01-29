@@ -33,18 +33,45 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 				$_SESSION['EXPIRETIME'] = time() + 300;
 			};
 		};
-		/**
-		 Select departments lists.
-   		**/
    		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+   		/**
+		 Select taxcode lists.
+   		**/
+   		$queryTaxCode = "SELECT * from taxcode ORDER BY taxCodeId ASC";
+		$resultTaxCode = mysql_query($queryTaxCode);
+		$rowTaxCode = mysql_num_rows($resultTaxCode);
+		if(!$resultTaxCode) die ("Table access failed: " . mysql_error());
+   		/**
+		 Select position lists.
+   		**/
+   		$queryPosition = "SELECT * from position ORDER BY positionName ASC";
+		$resultPosition = mysql_query($queryPosition);
+		$rowPosition = mysql_num_rows($resultPosition);
+		if(!$resultPosition) die ("Table access failed: " . mysql_error());
+   		/**
+		 Select unit lists.
+   		**/
+   		$queryUnit = "SELECT * from unit ORDER BY unitName ASC";
+		$resultUnit = mysql_query($queryUnit);
+		$rowUnit = mysql_num_rows($resultUnit);
+		if(!$resultUnit) die ("Table access failed: " . mysql_error());
+   		/**
+		 Select company lists.
+   		**/
    		$queryCom = "SELECT * from company ORDER BY comId ASC";
 		$resultCom = mysql_query($queryCom);
 		$rowCom = mysql_num_rows($resultCom);
 		if(!$resultCom) die ("Table access failed: " . mysql_error());
+		/**
+		 Select department lists.
+   		**/
    		$queryDept = "SELECT * from departments ORDER BY deptName ASC";
 		$resultDept = mysql_query($queryDept);
 		$rowDept = mysql_num_rows($resultDept);
 		if(!$resultDept) die ("Table access failed: " . mysql_error());
+		/**
+		 Select employee lists.
+   		**/
 		$query = "SELECT * from employees ORDER BY id DESC";
 		$result = mysql_query($query);
 		$row = mysql_num_rows($result);
@@ -76,21 +103,16 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 			$empPosition = ucwords(mysql_escape_string($_POST['empPosition']));
 			$empBasicSalary = mysql_escape_string($_POST['empBasicSalary']);
 			$empTaxCode = strtoupper(mysql_escape_string($_POST['empTaxCode']));
-			/**
-			 Get the gid from tables
-			 **/
-			// $dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 			$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
 			$result = mysql_query($query);
 			$row = mysql_fetch_array($result);
 			$time = $row['dateTime'];
-
 			$query = "INSERT INTO employees (dateTime, empId, empName, empSex, empBirth, empNationality, empCounty, empDateJoin, empSource, empCategory, empCompanyCode, empDepartment, empUnit, empPosition, empBasicSalary, empTaxCode, createdBy) VALUES ('$time', '$empId', '$empName', '$empSex', '$empBirth', '$empNationality', '$empCounty', '$empDateJoin', '$empSource', '$empCategory', '$empCompanyCode', '$empDepartment', '$empUnit', '$empPosition', '$empBasicSalary', '$empTaxCode', '$uid')";
 			$result = mysql_query($query);
 			if(!$result) die ("Table access failed: " . mysql_error());
 			if($result) {
 				/**
-				 Department created and redirected to registration.php.
+				 Employee created and redirected to previous page.
 				 **/
 				$_SESSION['STATUS'] = 15;
 				header("Location: status.php");
@@ -199,17 +221,9 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 												<div class="col-md-4">
 													<div class="form-group">
 														<label>County / State</label>
-<!-- 														<div class="input-icon input-icon-lg" id="empDivCounty"> -->
 															<select id="empCounty" name="empCounty" class="form-control input-lg">
 																<option value="">Select County</option>
-<!-- 																<div id="countyOption"></div> -->
 															</select>
-
-															<!--
-															<i class="fa fa-flag"></i>
-															<input type="text" class="form-control input-lg" name="empCounty" placeholder="County" required>
-															-->
-<!-- 														</div> -->
 													</div>
 												</div>
 												<div class="col-md-4">
@@ -248,17 +262,17 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 												</div>
 												<div class="col-md-4">
 													<div class="form-group">
-														<label>Company Code <small class="company-not-found">Create <a href="add_company.php">here!</a></small></label>
+														<label>Company Code <!-- <small class="company-not-found">Create <a href="add_company.php">here!</a></small> --></label>
 														<select name="empCompanyCode" class="form-control input-lg" required>
 															<?php
 															if($rowCom < 1) {
 																/**
-																 No departments were created.
+																 No company were created.
 																 **/
 																echo "<option value=''>No Company Code Found</option>";
 															} else {
 																/**
-																 Found departments lists.
+																 Found company lists.
 																 **/
 																echo "<option value=''>Select Company Code</option>";
 																for($i = 0; $i < $rowCom; ++$i) {
@@ -275,7 +289,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 											<div class="row">
 												<div class="col-md-4">
 													<div class="form-group">
-														<label>Department <small class="dept-not-found">Create <a href="add_department.php">here!</a></small></label>
+														<label>Department <!-- <small class="dept-not-found">Create <a href="add_department.php">here!</a></small> --></label>
 														<select name="empDepartment" class="form-control input-lg" required>
 															<?php
 															if($rowDept < 1) {
@@ -301,19 +315,51 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 												<div class="col-md-4">
 													<div class="form-group">
 														<label>Unit</label>
-														<div class="input-icon input-icon-lg">
-															<i class="fa fa-user-secret"></i>
-															<input type="text" class="form-control input-lg" name="empUnit" placeholder="Unit" required>
-														</div>
+														<select name="empUnit" class="form-control input-lg" required>
+															<?php
+															if($rowUnit < 1) {
+																/**
+																 No unit were created.
+																 **/
+																echo "<option value=''>No Unit Found</option>";
+															} else {
+																/**
+																 Found unit lists.
+																 **/
+																echo "<option value=' '>Select Unit</option>";
+																for($i = 0; $i < $rowUnit; ++$i) {
+																	$unitId = mysql_result($resultUnit, $i, 'unitId');
+																	$unitName = mysql_result($resultUnit, $i, 'unitName');
+																	echo "<option value=$unitId>$unitName</option>";
+																}
+															}
+															?>
+														</select>
 													</div>
 												</div>
 												<div class="col-md-4">
 													<div class="form-group">
 														<label>Position</label>
-														<div class="input-icon input-icon-lg">
-															<i class="fa fa-user-md"></i>
-															<input type="text" class="form-control input-lg" name="empPosition" placeholder="Position" required>
-														</div>
+														<select name="empPosition" class="form-control input-lg" required>
+															<?php
+															if($rowPosition < 1) {
+																/**
+																 No position were created.
+																 **/
+																echo "<option value=''>No Position Found</option>";
+															} else {
+																/**
+																 Found position lists.
+																 **/
+																echo "<option value=' '>Select Position</option>";
+																for($i = 0; $i < $rowPosition; ++$i) {
+																	$positionId = mysql_result($resultPosition, $i, 'positionId');
+																	$positionName = mysql_result($resultPosition, $i, 'positionName');
+																	echo "<option value=$positionId>$positionName</option>";
+																}
+															}
+															?>
+														</select>
 													</div>
 												</div>
 											</div>
@@ -330,10 +376,26 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 												<div class="col-md-6">
 													<div class="form-group">
 														<label>Tax Code</label>
-														<div class="input-icon input-icon-lg">
-															<i class="fa fa-credit-card"></i>
-															<input type="text" class="form-control input-lg" name="empTaxCode" placeholder="Tax Code" required>
-														</div>
+														<select name="empTaxCode" class="form-control input-lg" required>
+															<?php
+															if($rowTaxCode < 1) {
+																/**
+																 No taxcode were created.
+																 **/
+																echo "<option value=''>No Tax Code Found</option>";
+															} else {
+																/**
+																 Found taxcode lists.
+																 **/
+																echo "<option value=' '>Select Tax Code</option>";
+																for($i = 0; $i < $rowTaxCode; ++$i) {
+																	$taxCodeId = mysql_result($resultTaxCode, $i, 'taxCodeId');
+																	$taxCodeName = mysql_result($resultTaxCode, $i, 'taxCodeName');
+																	echo "<option value=$taxCodeId>$taxCodeName</option>";
+																}
+															}
+															?>
+														</select>
 													</div>
 												</div>
 											</div>
