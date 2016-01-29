@@ -1,10 +1,8 @@
 <?php include('pages/page_header.php'); ?>
-<!-- <link href="css/center.css" rel="stylesheet" type="text/css" /> -->
 <link href="css/components.css" rel="stylesheet" type="text/css" />
 <link href="css/layout.css" rel="stylesheet" type="text/css" />
 <link href="css/center.css" rel="stylesheet" type="text/css">
 <link href="css/signin.css" rel="stylesheet" type="text/css">
-<!-- <link href="css/setadmin.css" rel="stylesheet" type="text/css" /> -->
 <script type = "text/javascript">
 	history.pushState(null, null, 'employees.php');
 	window.addEventListener('popstate', function(event) {
@@ -128,26 +126,24 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 											$empPosition = mysql_result($result, $j, 'empPosition');
 											// $empBasicSalary = mysql_result($result, $j, 'empBasicSalary');
 											// $empTaxCode = mysql_result($result, $j, 'empTaxCode');
-
 											/*
 											$string = mysql_result($result, $j, 'dateTime');
 											if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
 												$datejoin = $match[1];
 											};
 											*/
-											echo "<tr><td class='fit'><img class='user-pic' src='images/user_unknown.png'></td><td><a href='' id='myModal22' class='primary-link'>$empName</td>";
+											echo "<tr><td class='fit'><img class='user-pic' src='images/user_unknown.png'></td><td><a href='employee_info.php?uid=$id' class='primary-link'>$empName</td>";
 											echo "<td align='center'>$empSex</td><td align='center'>$empBirth</td><td align='center'>$empNationality</td><td align='center'>$empDateJoin</td><td align='center'>$empSource</td><td align='center'>$empCompanyCode</td><td align='center'>$empDepartment</td><td align='center'>$empPosition</td></tr>";
 										};
 										echo "</tbody>";
 									} else {
 										/**
-										 No users account.
+										 No employee information.
 										 **/
 										echo "<div class='block' style='height:100%'><div class='centered-users'>";
 										echo "<h3 class='no-users'> No employess information found!</h3></tbody></div></div>";
 									}
 									?>
-<!-- 									employee_info.php?uid=$id -->
 								</table>
 							</div>
 						</div>
@@ -157,18 +153,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 		</div>
 	</div>
 </div>
-<!--
-<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="myModal">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      ...
-    </div>
-  </div>
-</div>
--->
-<?php include('pages/page_jquery.php'); ?>
-<script>
-</script>
 <?php include('pages/page_footer.php'); ?>
+<?php include('pages/page_jquery.php'); ?>
 </body>
 </html>
