@@ -2,7 +2,6 @@
 <link href="css/center.css" rel="stylesheet" type="text/css" />
 <link href="css/components.css" rel="stylesheet" type="text/css" />
 <link href="css/layout.css" rel="stylesheet" type="text/css" />
-<!-- <link href="css/setadmin.css" rel="stylesheet" type="text/css" /> -->
 <script type = "text/javascript">
 	history.pushState(null, null, 'employee_info.php');
 	window.addEventListener('popstate', function(event) {
