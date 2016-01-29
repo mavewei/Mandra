@@ -3,6 +3,9 @@ require_once('db/db_config.php');
 
 $dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 if($dbSelected) {
+	/**
+	 Validate data for email address.
+	 **/
 	if(!empty($_POST['emailAdd'])) {
 		$emailAdd = $_POST['emailAdd'];
 		$query = "SELECT * FROM userAccounts WHERE emailAdd = '$emailAdd'";
@@ -18,6 +21,9 @@ if($dbSelected) {
 			return true;
 		}
 	}
+	/**
+	 Validate data for company information.
+	 **/
 	if(!empty($_POST['comCode'])) {
 		$comCode = $_POST['comCode'];
 		$query = "SELECT * FROM company WHERE comCode = '$comCode'";
@@ -33,6 +39,9 @@ if($dbSelected) {
 			return true;
 		}
 	}
+	/**
+	 Validate data for department information.
+	 **/
 	if(!empty($_POST['deptCode'])) {
 		$deptCode = $_POST['deptCode'];
 		$query = "SELECT * FROM departments WHERE deptCode = '$deptCode'";
@@ -41,14 +50,16 @@ if($dbSelected) {
 		$row = mysql_num_rows($result);
 		if($row > 0) {
 			/**
-			 Company code found.
+			 Department information found.
 			 **/
 			echo "[Error] Department code already exist!";
 		} else {
 			return true;
 		}
 	}
-
+	/**
+	 Validate data for employee name.
+	 **/
 	if(!empty($_POST['empName'])) {
 		$empName = $_POST['empName'];
 		$query = "SELECT * FROM employees WHERE empName = '$empName'";
@@ -57,13 +68,16 @@ if($dbSelected) {
 		$row = mysql_num_rows($result);
 		if($row > 0) {
 			/**
-			 Company code found.
+			 Employee name found.
 			 **/
 			echo "[Error] Employee details already exist!";
 		} else {
 			return true;
 		}
 	}
+	/**
+	 Validate data for county.
+	 **/
 	if(!empty($_POST['empNationality'])) {
 		$empNationality = $_POST['empNationality'];
 		$query = "SELECT countyId, countyCode FROM county WHERE countyId = '$empNationality'";
@@ -72,16 +86,69 @@ if($dbSelected) {
 		$row = mysql_num_rows($result);
 		if($row > 0) {
 			/**
-			 Company code found.
+			 County found.
 			 **/
 			$rows = array();
 			while($data = mysql_fetch_array($result)) {
 			 	$rows[] = array("countyCode" => $data['countyCode']);
 			};
-
 			echo json_encode($rows);
 		} else {
 			return false;
+		}
+	}
+	/**
+	 Validate data for tax code.
+	 **/
+	if(!empty($_POST['taxCodeName'])) {
+		$taxCodeName = $_POST['taxCodeName'];
+		$query = "SELECT * FROM taxCode WHERE taxCodeName = '$taxCodeName'";
+		$result = mysql_query($query);
+		if(!$result) die ("Table access failed: " . mysql_error());
+		$row = mysql_num_rows($result);
+		if($row > 0) {
+			/**
+			 Tax Code found.
+			 **/
+			echo "[Error] Tax code already exist!";
+		} else {
+			return true;
+		}
+	}
+	/**
+	 Validate data for unit information.
+	 **/
+	if(!empty($_POST['unitName'])) {
+		$unitName = $_POST['unitName'];
+		$query = "SELECT * FROM unit WHERE unitName = '$unitName'";
+		$result = mysql_query($query);
+		if(!$result) die ("Table access failed: " . mysql_error());
+		$row = mysql_num_rows($result);
+		if($row > 0) {
+			/**
+			 Unit information found.
+			 **/
+			echo "[Error] Unit infor already exist!";
+		} else {
+			return true;
+		}
+	}
+	/**
+	 Validate data for position information.
+	 **/
+	if(!empty($_POST['positionName'])) {
+		$positionName = $_POST['positionName'];
+		$query = "SELECT * FROM position WHERE positionName = '$positionName'";
+		$result = mysql_query($query);
+		if(!$result) die ("Table access failed: " . mysql_error());
+		$row = mysql_num_rows($result);
+		if($row > 0) {
+			/**
+			 Unit information found.
+			 **/
+			echo "[Error] Position infor already exist!";
+		} else {
+			return true;
 		}
 	}
 }
