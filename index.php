@@ -115,7 +115,7 @@ if($status) {
 					id INT NOT NULL AUTO_INCREMENT,
 					dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 					countyId VARCHAR(15) NOT NULL,
-					countyCode VARCHAR(15) NOT NULL,
+					countyCode VARCHAR(50) NOT NULL,
 					PRIMARY KEY (id))";
 	$result = mysql_query($query);
 	if(!$result) die ("Tables create failed: " . mysql_error());
@@ -125,9 +125,33 @@ if($status) {
 	 **/
 	$query = "CREATE TABLE unit (
 					id INT NOT NULL AUTO_INCREMENT,
-					dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+					dateTime TIMESTAMP NULL,
 					unitId VARCHAR(15) NOT NULL,
-					unitName VARCHAR(15) NOT NULL,
+					unitName VARCHAR(50) NOT NULL,
+					PRIMARY KEY (id))";
+	$result = mysql_query($query);
+	if(!$result) die ("Tables create failed: " . mysql_error());
+	/**
+	 Unit
+	 IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
+	 **/
+	$query = "CREATE TABLE position (
+					id INT NOT NULL AUTO_INCREMENT,
+					dateTime TIMESTAMP NULL,
+					positionId VARCHAR(15) NOT NULL,
+					positionName VARCHAR(50) NOT NULL,
+					PRIMARY KEY (id))";
+	$result = mysql_query($query);
+	if(!$result) die ("Tables create failed: " . mysql_error());
+	/**
+	 Tax Code
+	 IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
+	 **/
+	$query = "CREATE TABLE taxCode (
+					id INT NOT NULL AUTO_INCREMENT,
+					dateTime TIMESTAMP NULL,
+					taxCodeId VARCHAR(15) NOT NULL,
+					taxCodeName VARCHAR(50) NOT NULL,
 					PRIMARY KEY (id))";
 	$result = mysql_query($query);
 	if(!$result) die ("Tables create failed: " . mysql_error());
