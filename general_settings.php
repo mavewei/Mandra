@@ -145,7 +145,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 												}
 												echo "<tr><td class='fit'><img class='user-pic' src='images/user_unknown.png'></td><td><a href='javascript:;' class='primary-link' style='text-align: left'>$deptCode</td><td align='center'>$deptId</td><td align='center'>$deptName</td><td align='center'>$datejoin</td></tr>";
 												*/
-												echo "<tr><td align='left'><a href='javascript:;' class='primary-link'>$comCode</td><td align='center'>$comId</td><td align='left'>$comName</td><td align='center'>$comLocation</td><td align='center'>$datejoin</td></tr>";
+												echo "<tr><td align='left'><a href='mod_company.php?comId=$comId' class='primary-link'>$comCode</td><td align='center'>$comId</td><td align='left'>$comName</td><td align='center'>$comLocation</td><td align='center'>$datejoin</td></tr>";
 											};
 											echo "</tbody>";
 										} else {
