@@ -30,7 +30,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 			};
 		};
 		/**
-		 Select departments lists.
+		 Select company lists.
    		**/
    		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 		$query = "SELECT * from company ORDER BY id DESC";

@@ -186,7 +186,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 											<div class="row">
 												<div class="col-md-6">
 													<div class="form-group">
-														<label>Departments <small class="dept-not-found">Create <a href="add_department.php">here!</a></small></label>
+														<label>Departments <!-- <small class="dept-not-found">Create <a href="add_department.php">here!</a></small> --></label>
 														<select name="departments" class="form-control input-lg" required>
 															<?php
 															if($rowDept < 1) {

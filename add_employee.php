@@ -37,7 +37,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
    		/**
 		 Select taxcode lists.
    		**/
-   		$queryTaxCode = "SELECT * from taxcode ORDER BY taxCodeId ASC";
+   		$queryTaxCode = "SELECT * from taxCode ORDER BY taxCodeId ASC";
 		$resultTaxCode = mysql_query($queryTaxCode);
 		$rowTaxCode = mysql_num_rows($resultTaxCode);
 		if(!$resultTaxCode) die ("Table access failed: " . mysql_error());

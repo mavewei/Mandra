@@ -136,7 +136,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 													<div class="form-group">
 														<label>Name</label>
 														<div class="input-icon input-icon-lg"><i class="fa fa-code"></i>
-															<input type="text" class="form-control input-lg" placeholder="Unit" id="positionName" name="positionName" onkeyup="checkPositionName();" autofocus="on" required>
+															<input type="text" class="form-control input-lg" placeholder="Position Name" id="positionName" name="positionName" onkeyup="checkPositionName();" autofocus="on" required>
 														</div>
 													</div>
 												</div>

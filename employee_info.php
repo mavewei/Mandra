@@ -237,11 +237,6 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 	</div>
 </div>
 <script>
-
-</script>
-
-
-<script>
 function countrySelect() {
 	var ddl = document.getElementById("empCountry");
 	var selectedValue = ddl.options[ddl.selectedIndex].value;
@@ -249,7 +244,6 @@ function countrySelect() {
 		alert("[ERROR] Please select country!");
 	}
 }
-
 function cmpPasswd() {
    	var oriPass = document.getElementById("oriPass").value;
 	var cmpPass = document.getElementById("cmpPass").value;
