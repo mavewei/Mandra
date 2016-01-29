@@ -13,22 +13,20 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 		 Change directory
 		 **/
 		chdir('db_backup');
-		/**
-		 Call function to backup all tables.
-		 **/
-		backup_tables($dbHost, $dbUsername, $dbPasswd, $dbName, 'initFlag');
-		backup_tables($dbHost, $dbUsername, $dbPasswd, $dbName, 'userAccounts');
-		backup_tables($dbHost, $dbUsername, $dbPasswd, $dbName, 'loginDetails');
-		backup_tables($dbHost, $dbUsername, $dbPasswd, $dbName, 'departments');
-		/*
-		backup_tables($dbHost, $dbUsername, $dbPasswd, $dbName, 'supplierLISTS');
-		backup_tables($dbHost, $dbUsername, $dbPasswd, $dbName, 'itemsLISTS');
-		backup_tables($dbHost, $dbUsername, $dbPasswd, $dbName, 'purchaseREQUEST');
-		backup_tables($dbHost, $dbUsername, $dbPasswd, $dbName, 'purchaseRequestDETAILS');
-		backup_tables($dbHost, $dbUsername, $dbPasswd, $dbName, 'requestQUOTATION');
-		backup_tables($dbHost, $dbUsername, $dbPasswd, $dbName, 'requestQuotationDETAILS');
-		backup_tables($dbHost, $dbUsername, $dbPasswd, $dbName, 'purchaseORDER');
-		*/
+
+		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+		$query = "select table_name from information_schema.tables where table_schema='$dbName' ORDER BY table_name ASC;";
+		$result = mysql_query($query);
+		$row = mysql_num_rows($result);
+		if(!$result) die ("Table access failed: " . mysql_error());
+		if($row > 0) {
+			for($i = 0; $i < $row; ++$i) {
+				$table_name = mysql_result($result, $i, 'table_name');
+				backup_tables($dbHost, $dbUsername, $dbPasswd, $dbName, $table_name);
+			}
+		} else {
+			exit(0);
+		}
 	} else {
 		/**
 		 Redirect to dashboard if not Superuser
@@ -45,7 +43,6 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 function backup_tables($host, $user, $pass, $name, $tables) {
 	$link = mysql_connect($host, $user, $pass);
 	mysql_select_db($name, $link);
-
 	/**
 	 Get all of the tables
 	 **/
@@ -58,7 +55,6 @@ function backup_tables($host, $user, $pass, $name, $tables) {
 	} else {
 		$tables = is_array($tables) ? $tables : explode(',', $tables);
 	};
-
 	/**
 	 Cycle through
 	 **/
@@ -84,12 +80,11 @@ function backup_tables($host, $user, $pass, $name, $tables) {
 		}
 		$return.="\n\n\n";
 	};
-
 	/**
 	 Save file
 	 **/
 	$handle = fopen('db-backup-'.(implode(',', $tables)).'.sql', 'w+');
-	//$handle = fopen('db-backup-'.(md5(implode(',',$tables))).'.sql','w+');
+	// $handle = fopen('db-backup-'.(md5(implode(',',$tables))).'.sql','w+');
 	// $handle = fopen('db-backup-'.time().'-'.(md5(implode(',',$tables))).'.sql','w+');
 	fwrite($handle, $return);
 	fclose($handle);

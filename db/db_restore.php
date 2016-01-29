@@ -10,19 +10,16 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 		/**
 		 Call function to restore all informations from tables.
 		 **/
-		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-initFlag.sql');
-		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-userAccounts.sql');
-		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-loginDetails.sql');
+		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-company.sql');
+		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-county.sql');
 		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-departments.sql');
-/*
-		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-supplierLISTS.sql');
-		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-itemsLISTS.sql');
-		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-purchaseREQUEST.sql');
-		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-purchaseRequestDETAILS.sql');
-		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-requestQUOTATION.sql');
-		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-requestQuotationDETAILS.sql');
-		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-purchaseORDER.sql');
-*/
+		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-employees.sql');
+		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-initFlag.sql');
+		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-loginDetails.sql');
+		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-position.sql');
+		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-taxCode.sql');
+		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-unit.sql');
+		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-userAccounts.sql');
 	} else {
 		/**
 		 Redirect to dashboard if not Superuser.
