@@ -61,6 +61,11 @@
 	display: inline-block;
 	width: 100%;
 }
+.centered-user-show {
+	vertical-align: middle;
+	display: inline-block;
+	width: 900px;
+}
 .centered-login-status {
 	vertical-align: middle;
 	display: inline-block;
@@ -129,6 +134,13 @@ span.error-status {
   float: right;
   display: inline-block;
   padding: 6px 0;
+}
+.table.table-light > tbody > tr > td.fit-no-padding-right {
+    width: 1px;
+    padding-right: 0px;
+}
+.name-padding {
+    padding-left: 7px;
 }
 html, body {
 	height: 100%;
