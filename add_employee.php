@@ -16,6 +16,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 	if($_SESSION['GID'] < 3000) {
 		$fname = $_SESSION['FNAME'];
 		$uid = $_SESSION['UID'];
+		$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
 		$_SESSION['LAST_PAGE'] = 'add_employee.php';
 		$year = date("Y");
 		$month = date("m");
@@ -30,7 +31,11 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 				header('Location: logout.php?TIMEOUT');
 				exit(0);
 			} else {
-				$_SESSION['EXPIRETIME'] = time() + 300;
+				/**
+				 Session time out time 5min.
+				 **/
+				//$_SESSION['EXPIRETIME'] = time() + 300;
+				$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
 			};
 		};
    		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
@@ -304,8 +309,9 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 																echo "<option value=''>Select Department</option>";
 																for($i = 0; $i < $rowDept; ++$i) {
 																	$deptId = mysql_result($resultDept, $i, 'deptId');
-																	$deptName = mysql_result($resultDept, $i, 'deptName');
-																	echo "<option value=$deptId>$deptName</option>";
+																	$deptCode = mysql_result($resultDept, $i, 'deptCode');
+																	// $deptName = mysql_result($resultDept, $i, 'deptName');
+																	echo "<option value=$deptId>$deptCode</option>";
 																}
 															}
 															?>

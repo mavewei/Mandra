@@ -64,6 +64,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 			//$_SESSION['MOBILE'] = $row['mobileNum'];
 			$_SESSION['LOGIN_ID'] = $row['emailAdd'];
 			$_SESSION['DEPARTMENT'] = $row['departments'];
+			$_SESSION['SESSIONTIMEOUT'] = $row['sessionTimeout'];
 			$_SESSION['ROLE'] = $row['roles'];
 			//$_SESSION['JOBTITLE'] = $row['jobTitle'];
 			// $_SESSION['REMARK'] = $row['remark'];

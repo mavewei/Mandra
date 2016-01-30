@@ -28,7 +28,7 @@ if(isset($_SESSION['INIT'])) {
 			$result = mysql_query($query);
 			$row = mysql_fetch_array($result);
 			$time = $row['dateTime'];
-			$query = "INSERT INTO userAccounts (dateTime, gid, firstName, lastName, emailAdd, departments, roles, passwd) VALUES ('$time', 1, '$fname', '$lname', '$email', 'Full', '$roles', '$passwd')";
+			$query = "INSERT INTO userAccounts (dateTime, gid, firstName, lastName, emailAdd, departments, roles, passwd, sessionTimeout) VALUES ('$time', 1, '$fname', '$lname', '$email', 'Full', '$roles', '$passwd', 900)";
 			$result = mysql_query($query);
 			if(!$result) die ("Table access failed: " . mysql_error());
 			if($result) {

@@ -15,6 +15,7 @@ require_once('db/db_config.php');
 if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 	if($_SESSION['GID'] < 3000) {
 		$fname = $_SESSION['FNAME'];
+		$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
 		$_SESSION['LAST_PAGE'] = 'add_user.php';
 		/**
 		 Lifetime added 5min.
@@ -25,7 +26,11 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 				header('Location: logout.php?TIMEOUT');
 				exit(0);
 			} else {
-				$_SESSION['EXPIRETIME'] = time() + 300;
+				/**
+				 Session time out time 5min.
+				 **/
+				//$_SESSION['EXPIRETIME'] = time() + 300;
+				$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
 			};
 		};
 		/**
@@ -89,7 +94,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 			$result = mysql_query($query);
 			$row = mysql_fetch_array($result);
 			$time = $row['dateTime'];
-			$query = "INSERT INTO userAccounts (dateTime, gid, firstName, lastName, emailAdd, departments, roles, passwd) VALUES('$time', '$gid', '$fname', '$lname', '$login', '$departments', '$role', '$passwd')";
+			$query = "INSERT INTO userAccounts (dateTime, gid, firstName, lastName, emailAdd, departments, roles, passwd, sessionTimeout) VALUES('$time', '$gid', '$fname', '$lname', '$login', '$departments', '$role', '$passwd', 600)";
 			$result = mysql_query($query);
 			if(!$result) die ("Table access failed: " . mysql_error());
 			if($result) {

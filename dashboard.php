@@ -16,6 +16,7 @@ require_once('db/db_config.php');
 if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 	$fname = $_SESSION['FNAME'];
 	$role = $_SESSION['ROLE'];
+	$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
 	/**
 	 Lifetime added 5min.
 	 **/
@@ -25,7 +26,11 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 			header('Location: logout.php?TIMEOUT');
 			exit(0);
 		} else {
-			$_SESSION['EXPIRETIME'] = time() + 300;
+			/**
+			 Session time out time 5min.
+			 **/
+			//$_SESSION['EXPIRETIME'] = time() + 300;
+			$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
 		};
 	};
 } else {

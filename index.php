@@ -60,6 +60,7 @@ if($status) {
 					departments VARCHAR(50) NULL,
 					roles VARCHAR(25) NOT NULL,
 					passwd VARCHAR(100) NOT NULL,
+					sessionTimeout INT(10) NULL,
 					PRIMARY KEY (id))";
 	$result = mysql_query($query);
 	if(!$result) die ("Tables create failed: " . mysql_error());
@@ -330,7 +331,7 @@ if($status) {
 	 Insert root account by default for maintenance
 	 **/
 	$password = md5('toor');
-	$query = "INSERT INTO userAccounts (dateTime, gid, firstName, lastName, emailAdd, departments, roles, passwd) VALUES('$time', 0, 'Root', 'Toor', 'root@mandra', 'Full', 'root', '$password')";
+	$query = "INSERT INTO userAccounts (dateTime, gid, firstName, lastName, emailAdd, departments, roles, passwd, sessionTimeout) VALUES('$time', 0, 'Root', 'Toor', 'root@mandra', 'Full', 'root', '$password', 3600)";
 	$result = mysql_query($query);
 	if(!$result) die ("Tables access failed: " . mysql_error());
 	/**

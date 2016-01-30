@@ -16,6 +16,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 	if($_SESSION['GID'] < 3000) {
 		$fname = $_SESSION['FNAME'];
 		$uid = $_SESSION['UID'];
+		$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
 		$unitId = $_GET['unitId'];
 		$lastPage = $_SESSION['LAST_PAGE'];
 		/**
@@ -27,7 +28,11 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 				header('Location: logout.php?TIMEOUT');
 				exit(0);
 			} else {
-				$_SESSION['EXPIRETIME'] = time() + 300;
+				/**
+				 Session time out time 5min.
+				 **/
+				//$_SESSION['EXPIRETIME'] = time() + 300;
+				$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
 			};
 		};
 		/**

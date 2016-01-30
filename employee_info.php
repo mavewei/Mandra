@@ -14,6 +14,7 @@ require_once('db/db_config.php');
 if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 	if($_SESSION['GID'] < 3000) {
 		$fname = $_SESSION['FNAME'];
+		$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
 		$id = $_GET['uid'];
 		/**
 		 Lifetime added 5min.
@@ -24,7 +25,11 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 				header('Location: logout.php?TIMEOUT');
 				exit(0);
 			} else {
-				$_SESSION['EXPIRETIME'] = time() + 300;
+				/**
+				 Session time out time 5min.
+				 **/
+				//$_SESSION['EXPIRETIME'] = time() + 300;
+				$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
 			};
 		};
 		/**
