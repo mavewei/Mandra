@@ -266,6 +266,34 @@ case "19":
 	echo "<div class='media-body'><h2 class='media-heading'>Company Infor Updated!</h2>You'll be redirected to previous page in 3 seconds.</div></div></div></div>";
 	echo "<meta http-equiv='refresh' content='3;$lastPage'>";
 	break;
+case "20":
+	echo "<div class='block' style='height:100%'><div class='centered-login-status'><div class='media'>";
+	echo "<div class='media-left media-middle'><a href='javascript:;'><div class='container-login-status'>";
+	echo "<img class='media-object image-middle-login-status' src='images/success.png' alt></div></a></div>";
+	echo "<div class='media-body'><h2 class='media-heading'>Department Updated!</h2>You'll be redirected to previous page in 3 seconds.</div></div></div></div>";
+	echo "<meta http-equiv='refresh' content='3;$lastPage'>";
+	break;
+case "21":
+	echo "<div class='block' style='height:100%'><div class='centered-login-status'><div class='media'>";
+	echo "<div class='media-left media-middle'><a href='javascript:;'><div class='container-login-status'>";
+	echo "<img class='media-object image-middle-login-status' src='images/success.png' alt></div></a></div>";
+	echo "<div class='media-body'><h2 class='media-heading'>Tax Code Updated!</h2>You'll be redirected to previous page in 3 seconds.</div></div></div></div>";
+	echo "<meta http-equiv='refresh' content='3;$lastPage'>";
+	break;
+case "22":
+	echo "<div class='block' style='height:100%'><div class='centered-login-status'><div class='media'>";
+	echo "<div class='media-left media-middle'><a href='javascript:;'><div class='container-login-status'>";
+	echo "<img class='media-object image-middle-login-status' src='images/success.png' alt></div></a></div>";
+	echo "<div class='media-body'><h2 class='media-heading'>Unit Infor Updated!</h2>You'll be redirected to previous page in 3 seconds.</div></div></div></div>";
+	echo "<meta http-equiv='refresh' content='3;$lastPage'>";
+	break;
+case "23":
+	echo "<div class='block' style='height:100%'><div class='centered-login-status'><div class='media'>";
+	echo "<div class='media-left media-middle'><a href='javascript:;'><div class='container-login-status'>";
+	echo "<img class='media-object image-middle-login-status' src='images/success.png' alt></div></a></div>";
+	echo "<div class='media-body'><h2 class='media-heading'>Position Infor Updated!</h2>You'll be redirected to previous page in 3 seconds.</div></div></div></div>";
+	echo "<meta http-equiv='refresh' content='3;$lastPage'>";
+	break;
 default:
 	echo "<div class='block' style='height:100%'><div class='centered-login-status'>";
 	echo "<div class='media'><div class='media-left media-middle'>";
