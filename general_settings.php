@@ -184,7 +184,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 												if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
 													$datejoin = $match[1];
 												};
-												echo "<tr><td align='center'><a href='javascript:;' class='primary-link'>$taxCodeId</td><td align='left'>$taxCodeName</td><td align='center'>$datejoin</td></tr>";
+												echo "<tr><td align='center'><a href='mod_taxcode.php?taxCodeId=$taxCodeId' class='primary-link'>$taxCodeId</td><td align='left'>$taxCodeName</td><td align='center'>$datejoin</td></tr>";
 											};
 											echo "</tbody>";
 										} else {
@@ -226,7 +226,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 												if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
 													$datejoin = $match[1];
 												};
-											echo "<tr><td align='left'><a href='javascript:;' class='primary-link'>$deptCode</td><td align='center'>$deptId</td><td align='left'>$deptName</td><td></td><td align='center'>$datejoin</td></tr>";
+											echo "<tr><td align='left'><a href='mod_department.php?deptId=$deptId' class='primary-link'>$deptCode</td><td align='center'>$deptId</td><td align='left'>$deptName</td><td></td><td align='center'>$datejoin</td></tr>";
 											};
 											echo "</tbody>";
 										} else {
@@ -265,7 +265,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 												if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
 													$datejoin = $match[1];
 												};
-												echo "<tr><td align='center'><a href='javascript:;' class='primary-link'>$unitId</td><td align='left'>$unitName</td><td align='center'>$datejoin</td></tr>";
+												echo "<tr><td align='center'><a href='mod_unit.php?unitId=$unitId' class='primary-link'>$unitId</td><td align='left'>$unitName</td><td align='center'>$datejoin</td></tr>";
 											};
 											echo "</tbody>";
 										} else {
@@ -307,7 +307,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 												if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
 													$datejoin = $match[1];
 												};
-												echo "<tr><td align='center'><a href='javascript:;' class='primary-link'>$positionId</td><td align='left'>$positionName</td><td align='center'>$datejoin</td></tr>";
+												echo "<tr><td align='center'><a href='mod_position.php?positionId=$positionId' class='primary-link'>$positionId</td><td align='left'>$positionName</td><td align='center'>$datejoin</td></tr>";
 											};
 											echo "</tbody>";
 										} else {

@@ -50,7 +50,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 			$result = mysql_query($query);
 			$row = mysql_fetch_array($result);
 			$time = $row['dateTime'];
-			$query = "UPDATE company SET comcode = '$comCode', comName = '$comName', comLocation = '$comLocation' WHERE comId = '$comId'";
+			$query = "UPDATE company SET comCode = '$comCode', comName = '$comName', comLocation = '$comLocation' WHERE comId = '$comId'";
 			$result = mysql_query($query);
 			if(!$result) die ("Table access failed: " . mysql_error());
 			if($result) {

@@ -134,7 +134,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 												</div>
 												<div class="col-md-8">
 													<div class="form-group">
-														<label>Code</label>
+														<label>Name</label>
 														<div class="input-icon input-icon-lg"><i class="fa fa-code"></i>
 															<input type="text" class="form-control input-lg" placeholder="Tax Code Name" id="taxCodeName" name="taxCodeName" onkeyup="checkTaxCode();" autofocus="on" required>
 														</div>
@@ -150,7 +150,6 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 										</div>
 										<div class="form-actions">
 											<input type="submit" value="Submit" class="btn blue">
-											<!-- <button type="submit" class="btn blue">Submit</button> -->
 											<a href="<?php echo $lastPage; ?>"><button type="button" class="btn default">Cancel</button></a>
 										</div>
 									</form>
