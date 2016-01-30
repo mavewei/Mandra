@@ -35,8 +35,23 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 		};
 		$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 		if($dbSelected) {
-			$query = "SELECT * FROM employees ORDER BY empName ASC";
-			// $query = "SELECT userAccounts.dateTime as dateTime, gid, firstName, lastName, emailAdd, departments.deptName as departments, roles FROM userAccounts INNER JOIN departments on userAccounts.departments = departments.deptId WHERE gid > 1000 ORDER BY dateTime DESC";
+			$query = "SELECT
+   							employees.id AS id, employees.empName AS empName, employees.empSex AS empSex,
+   							employees.empBirth AS empBirth, employees.empNationality AS empNationality,
+   							employees.empCounty AS empCounty, employees.empDateJoin AS empDateJoin,
+   							employees.empSource AS empSource,	company.comCode AS empCompanyCode,
+   							departments.deptCode AS empDepartment, position.positionName AS empPosition
+   						FROM
+   							employees
+   						INNER JOIN
+   							company ON employees.empCompanyCode = company.comId
+   						INNER JOIN
+   							departments ON employees.empDepartment = departments.deptId
+   						INNER JOIN
+   								position ON employees.empPosition = position.positionId
+   						ORDER BY
+   							empName
+   						ASC";
 			$result = mysql_query($query);
 			if(!$result) die ("Table access failed: " . mysql_error());
 			$rows = mysql_num_rows($result);
@@ -97,13 +112,14 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 								<table class="table table-hover table-light">
 									<?php
 									if($rows > 0) {
-										echo "<thead><tr class='uppercase'><th colspan='2'>Name</th>";
-										echo "<th class='center'>Sex</th><th class='center'>Birth</th>";
-										echo "<th class='center'>Nationality</th>";
-										echo "<th class='center'>Date Join</th><th class='center'>Source</th>";
-										echo "<th class='center'>Company Code</th>";
-										echo "<th class='center'>Department</th>";
-										echo "<th class='center'>Position</th>";
+										echo "<thead><tr class='uppercase'><th class='th-width-20'>Name</th>";
+										echo "<th class='center th-width-8'>Sex</th><th class='center th-width-10'>Birth</th>";
+										echo "<th class='center th-width-8'>Nationality</th>";
+										echo "<th class='center th-width-8'>County</th>";
+										echo "<th class='center th-width-10'>Date Join</th><th class='center th-width-8'>Source</th>";
+										echo "<th class='center th-width-8'>Company</th>";
+										echo "<th class='center th-width-8'>Department</th>";
+										echo "<th class='center th-width-12'>Position</th>";
 										echo "</tr></thead><tbody>";
 										/*
 										echo "<thead><tr class='uppercase'><th colspan='2'>Name</th>";
@@ -121,7 +137,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 											$empSex = mysql_result($result, $j, 'empSex');
 											$empBirth = mysql_result($result, $j, 'empBirth');
 											$empNationality = mysql_result($result, $j, 'empNationality');
-											// $empCountry = mysql_result($result, $j, 'empCountry');
+											$empCounty = mysql_result($result, $j, 'empCounty');
 											$empDateJoin = mysql_result($result, $j, 'empDateJoin');
 											$empSource = mysql_result($result, $j, 'empSource');
 											// $empCategory = mysql_result($result, $j, 'empCategory');
@@ -137,8 +153,8 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 												$datejoin = $match[1];
 											};
 											*/
-											echo "<tr><td class='fit'><img class='user-pic' src='images/user_unknown.png'></td><td><a href='employee_info.php?uid=$id' class='primary-link'>$empName</td>";
-											echo "<td align='center'>$empSex</td><td align='center'>$empBirth</td><td align='center'>$empNationality</td><td align='center'>$empDateJoin</td><td align='center'>$empSource</td><td align='center'>$empCompanyCode</td><td align='center'>$empDepartment</td><td align='center'>$empPosition</td></tr>";
+											echo "<tr><td class='fit'><img class='user-pic' src='images/user_unknown.png'><a href='employee_info.php?uid=$id' class='name-padding primary-link'>$empName</a></td>";
+											echo "<td align='center'>$empSex</td><td align='center'>$empBirth</td><td align='center'>$empNationality</td><td align='center'>$empCounty</td><td align='center'>$empDateJoin</td><td align='center'>$empSource</td><td align='center'>$empCompanyCode</td><td align='center'>$empDepartment</td><td align='center'>$empPosition</td></tr>";
 										};
 										echo "</tbody>";
 									} else {

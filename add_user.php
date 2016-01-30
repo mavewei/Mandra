@@ -206,8 +206,8 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 																echo "<option value=''>Select Department</option>";
 																for($i = 0; $i < $rowDept; ++$i) {
 																	$deptId = mysql_result($resultDept, $i, 'deptId');
-																	$deptName = mysql_result($resultDept, $i, 'deptName');
-																	echo "<option value=$deptId>$deptName</option>";
+																	$deptCode = mysql_result($resultDept, $i, 'deptCode');
+																	echo "<option value=$deptId>$deptCode</option>";
 																}
 															}
 															?>
@@ -309,7 +309,8 @@ $(document).ready(function() {
 
 function validate() {
 	var emailAdd_status=document.getElementById("emailAdd_status").innerHTML;
-	if(emailAdd_status =="") {
+	var passwd_status=document.getElementById("passwd_status").innerHTML;
+	if(emailAdd_status =="" && passwd_status == "") {
 		return true;
 	} else {
           return false;

@@ -36,7 +36,28 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 		 Select employee information.
    		**/
    		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-   		$query = "SELECT * from employees WHERE id = '$id'";
+   		$query = "SELECT
+   						employees.empName AS empName, employees.empSex AS empSex, employees.empBirth AS empBirth,
+   						employees.empNationality AS empNationality, employees.empCounty AS empCounty,
+   						employees.empDateJoin AS empDateJoin, employees.empSource AS empSource,
+   						employees.empCategory AS empCategory, company.comCode AS empCompanyCode,
+   						departments.deptCode AS empDepartment, unit.unitName AS empUnit,
+   						position.positionName AS empPosition, employees.empBasicSalary AS empBasicSalary,
+   						taxCode.taxCodeName AS empTaxCode
+   					FROM
+   						employees
+   					INNER JOIN
+   						company ON employees.empCompanyCode = company.comId
+   					INNER JOIN
+   						departments ON employees.empDepartment = departments.deptId
+   					INNER JOIN
+   						unit ON employees.empUnit = unit.unitId
+   					INNER JOIN
+   						position ON employees.empPosition = position.positionId
+   					INNER JOIN
+   						taxCode ON employees.empTaxCode = taxCode.taxCodeId
+   					WHERE
+   						employees.id = '$id'";
 		$result = mysql_query($query);
 		$row = mysql_num_rows($result);
 		if(!$result) die ("Table access failed: " . mysql_error());

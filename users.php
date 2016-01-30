@@ -18,6 +18,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 	if($_SESSION['GID'] < 4000) {
 		$fname = $_SESSION['FNAME'];
 		$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
+		$_SESSION['LAST_PAGE'] = "users.php";
 		// $role = $_SESSION['ROLE'];
 		/**
 		 Lifetime added 5min.
@@ -37,7 +38,20 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 		};
 		$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 		if($dbSelected) {
-			$query = "SELECT userAccounts.dateTime as dateTime, gid, firstName, lastName, emailAdd, departments.deptName as departments, roles FROM userAccounts INNER JOIN departments on userAccounts.departments = departments.deptId WHERE gid > 1000 ORDER BY dateTime DESC";
+			$query = "SELECT
+							userAccounts.id As uid, userAccounts.dateTime AS dateTime, gid, firstName, lastName,
+							emailAdd, departments.deptName AS departments, roles
+						FROM
+							userAccounts
+						INNER JOIN
+							departments
+						ON
+							userAccounts.departments = departments.deptId
+						WHERE
+							gid > 1000
+						ORDER BY
+							dateTime
+						DESC";
 			$result = mysql_query($query);
 			if(!$result) die ("Table access failed: " . mysql_error());
 			$rows = mysql_num_rows($result);
@@ -105,6 +119,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 										echo "<th class='center'>Date Created</th>";
 										echo "<th class='center'>Status</th></tr></thead><tbody>";
 										for($j = 0; $j < $rows; ++$j) {
+											$uid = ucfirst(mysql_result($result, $j, 'uid'));
 											$firstname = ucfirst(mysql_result($result, $j, 'firstName'));
 											$emailaddress = mysql_result($result, $j, 'emailAdd');
 											$departments = mysql_result($result, $j, 'departments');
@@ -119,7 +134,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 											if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
 												$datejoin = $match[1];
 											};
-											echo "<tr><td class='fit'><img class='user-pic' src='images/user_unknown.png'></td><td><a href='javascript:;' class='primary-link'>$firstname</td>";
+											echo "<tr><td class='fit'><img class='user-pic' src='images/user_unknown.png'></td><td><a href='mod_user.php?userId=$uid' class='primary-link'>$firstname</a></td>";
 											echo "<td align='center'>$emailaddress</td><td align='center'>$departments</td><td align='center'>$roles</td><td align='center'>$datejoin</td><td align='center'><span class='bold theme-font'>Active</span></td></tr>";
 										};
 										echo "</tbody>";
