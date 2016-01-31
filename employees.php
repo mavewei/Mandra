@@ -153,7 +153,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 												$datejoin = $match[1];
 											};
 											*/
-											echo "<tr><td class='fit'><img class='user-pic' src='images/user_unknown.png'><a href='employee_info.php?uid=$id' class='name-padding primary-link'>$empName</a></td>";
+											echo "<tr><td class='fit'><img class='user-pic' src='images/user_unknown.png'><a href='mod_employee.php?uid=$id' class='name-padding primary-link'>$empName</a></td>";
 											echo "<td align='center'>$empSex</td><td align='center'>$empBirth</td><td align='center'>$empNationality</td><td align='center'>$empCounty</td><td align='center'>$empDateJoin</td><td align='center'>$empSource</td><td align='center'>$empCompanyCode</td><td align='center'>$empDepartment</td><td align='center'>$empPosition</td></tr>";
 										};
 										echo "</tbody>";
