@@ -46,7 +46,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 		$taxCodeName = $data['taxCodeName'];
 		if(isset($_POST['taxCodeId']) && isset($_POST['taxCodeName'])) {
 			$taxCodeId = $_POST['taxCodeId'];
-			$taxCodeName = ucwords(mysql_escape_string($_POST['taxCodeName']));
+			$taxCodeName = strtoupper(mysql_escape_string($_POST['taxCodeName']));
 			$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
 			$result = mysql_query($query);
 			$row = mysql_fetch_array($result);

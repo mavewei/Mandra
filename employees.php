@@ -15,6 +15,7 @@ require_once('db/db_config.php');
 if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 	if($_SESSION['GID'] < 4000) {
 		$fname = $_SESSION['FNAME'];
+		$_SESSION['LAST_PAGE'] = 'employees.php';
 		$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
 		// $role = $_SESSION['ROLE'];
 		/**
