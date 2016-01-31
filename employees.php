@@ -112,13 +112,13 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 								<table class="table table-hover table-light">
 									<?php
 									if($rows > 0) {
-										echo "<thead><tr class='uppercase'><th class='th-width-20'>Name</th>";
-										echo "<th class='center th-width-8'>Sex</th><th class='center th-width-10'>Birth</th>";
-										echo "<th class='center th-width-8'>Nationality</th>";
-										echo "<th class='center th-width-8'>County</th>";
-										echo "<th class='center th-width-10'>Date Join</th><th class='center th-width-8'>Source</th>";
+										echo "<thead><tr class='uppercase'><th class='th-width-18'>Name</th>";
+										echo "<th class='center th-width-6'>Sex</th><th class='center th-width-9'>Birth</th>";
+										echo "<th class='center th-width-10'>Nationality</th>";
+										echo "<th class='center th-width-10'>County</th>";
+										echo "<th class='center th-width-9'>Date Join</th><th class='center th-width-8'>Source</th>";
 										echo "<th class='center th-width-8'>Company</th>";
-										echo "<th class='center th-width-8'>Department</th>";
+										echo "<th class='center th-width-10'>Department</th>";
 										echo "<th class='center th-width-12'>Position</th>";
 										echo "</tr></thead><tbody>";
 										/*
