@@ -16,6 +16,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-employees.sql');
 		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-initFlag.sql');
 		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-loginDetails.sql');
+		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-nationality.sql');
 		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-position.sql');
 		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-taxCode.sql');
 		restoreTables($dbHost, $dbUsername, $dbPasswd, $dbName, 'db-backup-unit.sql');

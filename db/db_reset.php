@@ -25,6 +25,9 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 		$query = "DROP TABLE loginDetails";
 		$result = mysql_query($query);
 		if(!$result) die ("Table access failed: " . mysql_error());
+		$query = "DROP TABLE nationality";
+		$result = mysql_query($query);
+		if(!$result) die ("Table access failed: " . mysql_error());
 		$query = "DROP TABLE position";
 		$result = mysql_query($query);
 		if(!$result) die ("Table access failed: " . mysql_error());
