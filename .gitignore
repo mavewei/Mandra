@@ -1,0 +1,4 @@
+
+*.sql
+
+db/db_config.php
