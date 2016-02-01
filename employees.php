@@ -109,64 +109,66 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 							<div class="tools"></div>
 						</div>
 						<div class="portlet-body">
-							<div class="table-scrollable table-scrollable-borderless">
-								<table class="table table-hover table-light">
-									<?php
-									if($rows > 0) {
-										echo "<thead><tr class='uppercase'><th class='th-width-18'>Name</th>";
-										echo "<th class='center th-width-6'>Sex</th><th class='center th-width-9'>Birth</th>";
-										echo "<th class='center th-width-10'>Nationality</th>";
-										echo "<th class='center th-width-10'>County</th>";
-										echo "<th class='center th-width-9'>Date Join</th><th class='center th-width-8'>Source</th>";
-										echo "<th class='center th-width-8'>Company</th>";
-										echo "<th class='center th-width-10'>Department</th>";
-										echo "<th class='center th-width-12'>Position</th>";
-										echo "</tr></thead><tbody>";
-										/*
-										echo "<thead><tr class='uppercase'><th colspan='2'>Name</th>";
-										echo "<th class='center'>Sex</th><th class='center'>Birth</th>";
-										echo "<th class='center'>Nationality</th><th class='center'>Country</th>";
-										echo "<th class='center'>Date Join</th><th class='center'>Source</th>";
-										echo "<th class='center'>Category</th><th class='center'>Company Code</th>";
-										echo "<th class='center'>Department</th><th class='center'>Unit</th>";
-										echo "<th class='center'>Position</th><th class='center'>Basic Salary</th>";
-										echo "<th class='center'>Tax Code</th></tr></thead><tbody>";
-										*/
-										for($j = 0; $j < $rows; ++$j) {
-											$id = mysql_result($result, $j, 'id');
-											$empName = ucfirst(mysql_result($result, $j, 'empName'));
-											$empSex = mysql_result($result, $j, 'empSex');
-											$empBirth = mysql_result($result, $j, 'empBirth');
-											$empNationality = mysql_result($result, $j, 'empNationality');
-											$empCounty = mysql_result($result, $j, 'empCounty');
-											$empDateJoin = mysql_result($result, $j, 'empDateJoin');
-											$empSource = mysql_result($result, $j, 'empSource');
-											// $empCategory = mysql_result($result, $j, 'empCategory');
-											$empCompanyCode = mysql_result($result, $j, 'empCompanyCode');
-											$empDepartment = mysql_result($result, $j, 'empDepartment');
-											// $empUnit = mysql_result($result, $j, 'empUnit');
-											$empPosition = mysql_result($result, $j, 'empPosition');
-											// $empBasicSalary = mysql_result($result, $j, 'empBasicSalary');
-											// $empTaxCode = mysql_result($result, $j, 'empTaxCode');
+							<div id="slimScrollEmployees">
+								<div class="table-scrollable table-scrollable-borderless">
+									<table class="table table-hover table-light">
+										<?php
+										if($rows > 0) {
+											echo "<thead><tr class='uppercase'><th class='th-width-18'>Name</th>";
+											echo "<th class='center th-width-6'>Sex</th><th class='center th-width-9'>Birth</th>";
+											echo "<th class='center th-width-10'>Nationality</th>";
+											echo "<th class='center th-width-10'>County</th>";
+											echo "<th class='center th-width-9'>Date Join</th><th class='center th-width-8'>Source</th>";
+											echo "<th class='center th-width-8'>Company</th>";
+											echo "<th class='center th-width-10'>Department</th>";
+											echo "<th class='center th-width-12'>Position</th>";
+											echo "</tr></thead><tbody>";
 											/*
-											$string = mysql_result($result, $j, 'dateTime');
-											if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
-												$datejoin = $match[1];
-											};
+											echo "<thead><tr class='uppercase'><th colspan='2'>Name</th>";
+											echo "<th class='center'>Sex</th><th class='center'>Birth</th>";
+											echo "<th class='center'>Nationality</th><th class='center'>Country</th>";
+											echo "<th class='center'>Date Join</th><th class='center'>Source</th>";
+											echo "<th class='center'>Category</th><th class='center'>Company Code</th>";
+											echo "<th class='center'>Department</th><th class='center'>Unit</th>";
+											echo "<th class='center'>Position</th><th class='center'>Basic Salary</th>";
+											echo "<th class='center'>Tax Code</th></tr></thead><tbody>";
 											*/
-											echo "<tr><td class='fit'><img class='user-pic' src='images/user_unknown.png'><a href='mod_employee.php?uid=$id' class='name-padding primary-link'>$empName</a></td>";
-											echo "<td align='center'>$empSex</td><td align='center'>$empBirth</td><td align='center'>$empNationality</td><td align='center'>$empCounty</td><td align='center'>$empDateJoin</td><td align='center'>$empSource</td><td align='center'>$empCompanyCode</td><td align='center'>$empDepartment</td><td align='center'>$empPosition</td></tr>";
-										};
-										echo "</tbody>";
-									} else {
-										/**
-										 No employee information.
-										 **/
-										echo "<div class='block' style='height:100%'><div class='centered-users'>";
-										echo "<h3 class='no-users'> No employess information found!</h3></tbody></div></div>";
-									}
-									?>
-								</table>
+											for($j = 0; $j < $rows; ++$j) {
+												$id = mysql_result($result, $j, 'id');
+												$empName = ucfirst(mysql_result($result, $j, 'empName'));
+												$empSex = mysql_result($result, $j, 'empSex');
+												$empBirth = mysql_result($result, $j, 'empBirth');
+												$empNationality = mysql_result($result, $j, 'empNationality');
+												$empCounty = mysql_result($result, $j, 'empCounty');
+												$empDateJoin = mysql_result($result, $j, 'empDateJoin');
+												$empSource = mysql_result($result, $j, 'empSource');
+												// $empCategory = mysql_result($result, $j, 'empCategory');
+												$empCompanyCode = mysql_result($result, $j, 'empCompanyCode');
+												$empDepartment = mysql_result($result, $j, 'empDepartment');
+												// $empUnit = mysql_result($result, $j, 'empUnit');
+												$empPosition = mysql_result($result, $j, 'empPosition');
+												// $empBasicSalary = mysql_result($result, $j, 'empBasicSalary');
+												// $empTaxCode = mysql_result($result, $j, 'empTaxCode');
+												/*
+												$string = mysql_result($result, $j, 'dateTime');
+												if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
+													$datejoin = $match[1];
+												};
+												*/
+												echo "<tr><td class='fit'><img class='user-pic' src='images/user_unknown.png'><a href='mod_employee.php?uid=$id' class='name-padding primary-link'>$empName</a></td>";
+												echo "<td align='center'>$empSex</td><td align='center'>$empBirth</td><td align='center'>$empNationality</td><td align='center'>$empCounty</td><td align='center'>$empDateJoin</td><td align='center'>$empSource</td><td align='center'>$empCompanyCode</td><td align='center'>$empDepartment</td><td align='center'>$empPosition</td></tr>";
+											};
+											echo "</tbody>";
+										} else {
+											/**
+											 No employee information.
+											 **/
+											echo "<div class='block' style='height:100%'><div class='centered-users'>";
+											echo "<h3 class='no-users'> No employess information found!</h3></tbody></div></div>";
+										}
+										?>
+									</table>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -175,7 +177,18 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 		</div>
 	</div>
 </div>
-<?php include('pages/page_footer.php'); ?>
 <?php include('pages/page_jquery.php'); ?>
+<script src="js/jquery.slimscroll.min.js" type="text/javascript"></script>
+<script>
+$(function(){
+	var row = <?php echo $rows; ?>;
+	if(row < 7) {	} else {
+		$('#slimScrollEmployees').slimScroll({
+	    		height: '335px'
+    		});
+	}
+});
+</script>
+<?php include('pages/page_footer.php'); ?>
 </body>
 </html>
