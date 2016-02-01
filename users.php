@@ -109,44 +109,46 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 							<div class="tools"></div>
 						</div>
 						<div class="portlet-body">
-							<div class="table-scrollable table-scrollable-borderless">
-								<table class="table table-hover table-light">
-									<?php
-									if($rows > 0) {
-										echo "<thead><tr class='uppercase'><th colspan='2'>User</th>";
-										echo "<th class='center'>Email Address</th>";
-										echo "<th class='center'>Department</th><th class='center'>Role</th>";
-										echo "<th class='center'>Date Created</th>";
-										echo "<th class='center'>Status</th></tr></thead><tbody>";
-										for($j = 0; $j < $rows; ++$j) {
-											$uid = ucfirst(mysql_result($result, $j, 'uid'));
-											$firstname = ucfirst(mysql_result($result, $j, 'firstName'));
-											$emailaddress = mysql_result($result, $j, 'emailAdd');
-											$departments = mysql_result($result, $j, 'departments');
-											$roles = mysql_result($result, $j, 'roles');
-											/*
-											$job = ucfirst(mysql_result($result, $j, 'jobTitle'));
-											if($job == null) {
-												$job = "No record found!";
-											}
-											*/
-											$string = mysql_result($result, $j, 'dateTime');
-											if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
-												$datejoin = $match[1];
+							<div id="slimScrollUsers">
+								<div class="table-scrollable table-scrollable-borderless">
+									<table class="table table-hover table-light">
+										<?php
+										if($rows > 0) {
+											echo "<thead><tr class='uppercase'><th colspan='2'>User</th>";
+											echo "<th class='center'>Email Address</th>";
+											echo "<th class='center'>Department</th><th class='center'>Role</th>";
+											echo "<th class='center'>Date Created</th>";
+											echo "<th class='center'>Status</th></tr></thead><tbody>";
+											for($j = 0; $j < $rows; ++$j) {
+												$uid = ucfirst(mysql_result($result, $j, 'uid'));
+												$firstname = ucfirst(mysql_result($result, $j, 'firstName'));
+												$emailaddress = mysql_result($result, $j, 'emailAdd');
+												$departments = mysql_result($result, $j, 'departments');
+												$roles = mysql_result($result, $j, 'roles');
+												/*
+												$job = ucfirst(mysql_result($result, $j, 'jobTitle'));
+												if($job == null) {
+													$job = "No record found!";
+												}
+												*/
+												$string = mysql_result($result, $j, 'dateTime');
+												if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
+													$datejoin = $match[1];
+												};
+												echo "<tr><td class='fit'><img class='user-pic' src='images/user_unknown.png'></td><td><a href='mod_user.php?userId=$uid' class='primary-link'>$firstname</a></td>";
+												echo "<td align='center'>$emailaddress</td><td align='center'>$departments</td><td align='center'>$roles</td><td align='center'>$datejoin</td><td align='center'><span class='bold theme-font'>Active</span></td></tr>";
 											};
-											echo "<tr><td class='fit'><img class='user-pic' src='images/user_unknown.png'></td><td><a href='mod_user.php?userId=$uid' class='primary-link'>$firstname</a></td>";
-											echo "<td align='center'>$emailaddress</td><td align='center'>$departments</td><td align='center'>$roles</td><td align='center'>$datejoin</td><td align='center'><span class='bold theme-font'>Active</span></td></tr>";
-										};
-										echo "</tbody>";
-									} else {
-										/**
-										 No users account.
-										 **/
-										echo "<div class='block' style='height:100%'><div class='centered-users'>";
-										echo "<h3 class='no-users'> No users account found!</h3></tbody></div></div>";
-									}
-									?>
-								</table>
+											echo "</tbody>";
+										} else {
+											/**
+											 No users account.
+											 **/
+											echo "<div class='block' style='height:100%'><div class='centered-users'>";
+											echo "<h3 class='no-users'> No users account found!</h3></tbody></div></div>";
+										}
+										?>
+									</table>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -158,7 +160,18 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 		</div>
 	</div>
 </div>
-<?php include('pages/page_footer.php'); ?>
 <?php include('pages/page_jquery.php'); ?>
+<script src="js/jquery.slimscroll.min.js" type="text/javascript"></script>
+<script>
+$(function(){
+    var row = <?php echo $rows; ?>;
+	if(row < 7) {	} else {
+		$('#slimScrollUsers').slimScroll({
+	    		height: '335px'
+    		});
+	}
+});
+</script>
+<?php include('pages/page_footer.php'); ?>
 </body>
 </html>
