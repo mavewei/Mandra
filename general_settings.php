@@ -1,8 +1,9 @@
 <?php include('pages/page_header.php'); ?>
 <link href="css/components.css" rel="stylesheet" type="text/css" />
 <link href="css/layout.css" rel="stylesheet" type="text/css" />
-<link href="css/center.css" rel="stylesheet" type="text/css">
-<link href="css/signin.css" rel="stylesheet" type="text/css">
+<link href="css/center.css" rel="stylesheet" type="text/css" />
+<link href="css/signin.css" rel="stylesheet" type="text/css" />
+<link href="css/plugin.css" rel="stylesheet" type="text/css" />
 <script type = "text/javascript">
 	history.pushState(null, null, 'general_settings.php');
 	window.addEventListener('popstate', function(event) {
@@ -111,20 +112,20 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 					Settings
 				</li>
 			</ul>
-			<div class="row margin-to-10">
-				<div class="portlet light">
-					<div class="row">
-						<div class="col-md-6">
-							<div class="portlet-title">
-								<div class="caption">
-									<span class="caption-subjet font-green-sharp bold uppercase">Company</span>
-								</div>
-								<div class="actions btn-set">
-									<a class="btn green-haze btn-circle" href="add_company.php"><i class="fa fa-plus"></i> Add </a>
-								</div>
-								<div class="tools"></div>
+			<div class="row margin-top-10">
+				<div class="col-md-6">
+					<div class="portlet light">
+						<div class="portlet-title">
+							<div class="caption">
+								<span class="caption-subjet font-green-sharp bold uppercase">Company</span>
 							</div>
-							<div class="portlet-body">
+							<div class="actions btn-set">
+								<a class="btn green-haze btn-circle" href="add_company.php"><i class="fa fa-plus"></i> Add </a>
+							</div>
+							<div class="tools"></div>
+						</div>
+						<div class="portlet-body">
+							<div id="slimScrollCompany">
 								<div class="table-scrollable table-scrollable-borderless">
 									<table class="table table-hover table-light">
 										<?php
@@ -155,7 +156,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 											echo "</tbody>";
 										} else {
 											/**
-											 No users account.
+											 No company account.
 											 **/
 											echo "<div class='block' style='height:100%'><div class='centered-users'>";
 											echo "<h3 class='no-users'> No company infor. found!</h3></tbody></div></div>";
@@ -165,16 +166,20 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 								</div>
 							</div>
 						</div>
-						<div class="col-md-6">
-							<div class="portlet-title">
-								<div class="caption">
-									<span class="caption-subjet font-green-sharp bold uppercase">Tax Code</span>
-								</div>
-								<div class="actions btn-set">
-									<a class="btn green-haze btn-circle" href="add_taxcode.php"><i class="fa fa-plus"></i> Add </a>
-								</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="portlet light">
+						<div class="portlet-title">
+							<div class="caption">
+								<span class="caption-subjet font-green-sharp bold uppercase">Tax Code</span>
 							</div>
-							<div class="portlet-body">
+							<div class="actions btn-set">
+								<a class="btn green-haze btn-circle" href="add_taxcode.php"><i class="fa fa-plus"></i> Add </a>
+							</div>
+						</div>
+						<div class="portlet-body">
+							<div id="slimScrollTaxCode">
 								<div class="table-scrollable table-scrollable-borderless">
 									<table class="table table-hover table-light">
 										<?php
@@ -205,17 +210,21 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 							</div>
 						</div>
 					</div>
-					<div class="row margin-top-30">
-						<div class="col-md-6">
-							<div class="portlet-title">
-								<div class="caption">
-									<span class="caption-subjet font-green-sharp bold uppercase">Department</span>
-								</div>
-								<div class="actions btn-set">
-									<a class="btn green-haze btn-circle" href="add_department.php"><i class="fa fa-plus"></i> Add </a>
-								</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="portlet light">
+						<div class="portlet-title">
+							<div class="caption">
+								<span class="caption-subjet font-green-sharp bold uppercase">Department</span>
 							</div>
-							<div class="portlet-body">
+							<div class="actions btn-set">
+								<a class="btn green-haze btn-circle" href="add_department.php"><i class="fa fa-plus"></i> Add </a>
+							</div>
+						</div>
+						<div class="portlet-body">
+							<div id="slimScrollDepartment">
 								<div class="table-scrollable table-scrollable-borderless">
 									<table class="table table-hover table-light">
 										<?php
@@ -246,16 +255,20 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 								</div>
 							</div>
 						</div>
-						<div class="col-md-6">
-							<div class="portlet-title">
-								<div class="caption">
-									<span class="caption-subjet font-green-sharp bold uppercase">Unit</span>
-								</div>
-								<div class="actions btn-set">
-									<a class="btn green-haze btn-circle" href="add_unit.php"><i class="fa fa-plus"></i> Add </a>
-								</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="portlet light">
+						<div class="portlet-title">
+							<div class="caption">
+								<span class="caption-subjet font-green-sharp bold uppercase">Unit</span>
 							</div>
-							<div class="portlet-body">
+							<div class="actions btn-set">
+								<a class="btn green-haze btn-circle" href="add_unit.php"><i class="fa fa-plus"></i> Add </a>
+							</div>
+						</div>
+						<div class="portlet-body">
+							<div id="slimScrollUnit">
 								<div class="table-scrollable table-scrollable-borderless">
 									<table class="table table-hover table-light">
 										<?php
@@ -286,18 +299,21 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 							</div>
 						</div>
 					</div>
-					<div class="row margin-top-30">
-						<div class="col-md-6"></div>
-						<div class="col-md-6">
-							<div class="portlet-title">
-								<div class="caption">
-									<span class="caption-subjet font-green-sharp bold uppercase">Position</span>
-								</div>
-								<div class="actions btn-set">
-									<a class="btn green-haze btn-circle" href="add_position.php"><i class="fa fa-plus"></i> Add </a>
-								</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="portlet light">
+						<div class="portlet-title">
+							<div class="caption">
+								<span class="caption-subjet font-green-sharp bold uppercase">Position</span>
 							</div>
-							<div class="portlet-body">
+							<div class="actions btn-set">
+								<a class="btn green-haze btn-circle" href="add_position.php"><i class="fa fa-plus"></i> Add </a>
+							</div>
+						</div>
+						<div class="portlet-body">
+							<div id="slimScrollPosition">
 								<div class="table-scrollable table-scrollable-borderless">
 									<table class="table table-hover table-light">
 										<?php
@@ -329,11 +345,40 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 						</div>
 					</div>
 				</div>
+				<div class="col-md-6"></div>
 			</div>
 		</div>
 	</div>
 </div>
-<?php include('pages/page_footer.php'); ?>
 <?php include('pages/page_jquery.php'); ?>
+<script src="js/jquery.slimscroll.min.js" type="text/javascript"></script>
+<script>
+$(function(){
+    $('#slimScrollCompany').slimScroll({
+        height: '230px'
+    });
+});
+$(function(){
+    $('#slimScrollTaxCode').slimScroll({
+        height: '230px'
+    });
+});
+$(function(){
+    $('#slimScrollDepartment').slimScroll({
+        height: '230px'
+    });
+});
+$(function(){
+    $('#slimScrollUnit').slimScroll({
+        height: '230px'
+    });
+});
+$(function(){
+    $('#slimScrollPosition').slimScroll({
+        height: '230px'
+    });
+});
+</script>
+<?php include('pages/page_footer.php'); ?>
 </body>
 </html>
