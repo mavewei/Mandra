@@ -16,7 +16,7 @@
 <div class="page-header">
 	<div class="page-header-top">
 		<div class="container">
-			<div class="page-logo"><a href="dashboard.php"><img src="images/logo.png" alt="logo" class="logo-default" /></a></div>
+			<div class="page-logo"><a href="dashboard.php"><img src="images/logo3.png" alt="logo" class="logo-default" /></a></div>
 			<div class="top-menu">
 				<ul class="nav navbar-nav pull-right">
 					<li class="dropdown dropdown-extended dropdown-dark dropdown-notification" id="header_noti">

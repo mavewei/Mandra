@@ -229,8 +229,8 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 									<table class="table table-hover table-light">
 										<?php
 										if($rowsDept > 0) {
-											echo "<thead><tr class='uppercase'><th class='left th-width-15'>Code</th>";
-											echo "<th class='center th-width-10'>Id</th><th class='left th-width-40'>Name</th>";
+											echo "<thead><tr class='uppercase'><th class='left th-width-20'>Code</th>";
+											echo "<th class='center th-width-10'>Id</th><th class='left th-width-35'>Name</th>";
 											echo "<th class='center th-width-15'></th><th class='center th-width-20'>Date Created</th></tr></thead><tbody>";
 											for($j = 0; $j < $rowsDept; ++$j) {
 												$deptCode = mysql_result($resultDept, $j, 'deptCode');
@@ -354,29 +354,44 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 <script src="js/jquery.slimscroll.min.js" type="text/javascript"></script>
 <script>
 $(function(){
-    $('#slimScrollCompany').slimScroll({
-        height: '230px'
-    });
+	var row = <?php echo $rows; ?>;
+	if(row < 6) {	} else {
+		$('#slimScrollCompany').slimScroll({
+	    		height: '230px'
+    		});
+	}
 });
 $(function(){
-    $('#slimScrollTaxCode').slimScroll({
-        height: '230px'
-    });
+	var row = <?php echo $rowstaxCode; ?>;
+	if(row < 6) {	} else {
+		$('#slimScrollTaxCode').slimScroll({
+	    		height: '230px'
+    		});
+	}
 });
 $(function(){
-    $('#slimScrollDepartment').slimScroll({
-        height: '230px'
-    });
+	var row = <?php echo $rowsDept; ?>;
+	if(row < 6) {	} else {
+		$('#slimScrollDepartment').slimScroll({
+	    		height: '230px'
+    		});
+	}
 });
 $(function(){
-    $('#slimScrollUnit').slimScroll({
-        height: '230px'
-    });
+	var row = <?php echo $rowsUnit; ?>;
+	if(row < 6) {	} else {
+		$('#slimScrollUnit').slimScroll({
+	    		height: '230px'
+    		});
+	}
 });
 $(function(){
-    $('#slimScrollPosition').slimScroll({
-        height: '230px'
-    });
+	var row = <?php echo $rowsPosition; ?>;
+	if(row < 6) {	} else {
+		$('#slimScrollPosition').slimScroll({
+	    		height: '230px'
+    		});
+	}
 });
 </script>
 <?php include('pages/page_footer.php'); ?>

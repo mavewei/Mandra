@@ -279,7 +279,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 													<div class="form-group">
 														<label>Date of Join</label>
 														<div class="input-icon input-icon-lg"><i class="fa fa-calendar"></i>
-															<input name="empDateJoin" type="date" class="form-control input-lg" value="<?php echo $empDateJoin; ?>">
+															<input name="empDateJoin" type="date" class="form-control input-lg" style="text-align: center" value="<?php echo $empDateJoin; ?>">
 														</div>
 													</div>
 												</div>
