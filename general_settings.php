@@ -13,76 +13,92 @@
 <?php include('pages/page_meta.php'); ?>
 <?php
 require_once('db/db_config.php');
-if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
-	if($_SESSION['GID'] < 4000) {
-		$fname = $_SESSION['FNAME'];
-		$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
-		$_SESSION['LAST_PAGE'] = "general_settings.php";
-		// $role = $_SESSION['ROLE'];
-		/**
-		 Lifetime added 5min.
-		 **/
-		if(isset($_SESSION['EXPIRETIME'])) {
-			if($_SESSION['EXPIRETIME'] < time()) {
-				unset($_SESSION['EXPIRETIME']);
-				header('Location: logout.php?TIMEOUT');
-				exit(0);
-			} else {
-				/**
-				 Session time out time 5min.
-				 **/
-				//$_SESSION['EXPIRETIME'] = time() + 300;
-				$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+/**
+	Check session id.
+**/
+$login = $_SESSION['LOGIN_ID'];
+$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
+$result = mysql_query($query);
+if(!$result) die ("Table access failed: " . mysql_error());
+$data = mysql_fetch_assoc($result);
+$sid = $data['sid'];
+if($sid == $_SESSION['SID']) {
+	if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
+		if($_SESSION['GID'] < 4000) {
+			$fname = $_SESSION['FNAME'];
+			$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
+			$_SESSION['LAST_PAGE'] = "general_settings.php";
+			// $role = $_SESSION['ROLE'];
+			/**
+				Lifetime added 5min.
+			**/
+			if(isset($_SESSION['EXPIRETIME'])) {
+				if($_SESSION['EXPIRETIME'] < time()) {
+					unset($_SESSION['EXPIRETIME']);
+					header('Location: logout.php?TIMEOUT');
+					exit(0);
+				} else {
+					/**
+						Session time out time 5min.
+					**/
+					//$_SESSION['EXPIRETIME'] = time() + 300;
+					$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+				};
 			};
-		};
-		$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-		if($dbSelected) {
+			$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+			if($dbSelected) {
+				/**
+					Select from company.
+				**/
+				$query = "SELECT * FROM company ORDER BY id DESC";
+				$result = mysql_query($query);
+				if(!$result) die ("Table access failed: " . mysql_error());
+				$rows = mysql_num_rows($result);
+				/**
+					Select from taxCode.
+				**/
+				$querytaxCode = "SELECT * FROM taxCode ORDER BY id DESC";
+				$resulttaxCode = mysql_query($querytaxCode);
+				if(!$resulttaxCode) die ("Table access failed: " . mysql_error());
+				$rowstaxCode = mysql_num_rows($resulttaxCode);
+				/**
+					Select from departments.
+				**/
+				$queryDept = "SELECT * FROM departments ORDER BY id DESC";
+				$resultDept = mysql_query($queryDept);
+				if(!$resultDept) die ("Table access failed: " . mysql_error());
+				$rowsDept = mysql_num_rows($resultDept);
+				/**
+					Select from unit.
+				**/
+				$queryUnit = "SELECT * FROM unit ORDER BY id DESC";
+				$resultUnit = mysql_query($queryUnit);
+				if(!$resultUnit) die ("Table access failed: " . mysql_error());
+				$rowsUnit = mysql_num_rows($resultUnit);
+				/**
+					Select from position.
+				**/
+				$queryPosition = "SELECT * FROM position ORDER BY id DESC";
+				$resultPosition = mysql_query($queryPosition);
+				if(!$resultPosition) die ("Table access failed: " . mysql_error());
+				$rowsPosition = mysql_num_rows($resultPosition);
+			};
+		} else {
 			/**
-			 Select from company.
-			 **/
-			$query = "SELECT * FROM company ORDER BY id DESC";
-			$result = mysql_query($query);
-			if(!$result) die ("Table access failed: " . mysql_error());
-			$rows = mysql_num_rows($result);
-			/**
-			 Select from taxCode.
-			 **/
-			$querytaxCode = "SELECT * FROM taxCode ORDER BY id DESC";
-			$resulttaxCode = mysql_query($querytaxCode);
-			if(!$resulttaxCode) die ("Table access failed: " . mysql_error());
-			$rowstaxCode = mysql_num_rows($resulttaxCode);
-			/**
-			 Select from departments.
-			 **/
-			$queryDept = "SELECT * FROM departments ORDER BY id DESC";
-			$resultDept = mysql_query($queryDept);
-			if(!$resultDept) die ("Table access failed: " . mysql_error());
-			$rowsDept = mysql_num_rows($resultDept);
-			/**
-			 Select from unit.
-			 **/
-			$queryUnit = "SELECT * FROM unit ORDER BY id DESC";
-			$resultUnit = mysql_query($queryUnit);
-			if(!$resultUnit) die ("Table access failed: " . mysql_error());
-			$rowsUnit = mysql_num_rows($resultUnit);
-			/**
-			 Select from position.
-			 **/
-			$queryPosition = "SELECT * FROM position ORDER BY id DESC";
-			$resultPosition = mysql_query($queryPosition);
-			if(!$resultPosition) die ("Table access failed: " . mysql_error());
-			$rowsPosition = mysql_num_rows($resultPosition);
+				Redirect to dashboard if not Superuser or Manager.
+			**/
+			$_SESSION['STATUS'] = 10;
+			header('Location: status.php');
 		};
 	} else {
-		/**
-		 Redirect to dashboard if not Superuser or Manager.
-		 **/
-		$_SESSION['STATUS'] = 10;
+		unset($_SESSION['STATUS']);
 		header('Location: status.php');
 	};
 } else {
+	unset($_SESSION['STATUS']);
 	header('Location: status.php');
-};
+}
 ?>
 <?php include('pages/page_menu.php'); ?>
 <div class="page-container">

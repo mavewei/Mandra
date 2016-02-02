@@ -12,61 +12,81 @@
 <?php include('pages/page_meta.php'); ?>
 <?php
 require_once('db/db_config.php');
-if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
-	if($_SESSION['GID'] < 4000) {
-		$fname = $_SESSION['FNAME'];
-		$_SESSION['LAST_PAGE'] = 'employees.php';
-		$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
-		// $role = $_SESSION['ROLE'];
-		/**
-		 Lifetime added 5min.
-		 **/
-		if(isset($_SESSION['EXPIRETIME'])) {
-			if($_SESSION['EXPIRETIME'] < time()) {
-				unset($_SESSION['EXPIRETIME']);
-				header('Location: logout.php?TIMEOUT');
-				exit(0);
-			} else {
-				/**
-				 Session time out time 5min.
-				 **/
-				//$_SESSION['EXPIRETIME'] = time() + 300;
-				$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+/**
+	Check session id.
+**/
+$login = $_SESSION['LOGIN_ID'];
+$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+$query = "SELECT *
+			FROM
+				tempSession
+			WHERE
+				emailAdd = '$login'";
+$result = mysql_query($query);
+if(!$result) die ("Table access failed: " . mysql_error());
+$data = mysql_fetch_assoc($result);
+$sid = $data['sid'];
+if($sid == $_SESSION['SID']) {
+	if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
+		if($_SESSION['GID'] < 4000) {
+			$fname = $_SESSION['FNAME'];
+			$_SESSION['LAST_PAGE'] = 'employees.php';
+			$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
+			// $role = $_SESSION['ROLE'];
+			/**
+				Lifetime added 5min.
+			**/
+			if(isset($_SESSION['EXPIRETIME'])) {
+				if($_SESSION['EXPIRETIME'] < time()) {
+					unset($_SESSION['EXPIRETIME']);
+					header('Location: logout.php?TIMEOUT');
+					exit(0);
+				} else {
+					/**
+						Session time out time 5min.
+					**/
+					//$_SESSION['EXPIRETIME'] = time() + 300;
+					$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+				};
 			};
-		};
-		$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-		if($dbSelected) {
-			$query = "SELECT
-   							employees.id AS id, employees.empName AS empName, employees.empSex AS empSex,
-   							employees.empBirth AS empBirth, employees.empNationality AS empNationality,
-   							employees.empCounty AS empCounty, employees.empDateJoin AS empDateJoin,
-   							employees.empSource AS empSource,	company.comCode AS empCompanyCode,
-   							departments.deptCode AS empDepartment, position.positionName AS empPosition
-   						FROM
-   							employees
-   						INNER JOIN
-   							company ON employees.empCompanyCode = company.comId
-   						INNER JOIN
-   							departments ON employees.empDepartment = departments.deptId
-   						INNER JOIN
-   								position ON employees.empPosition = position.positionId
-   						ORDER BY
-   							empName
-   						ASC";
-			$result = mysql_query($query);
-			if(!$result) die ("Table access failed: " . mysql_error());
-			$rows = mysql_num_rows($result);
+			$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+			if($dbSelected) {
+				$query = "SELECT
+	   							employees.id AS id, employees.empName AS empName, employees.empSex AS empSex,
+	   							employees.empBirth AS empBirth, employees.empNationality AS empNationality,
+	   							employees.empCounty AS empCounty, employees.empDateJoin AS empDateJoin,
+	   							employees.empSource AS empSource,	company.comCode AS empCompanyCode,
+	   							departments.deptCode AS empDepartment, position.positionName AS empPosition
+	   						FROM
+	   							employees
+	   						INNER JOIN
+	   							company ON employees.empCompanyCode = company.comId
+	   						INNER JOIN
+	   							departments ON employees.empDepartment = departments.deptId
+	   						INNER JOIN
+	   								position ON employees.empPosition = position.positionId
+	   						ORDER BY
+	   							empName
+	   						ASC";
+				$result = mysql_query($query);
+				if(!$result) die ("Table access failed: " . mysql_error());
+				$rows = mysql_num_rows($result);
+			};
+		} else {
+			/**
+				Redirect to dashboard if not Superuser or Manager.
+			**/
+			$_SESSION['STATUS'] = 10;
+			header('Location: status.php');
 		};
 	} else {
-		/**
-		 Redirect to dashboard if not Superuser or Manager.
-		 **/
-		$_SESSION['STATUS'] = 10;
+		unset($_SESSION['STATUS']);
 		header('Location: status.php');
 	};
 } else {
+	unset($_SESSION['STATUS']);
 	header('Location: status.php');
-};
+}
 ?>
 <?php include('pages/page_menu.php'); ?>
 <div class="page-container">

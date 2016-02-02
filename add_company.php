@@ -12,82 +12,98 @@
 <?php include('pages/page_meta.php'); ?>
 <?php
 require_once('db/db_config.php');
-if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
-	if($_SESSION['GID'] < 3000) {
-		$fname = $_SESSION['FNAME'];
-		$uid = $_SESSION['UID'];
-		$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
-		$lastPage = $_SESSION['LAST_PAGE'];
-		/**
-		 Lifetime added 5min.
-		 **/
-		if(isset($_SESSION['EXPIRETIME'])) {
-			if($_SESSION['EXPIRETIME'] < time()) {
-				unset($_SESSION['EXPIRETIME']);
-				header('Location: logout.php?TIMEOUT');
-				exit(0);
-			} else {
-				/**
-				 Session time out time 5min.
-				 **/
-				//$_SESSION['EXPIRETIME'] = time() + 300;
-				$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
-			};
-		};
-		/**
-		 Select company lists.
-   		**/
-   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-		$query = "SELECT * from company ORDER BY id DESC";
-		$result = mysql_query($query);
-		$row = mysql_num_rows($result);
-		if(!$result) die ("Table access failed: " . mysql_error());
-		if($row == 0) {
-			$comId = 'C01';
-		} else {
-			if($row < 9) {
-				$row++;
-				$comId = 'C0' . $row;
-			} else {
-				$row++;
-				$comId = 'C' . $row;
-			}
-		}
-
-		if(isset($_POST['comCode']) && isset($_POST['comName'])) {
-			$comId = $_POST['comId'];
-			$comCode = strtoupper(mysql_escape_string($_POST['comCode']));
-			$comName = ucwords(mysql_escape_string($_POST['comName']));
-			$comLocation = $_POST['comLocation'];
+/**
+	Check session id.
+**/
+$login = $_SESSION['LOGIN_ID'];
+$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
+$result = mysql_query($query);
+if(!$result) die ("Table access failed: " . mysql_error());
+$data = mysql_fetch_assoc($result);
+$sid = $data['sid'];
+if($sid == $_SESSION['SID']) {
+	if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
+		if($_SESSION['GID'] < 3000) {
+			$fname = $_SESSION['FNAME'];
+			$uid = $_SESSION['UID'];
+			$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
+			$lastPage = $_SESSION['LAST_PAGE'];
 			/**
-			 Get the gid from tables
-			 **/
-			// $dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-			$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
-			$result = mysql_query($query);
-			$row = mysql_fetch_array($result);
-			$time = $row['dateTime'];
-			$query = "INSERT INTO company (dateTime, comId, comCode, comName, comLocation, createdBy) VALUES('$time', '$comId', '$comCode', '$comName', '$comLocation', '$uid')";
-			$result = mysql_query($query);
-			if(!$result) die ("Table access failed: " . mysql_error());
-			if($result) {
-				/**
-				 Company information created and redirected to previous page.
-				 **/
-				$_SESSION['STATUS'] = 14;
-				header("Location: status.php");
+				Lifetime added 5min.
+			**/
+			if(isset($_SESSION['EXPIRETIME'])) {
+				if($_SESSION['EXPIRETIME'] < time()) {
+					unset($_SESSION['EXPIRETIME']);
+					header('Location: logout.php?TIMEOUT');
+					exit(0);
+				} else {
+					/**
+						Session time out time 5min.
+					**/
+					//$_SESSION['EXPIRETIME'] = time() + 300;
+					$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+				};
 			};
-		};
+			/**
+				Select company lists.
+	   		**/
+	   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+			$query = "SELECT * from company ORDER BY id DESC";
+			$result = mysql_query($query);
+			$row = mysql_num_rows($result);
+			if(!$result) die ("Table access failed: " . mysql_error());
+			if($row == 0) {
+				$comId = 'C01';
+			} else {
+				if($row < 9) {
+					$row++;
+					$comId = 'C0' . $row;
+				} else {
+					$row++;
+					$comId = 'C' . $row;
+				}
+			}
+
+			if(isset($_POST['comCode']) && isset($_POST['comName'])) {
+				$comId = $_POST['comId'];
+				$comCode = strtoupper(mysql_escape_string($_POST['comCode']));
+				$comName = ucwords(mysql_escape_string($_POST['comName']));
+				$comLocation = $_POST['comLocation'];
+				/**
+					Get the gid from tables
+				**/
+				// $dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+				$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
+				$result = mysql_query($query);
+				$row = mysql_fetch_array($result);
+				$time = $row['dateTime'];
+				$query = "INSERT INTO company (dateTime, comId, comCode, comName, comLocation, createdBy) VALUES('$time', '$comId', '$comCode', '$comName', '$comLocation', '$uid')";
+				$result = mysql_query($query);
+				if(!$result) die ("Table access failed: " . mysql_error());
+				if($result) {
+					/**
+						Company information created and redirected to previous page.
+					**/
+					$_SESSION['STATUS'] = 14;
+					header("Location: status.php");
+				};
+			};
+		} else {
+			/**
+				Redirect to dashboard if not Superuser or Manager
+			**/
+			$_SESSION['STATUS'] = 10;
+			header('Location: status.php');
+		}
 	} else {
-		/**
-		 Redirect to dashboard if not Superuser or Manager
-		 **/
-		$_SESSION['STATUS'] = 10;
+		unset($_SESSION['STATUS']);
 		header('Location: status.php');
-	}
+	};
 } else {
+	unset($_SESSION['STATUS']);
 	header('Location: status.php');
-};
+}
 ?>
 <?php include('pages/page_menu.php'); ?>
 

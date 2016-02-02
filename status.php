@@ -14,8 +14,8 @@ $status = $_SESSION['STATUS'];
 switch($status) {
 case "1":
 	/**
-	 Success from admin_registration page
-	 **/
+		Success from admin_registration page
+	**/
 	echo "<div class=\"container vertical-center-jumbo\"><div class=\"jumbotron\">";
 	echo "<h1>Woows. You're done!</h1><p></p>";
 	echo "<p>We're finish initialized without any problem, and, the main database and correspond tables are created. This system are still under beta version, kindly contact to system programmer once bug or any system unstable occurred. Please don't hesitate to contact us if have any suggestions.</p>";
@@ -26,8 +26,8 @@ case "1":
 	break;
 case "2":
 	/**
-	 User authentication successful!
-	 **/
+		User authentication successful!
+	**/
 	echo "<div class=\"block\" style=\"height:100%\"><div class=\"centered-login-status\">";
 	echo "<div class=\"media\"><div class=\"media-left media-middle\">";
 	echo "<a href=\"javascript:;\"><div class=\"container-login-status\">";
@@ -316,7 +316,6 @@ default:
 	echo "<meta http-equiv='refresh' content='3;logout.php'>";
 };
 ?>
-
 <?php //echo $imgmsg; ?>
 <?php include("pages/page_jquery.php"); ?>
 </body>

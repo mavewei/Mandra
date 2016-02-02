@@ -14,58 +14,74 @@
 <?php include('pages/page_meta.php'); ?>
 <?php
 require_once('db/db_config.php');
-if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
-	if($_SESSION['GID'] < 4000) {
-		$fname = $_SESSION['FNAME'];
-		$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
-		$_SESSION['LAST_PAGE'] = "users.php";
-		// $role = $_SESSION['ROLE'];
-		/**
-		 Lifetime added 5min.
-		 **/
-		if(isset($_SESSION['EXPIRETIME'])) {
-			if($_SESSION['EXPIRETIME'] < time()) {
-				unset($_SESSION['EXPIRETIME']);
-				header('Location: logout.php?TIMEOUT');
-				exit(0);
-			} else {
-				/**
-				 Session time out time 5min.
-				 **/
-				//$_SESSION['EXPIRETIME'] = time() + 300;
-				$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+/**
+	Check session id.
+**/
+$login = $_SESSION['LOGIN_ID'];
+$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
+$result = mysql_query($query);
+if(!$result) die ("Table access failed: " . mysql_error());
+$data = mysql_fetch_assoc($result);
+$sid = $data['sid'];
+if($sid == $_SESSION['SID']) {
+	if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
+		if($_SESSION['GID'] < 4000) {
+			$fname = $_SESSION['FNAME'];
+			$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
+			$_SESSION['LAST_PAGE'] = "users.php";
+			// $role = $_SESSION['ROLE'];
+			/**
+				Lifetime added 5min.
+			**/
+			if(isset($_SESSION['EXPIRETIME'])) {
+				if($_SESSION['EXPIRETIME'] < time()) {
+					unset($_SESSION['EXPIRETIME']);
+					header('Location: logout.php?TIMEOUT');
+					exit(0);
+				} else {
+					/**
+						Session time out time 5min.
+					**/
+					//$_SESSION['EXPIRETIME'] = time() + 300;
+					$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+				};
 			};
-		};
-		$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-		if($dbSelected) {
-			$query = "SELECT
-							userAccounts.id As uid, userAccounts.dateTime AS dateTime, gid, firstName, lastName,
-							emailAdd, departments.deptName AS departments, roles
-						FROM
-							userAccounts
-						INNER JOIN
-							departments
-						ON
-							userAccounts.departments = departments.deptId
-						WHERE
-							gid > 1000
-						ORDER BY
-							dateTime
-						DESC";
-			$result = mysql_query($query);
-			if(!$result) die ("Table access failed: " . mysql_error());
-			$rows = mysql_num_rows($result);
+			$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+			if($dbSelected) {
+				$query = "SELECT
+								userAccounts.id As uid, userAccounts.dateTime AS dateTime, gid, firstName, lastName,
+								emailAdd, departments.deptName AS departments, roles
+							FROM
+								userAccounts
+							INNER JOIN
+								departments
+							ON
+								userAccounts.departments = departments.deptId
+							WHERE
+								gid > 1000
+							ORDER BY
+								dateTime
+							DESC";
+				$result = mysql_query($query);
+				if(!$result) die ("Table access failed: " . mysql_error());
+				$rows = mysql_num_rows($result);
+			};
+		} else {
+			/**
+				Redirect to dashboard if not Superuser or Manager.
+			**/
+			$_SESSION['STATUS'] = 10;
+			header('Location: status.php');
 		};
 	} else {
-		/**
-		 Redirect to dashboard if not Superuser or Manager.
-		 **/
-		$_SESSION['STATUS'] = 10;
+		unset($_SESSION['STATUS']);
 		header('Location: status.php');
 	};
 } else {
+	unset($_SESSION['STATUS']);
 	header('Location: status.php');
-};
+}
 ?>
 <?php include('pages/page_menu.php'); ?>
 <div class="page-container">

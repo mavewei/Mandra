@@ -4,16 +4,27 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 	$email = $_SESSION['LOGIN_ID'];
 	$sid = $_SESSION['SID'];
 	/**
-	 Logout information recorded!
-	 **/
+		Logout information recorded!
+	**/
 	$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 	if($dbSelected) {
-		$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
+		$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
 		$result = mysql_query($query);
 		$row = mysql_fetch_array($result);
 		$time = $row['dateTime'];
-		$query = "UPDATE loginDetails SET dateTimeLast = '$time' WHERE emailAdd = '$email' AND sid = '$sid'";
+		$query = "UPDATE
+						loginDetails
+					SET
+						dateTimeLast = '$time'
+					WHERE
+						emailAdd = '$email' AND sid = '$sid'";
 		//$query = "UPDATE loginDETAILS SET date_t_Logout = CURRENT_TIMESTAMP WHERE emailAdd = '$email' AND sid = '$sid'";
+		$result = mysql_query($query);
+		if(!$result) die ("Table access failed: " . mysql_error());
+		$query = "DELETE FROM
+						tempSession
+					WHERE
+						emailAdd = '$email' AND sid = '$sid'";
 		$result = mysql_query($query);
 		if(!$result) die ("Table access failed: " . mysql_error());
 	};

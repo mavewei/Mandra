@@ -4,8 +4,8 @@ require_once('db/db_config.php');
 $dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 if($dbSelected) {
 	/**
-	 Validate data for email address.
-	 **/
+		Validate data for email address.
+	**/
 	if(!empty($_POST['emailAdd'])) {
 		$emailAdd = $_POST['emailAdd'];
 		$query = "SELECT * FROM userAccounts WHERE emailAdd = '$emailAdd'";
@@ -14,16 +14,16 @@ if($dbSelected) {
 		$row = mysql_num_rows($result);
 		if($row > 0) {
 			/**
-			 Email address found.
-			 **/
+				Email address found.
+			**/
 			echo '[Error] Login ID already exist!';
 		} else {
 			return true;
 		}
 	}
 	/**
-	 Validate data for company information.
-	 **/
+		Validate data for company information.
+	**/
 	if(!empty($_POST['comCode'])) {
 		$comCode = $_POST['comCode'];
 		$query = "SELECT * FROM company WHERE comCode = '$comCode'";
@@ -32,16 +32,16 @@ if($dbSelected) {
 		$row = mysql_num_rows($result);
 		if($row > 0) {
 			/**
-			 Company code found.
-			 **/
+				Company code found.
+			**/
 			echo "[Error] Company code already exist!";
 		} else {
 			return true;
 		}
 	}
 	/**
-	 Validate data for department information.
-	 **/
+		Validate data for department information.
+	**/
 	if(!empty($_POST['deptCode'])) {
 		$deptCode = $_POST['deptCode'];
 		$query = "SELECT * FROM departments WHERE deptCode = '$deptCode'";
@@ -50,16 +50,16 @@ if($dbSelected) {
 		$row = mysql_num_rows($result);
 		if($row > 0) {
 			/**
-			 Department information found.
-			 **/
+				Department information found.
+			**/
 			echo "[Error] Department code already exist!";
 		} else {
 			return true;
 		}
 	}
 	/**
-	 Validate data for employee name.
-	 **/
+		Validate data for employee name.
+	**/
 	if(!empty($_POST['empName'])) {
 		$empName = $_POST['empName'];
 		$query = "SELECT * FROM employees WHERE empName = '$empName'";
@@ -68,16 +68,16 @@ if($dbSelected) {
 		$row = mysql_num_rows($result);
 		if($row > 0) {
 			/**
-			 Employee name found.
-			 **/
+				Employee name found.
+			**/
 			echo "[Error] Employee details already exist!";
 		} else {
 			return true;
 		}
 	}
 	/**
-	 Validate data for county.
-	 **/
+		Validate data for county.
+	**/
 	if(!empty($_POST['empNationality'])) {
 		$empNationality = $_POST['empNationality'];
 		$query = "SELECT countyId, countyCode FROM county WHERE countyId = '$empNationality'";
@@ -86,8 +86,8 @@ if($dbSelected) {
 		$row = mysql_num_rows($result);
 		if($row > 0) {
 			/**
-			 County found.
-			 **/
+				County found.
+			**/
 			$rows = array();
 			while($data = mysql_fetch_array($result)) {
 			 	$rows[] = array("countyCode" => $data['countyCode']);
@@ -98,8 +98,8 @@ if($dbSelected) {
 		}
 	}
 	/**
-	 Validate data for tax code.
-	 **/
+		Validate data for tax code.
+	**/
 	if(!empty($_POST['taxCodeName'])) {
 		$taxCodeName = $_POST['taxCodeName'];
 		$query = "SELECT * FROM taxCode WHERE taxCodeName = '$taxCodeName'";
@@ -108,16 +108,16 @@ if($dbSelected) {
 		$row = mysql_num_rows($result);
 		if($row > 0) {
 			/**
-			 Tax Code found.
-			 **/
+				Tax Code found.
+			**/
 			echo "[Error] Tax code already exist!";
 		} else {
 			return true;
 		}
 	}
 	/**
-	 Validate data for unit information.
-	 **/
+		Validate data for unit information.
+	**/
 	if(!empty($_POST['unitName'])) {
 		$unitName = $_POST['unitName'];
 		$query = "SELECT * FROM unit WHERE unitName = '$unitName'";
@@ -126,16 +126,16 @@ if($dbSelected) {
 		$row = mysql_num_rows($result);
 		if($row > 0) {
 			/**
-			 Unit information found.
-			 **/
+				Unit information found.
+			**/
 			echo "[Error] Unit infor already exist!";
 		} else {
 			return true;
 		}
 	}
 	/**
-	 Validate data for position information.
-	 **/
+		Validate data for position information.
+	**/
 	if(!empty($_POST['positionName'])) {
 		$positionName = $_POST['positionName'];
 		$query = "SELECT * FROM position WHERE positionName = '$positionName'";
@@ -144,8 +144,8 @@ if($dbSelected) {
 		$row = mysql_num_rows($result);
 		if($row > 0) {
 			/**
-			 Unit information found.
-			 **/
+				Position information found.
+			**/
 			echo "[Error] Position infor already exist!";
 		} else {
 			return true;

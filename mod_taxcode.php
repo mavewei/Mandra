@@ -12,66 +12,82 @@
 <?php include('pages/page_meta.php'); ?>
 <?php
 require_once('db/db_config.php');
-if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
-	if($_SESSION['GID'] < 3000) {
-		$fname = $_SESSION['FNAME'];
-		$uid = $_SESSION['UID'];
-		$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
-		$taxCodeId = $_GET['taxCodeId'];
-		$lastPage = $_SESSION['LAST_PAGE'];
-		/**
-		 Lifetime added 5min.
-		 **/
-		if(isset($_SESSION['EXPIRETIME'])) {
-			if($_SESSION['EXPIRETIME'] < time()) {
-				unset($_SESSION['EXPIRETIME']);
-				header('Location: logout.php?TIMEOUT');
-				exit(0);
-			} else {
-				/**
-				 Session time out time 5min.
-				 **/
-				//$_SESSION['EXPIRETIME'] = time() + 300;
-				$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+/**
+	Check session id.
+**/
+$login = $_SESSION['LOGIN_ID'];
+$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
+$result = mysql_query($query);
+if(!$result) die ("Table access failed: " . mysql_error());
+$data = mysql_fetch_assoc($result);
+$sid = $data['sid'];
+if($sid == $_SESSION['SID']) {
+	if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
+		if($_SESSION['GID'] < 3000) {
+			$fname = $_SESSION['FNAME'];
+			$uid = $_SESSION['UID'];
+			$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
+			$taxCodeId = $_GET['taxCodeId'];
+			$lastPage = $_SESSION['LAST_PAGE'];
+			/**
+				Lifetime added 5min.
+			**/
+			if(isset($_SESSION['EXPIRETIME'])) {
+				if($_SESSION['EXPIRETIME'] < time()) {
+					unset($_SESSION['EXPIRETIME']);
+					header('Location: logout.php?TIMEOUT');
+					exit(0);
+				} else {
+					/**
+						Session time out time 5min.
+					**/
+					//$_SESSION['EXPIRETIME'] = time() + 300;
+					$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+				};
 			};
-		};
-		/**
-		 Select tax code lists.
-   		**/
-   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-   		$query = "SELECT * FROM taxCode WHERE taxCodeId = '$taxCodeId'";
-   		$result = mysql_query($query);
-		if(!$result) die ("Table access failed: " . mysql_error());
-		$data = mysql_fetch_array($result);
-		$taxCodeName = $data['taxCodeName'];
-		if(isset($_POST['taxCodeId']) && isset($_POST['taxCodeName'])) {
-			$taxCodeId = $_POST['taxCodeId'];
-			$taxCodeName = strtoupper(mysql_escape_string($_POST['taxCodeName']));
-			$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
-			$result = mysql_query($query);
-			$row = mysql_fetch_array($result);
-			$time = $row['dateTime'];
-			$query = "UPDATE taxCode SET taxCodeName = '$taxCodeName' WHERE taxCodeId = '$taxCodeId'";
-			$result = mysql_query($query);
+			/**
+				Select tax code lists.
+	   		**/
+	   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+	   		$query = "SELECT * FROM taxCode WHERE taxCodeId = '$taxCodeId'";
+	   		$result = mysql_query($query);
 			if(!$result) die ("Table access failed: " . mysql_error());
-			if($result) {
-				/**
-				 Tax code information updated and redirected to previous page.
-				 **/
-				$_SESSION['STATUS'] = 21;
-				header("Location: status.php");
+			$data = mysql_fetch_array($result);
+			$taxCodeName = $data['taxCodeName'];
+			if(isset($_POST['taxCodeId']) && isset($_POST['taxCodeName'])) {
+				$taxCodeId = $_POST['taxCodeId'];
+				$taxCodeName = strtoupper(mysql_escape_string($_POST['taxCodeName']));
+				$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
+				$result = mysql_query($query);
+				$row = mysql_fetch_array($result);
+				$time = $row['dateTime'];
+				$query = "UPDATE taxCode SET taxCodeName = '$taxCodeName' WHERE taxCodeId = '$taxCodeId'";
+				$result = mysql_query($query);
+				if(!$result) die ("Table access failed: " . mysql_error());
+				if($result) {
+					/**
+						Tax code information updated and redirected to previous page.
+					**/
+					$_SESSION['STATUS'] = 21;
+					header("Location: status.php");
+				};
 			};
-		};
+		} else {
+			/**
+				Redirect to dashboard if not Superuser or Manager
+			**/
+			$_SESSION['STATUS'] = 10;
+			header('Location: status.php');
+		}
 	} else {
-		/**
-		 Redirect to dashboard if not Superuser or Manager
-		 **/
-		$_SESSION['STATUS'] = 10;
+		unset($_SESSION['STATUS']);
 		header('Location: status.php');
-	}
+	};
 } else {
+	unset($_SESSION['STATUS']);
 	header('Location: status.php');
-};
+}
 ?>
 <?php include('pages/page_menu.php'); ?>
 <div class="page-container">

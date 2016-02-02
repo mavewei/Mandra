@@ -12,134 +12,182 @@
 <?php include('pages/page_meta.php'); ?>
 <?php
 require_once('db/db_config.php');
-if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
-	if($_SESSION['GID'] < 3000) {
-		$fname = $_SESSION['FNAME'];
-		$uid = $_SESSION['UID'];
-		$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
-		$_SESSION['LAST_PAGE'] = 'add_employee.php';
-		$year = date("Y");
-		$month = date("m");
-		$day = date("d");
-		$maxDoB = $year . '-' . $month . '-' . $day;
-		/**
-		 Lifetime added 5min.
-		 **/
-		if(isset($_SESSION['EXPIRETIME'])) {
-			if($_SESSION['EXPIRETIME'] < time()) {
-				unset($_SESSION['EXPIRETIME']);
-				header('Location: logout.php?TIMEOUT');
-				exit(0);
-			} else {
-				/**
-				 Session time out time 5min.
-				 **/
-				//$_SESSION['EXPIRETIME'] = time() + 300;
-				$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+/**
+	Check session id.
+**/
+$login = $_SESSION['LOGIN_ID'];
+$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+$query = "SELECT *
+			FROM
+				tempSession
+			WHERE
+				emailAdd = '$login'";
+$result = mysql_query($query);
+if(!$result) die ("Table access failed: " . mysql_error());
+$data = mysql_fetch_assoc($result);
+$sid = $data['sid'];
+if($sid == $_SESSION['SID']) {
+	if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
+		if($_SESSION['GID'] < 3000) {
+			$fname = $_SESSION['FNAME'];
+			$uid = $_SESSION['UID'];
+			$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
+			$_SESSION['LAST_PAGE'] = 'add_employee.php';
+			$year = date("Y");
+			$month = date("m");
+			$day = date("d");
+			$maxDoB = $year . '-' . $month . '-' . $day;
+			/**
+				Lifetime added 5min.
+			**/
+			if(isset($_SESSION['EXPIRETIME'])) {
+				if($_SESSION['EXPIRETIME'] < time()) {
+					unset($_SESSION['EXPIRETIME']);
+					header('Location: logout.php?TIMEOUT');
+					exit(0);
+				} else {
+					/**
+						Session time out time 5min.
+					**/
+					//$_SESSION['EXPIRETIME'] = time() + 300;
+					$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+				};
 			};
-		};
-   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-   		/**
-		 Select nationality lists.
-   		**/
-   		$queryNationality = "SELECT * from nationality ORDER BY nationalityName ASC";
-		$resultNationality = mysql_query($queryNationality);
-		$rowNationality = mysql_num_rows($resultNationality);
-		if(!$resultNationality) die ("Table access failed: " . mysql_error());
-   		/**
-		 Select taxcode lists.
-   		**/
-   		$queryTaxCode = "SELECT * from taxCode ORDER BY taxCodeId ASC";
-		$resultTaxCode = mysql_query($queryTaxCode);
-		$rowTaxCode = mysql_num_rows($resultTaxCode);
-		if(!$resultTaxCode) die ("Table access failed: " . mysql_error());
-   		/**
-		 Select position lists.
-   		**/
-   		$queryPosition = "SELECT * from position ORDER BY positionName ASC";
-		$resultPosition = mysql_query($queryPosition);
-		$rowPosition = mysql_num_rows($resultPosition);
-		if(!$resultPosition) die ("Table access failed: " . mysql_error());
-   		/**
-		 Select unit lists.
-   		**/
-   		$queryUnit = "SELECT * from unit ORDER BY unitName ASC";
-		$resultUnit = mysql_query($queryUnit);
-		$rowUnit = mysql_num_rows($resultUnit);
-		if(!$resultUnit) die ("Table access failed: " . mysql_error());
-   		/**
-		 Select company lists.
-   		**/
-   		$queryCom = "SELECT * from company ORDER BY comId ASC";
-		$resultCom = mysql_query($queryCom);
-		$rowCom = mysql_num_rows($resultCom);
-		if(!$resultCom) die ("Table access failed: " . mysql_error());
-		/**
-		 Select department lists.
-   		**/
-   		$queryDept = "SELECT * from departments ORDER BY deptName ASC";
-		$resultDept = mysql_query($queryDept);
-		$rowDept = mysql_num_rows($resultDept);
-		if(!$resultDept) die ("Table access failed: " . mysql_error());
-		/**
-		 Select employee lists.
-   		**/
-		$query = "SELECT * from employees ORDER BY id DESC";
-		$result = mysql_query($query);
-		$row = mysql_num_rows($result);
-		if(!$result) die ("Table access failed: " . mysql_error());
-		if($row == 0) {
-			$empId = 'E01';
-		} else {
-			if($row < 9) {
-				$row++;
-				$empId = 'E0' . $row;
-			} else {
-				$row++;
-				$empId = 'E' . $row;
-			}
-		}
-
-		if(isset($_POST['empName'])) {
-			$empName = ucwords(mysql_escape_string($_POST['empName']));
-			$empSex = $_POST['empSex'];
-			$empBirth = $_POST['empBirth'];
-			$empNationality = $_POST['empNationality'];
-			$empCounty = ucwords(mysql_escape_string($_POST['empCounty']));
-			$empDateJoin = $_POST['empDateJoin'];
-			$empSource = $_POST['empSource'];
-			$empCategory = $_POST['empCategory'];
-			$empCompanyCode = $_POST['empCompanyCode'];
-			$empDepartment = $_POST['empDepartment'];
-			$empUnit = $_POST['empUnit'];
-			$empPosition = $_POST['empPosition'];
-			$empBasicSalary = mysql_escape_string($_POST['empBasicSalary']);
-			$empTaxCode = $_POST['empTaxCode'];
-			$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
+	   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+	   		/**
+				Select nationality lists.
+	   		**/
+	   		$queryNationality = "SELECT *
+	   									FROM
+	   										nationality
+	   									ORDER BY nationalityName ASC";
+			$resultNationality = mysql_query($queryNationality);
+			$rowNationality = mysql_num_rows($resultNationality);
+			if(!$resultNationality) die ("Table access failed: " . mysql_error());
+	   		/**
+				Select taxcode lists.
+	   		**/
+	   		$queryTaxCode = "SELECT *
+	   								FROM
+	   									taxCode
+	   								ORDER BY taxCodeId ASC";
+			$resultTaxCode = mysql_query($queryTaxCode);
+			$rowTaxCode = mysql_num_rows($resultTaxCode);
+			if(!$resultTaxCode) die ("Table access failed: " . mysql_error());
+	   		/**
+				Select position lists.
+	   		**/
+	   		$queryPosition = "SELECT *
+	   								FROM
+	   									position
+	   								ORDER BY positionName ASC";
+			$resultPosition = mysql_query($queryPosition);
+			$rowPosition = mysql_num_rows($resultPosition);
+			if(!$resultPosition) die ("Table access failed: " . mysql_error());
+	   		/**
+				Select unit lists.
+	   		**/
+	   		$queryUnit = "SELECT *
+	   							FROM
+	   								unit
+	   							ORDER BY unitName ASC";
+			$resultUnit = mysql_query($queryUnit);
+			$rowUnit = mysql_num_rows($resultUnit);
+			if(!$resultUnit) die ("Table access failed: " . mysql_error());
+	   		/**
+				Select company lists.
+	   		**/
+	   		$queryCom = "SELECT *
+	   							FROM
+	   								company
+	   							ORDER BY comId ASC";
+			$resultCom = mysql_query($queryCom);
+			$rowCom = mysql_num_rows($resultCom);
+			if(!$resultCom) die ("Table access failed: " . mysql_error());
+			/**
+				Select department lists.
+	   		**/
+	   		$queryDept = "SELECT *
+	   							FROM
+	   								departments
+	   							ORDER BY deptName ASC";
+			$resultDept = mysql_query($queryDept);
+			$rowDept = mysql_num_rows($resultDept);
+			if(!$resultDept) die ("Table access failed: " . mysql_error());
+			/**
+				Select employee lists.
+	   		**/
+			$query = "SELECT *
+							FROM
+								employees
+							ORDER BY id DESC";
 			$result = mysql_query($query);
-			$row = mysql_fetch_array($result);
-			$time = $row['dateTime'];
-			$query = "INSERT INTO employees (dateTime, empId, empName, empSex, empBirth, empNationality, empCounty, empDateJoin, empSource, empCategory, empCompanyCode, empDepartment, empUnit, empPosition, empBasicSalary, empTaxCode, createdBy) VALUES ('$time', '$empId', '$empName', '$empSex', '$empBirth', '$empNationality', '$empCounty', '$empDateJoin', '$empSource', '$empCategory', '$empCompanyCode', '$empDepartment', '$empUnit', '$empPosition', '$empBasicSalary', '$empTaxCode', '$uid')";
-			$result = mysql_query($query);
+			$row = mysql_num_rows($result);
 			if(!$result) die ("Table access failed: " . mysql_error());
-			if($result) {
-				/**
-				 Employee created and redirected to previous page.
-				 **/
-				$_SESSION['STATUS'] = 15;
-				header("Location: status.php");
+			if($row == 0) {
+				$empId = 'E01';
+			} else {
+				if($row < 9) {
+					$row++;
+					$empId = 'E0' . $row;
+				} else {
+					$row++;
+					$empId = 'E' . $row;
+				}
+			}
+
+			if(isset($_POST['empName'])) {
+				$empName = ucwords(mysql_escape_string($_POST['empName']));
+				$empSex = $_POST['empSex'];
+				$empBirth = $_POST['empBirth'];
+				$empNationality = $_POST['empNationality'];
+				$empCounty = ucwords(mysql_escape_string($_POST['empCounty']));
+				$empDateJoin = $_POST['empDateJoin'];
+				$empSource = $_POST['empSource'];
+				$empCategory = $_POST['empCategory'];
+				$empCompanyCode = $_POST['empCompanyCode'];
+				$empDepartment = $_POST['empDepartment'];
+				$empUnit = $_POST['empUnit'];
+				$empPosition = $_POST['empPosition'];
+				$empBasicSalary = mysql_escape_string($_POST['empBasicSalary']);
+				$empTaxCode = $_POST['empTaxCode'];
+				$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
+				$result = mysql_query($query);
+				$row = mysql_fetch_array($result);
+				$time = $row['dateTime'];
+				$query = "INSERT INTO employees
+								(dateTime, empId, empName, empSex, empBirth, empNationality, empCounty, empDateJoin,
+								empSource, empCategory, empCompanyCode, empDepartment, empUnit, empPosition,
+								empBasicSalary, empTaxCode, createdBy)
+							VALUES
+								('$time', '$empId', '$empName', '$empSex', '$empBirth', '$empNationality', '$empCounty',
+								'$empDateJoin', '$empSource', '$empCategory', '$empCompanyCode', '$empDepartment',
+								'$empUnit', '$empPosition', '$empBasicSalary', '$empTaxCode', '$uid')";
+				$result = mysql_query($query);
+				if(!$result) die ("Table access failed: " . mysql_error());
+				if($result) {
+					/**
+						Employee created and redirected to previous page.
+					**/
+					$_SESSION['STATUS'] = 15;
+					header("Location: status.php");
+				};
 			};
-		};
+		} else {
+			/**
+				Redirect to dashboard if not Superuser or Manager
+			**/
+			$_SESSION['STATUS'] = 10;
+			header('Location: status.php');
+		}
 	} else {
-		/**
-		 Redirect to dashboard if not Superuser or Manager
-		 **/
-		$_SESSION['STATUS'] = 10;
+		unset($_SESSION['STATUS']);
 		header('Location: status.php');
-	}
+	};
 } else {
+	unset($_SESSION['STATUS']);
 	header('Location: status.php');
-};
+}
 ?>
 <?php include('pages/page_menu.php'); ?>
 

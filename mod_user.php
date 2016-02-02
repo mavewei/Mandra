@@ -12,158 +12,173 @@
 <?php include('pages/page_meta.php'); ?>
 <?php
 require_once('db/db_config.php');
-if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
-	if($_SESSION['GID'] < 3000) {
-		$fname = $_SESSION['FNAME'];
-		$userId = $_GET['userId'];
-		$lastPage = $_SESSION['LAST_PAGE'];
-		$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
-		/**
-		 Lifetime added 5min.
-		 **/
-		if(isset($_SESSION['EXPIRETIME'])) {
-			if($_SESSION['EXPIRETIME'] < time()) {
-				unset($_SESSION['EXPIRETIME']);
-				header('Location: logout.php?TIMEOUT');
-				exit(0);
-			} else {
-				/**
-				 Session time out time 5min.
-				 **/
-				//$_SESSION['EXPIRETIME'] = time() + 300;
-				$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
-			};
-		};
-		/**
-		 Select departments lists.
-   		**/
-   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-		$queryDept = "SELECT * from departments ORDER BY deptName ASC";
-		$resultDept = mysql_query($queryDept);
-		$rowDept = mysql_num_rows($resultDept);
-		if(!$resultDept) die ("Table access failed: " . mysql_error());
-		/**
-		 Select user information.
-		 **/
-   		$query = "SELECT * FROM userAccounts WHERE id = '$userId'";
-   		$result = mysql_query($query);
-		if(!$result) die ("Table access failed: " . mysql_error());
-		$data = mysql_fetch_assoc($result);
-		$userId = $data['id'];
-		$userGid = $data['gid'];
-		$firstName = $data['firstName'];
-		$lastName = $data['lastName'];
-		$emailAdd = $data['emailAdd'];
-		$departments = $data['departments'];
-		$roles = $data['roles'];
-		$passwd = $data['passwd'];
-		/**
-		 Form submit.
-		 **/
-		if(isset($_POST['fname']) && isset($_POST['lname'])) {
-			$userId = $_POST['userId'];
-			$userGid = $_POST['currentGid'];
-			$firstName = ucwords(mysql_real_escape_string($_POST['fname']));
-			$lastName = ucwords(mysql_escape_string($_POST['lname']));
-			$emailAdd = strtolower(mysql_escape_string($_POST['login']));
-			$departments = $_POST['departments'];
-			$currentRoles = $_POST['currentRoles'];
-			$role = $_POST['roles'];
+/**
+	Check session id.
+**/
+$login = $_SESSION['LOGIN_ID'];
+$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
+$result = mysql_query($query);
+if(!$result) die ("Table access failed: " . mysql_error());
+$data = mysql_fetch_assoc($result);
+$sid = $data['sid'];
+if($sid == $_SESSION['SID']) {
+	if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
+		if($_SESSION['GID'] < 3000) {
+			$fname = $_SESSION['FNAME'];
+			$userId = $_GET['userId'];
+			$lastPage = $_SESSION['LAST_PAGE'];
+			$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
 			/**
-			 Get the gid from tables
-			 **/
-			//$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-			if($role == $currentRoles) {
+				Lifetime added 5min.
+			**/
+			if(isset($_SESSION['EXPIRETIME'])) {
+				if($_SESSION['EXPIRETIME'] < time()) {
+					unset($_SESSION['EXPIRETIME']);
+					header('Location: logout.php?TIMEOUT');
+					exit(0);
+				} else {
+					/**
+						Session time out time 5min.
+					**/
+					//$_SESSION['EXPIRETIME'] = time() + 300;
+					$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+				};
+			};
+			/**
+				Select departments lists.
+	   		**/
+	   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+			$queryDept = "SELECT * from departments ORDER BY deptName ASC";
+			$resultDept = mysql_query($queryDept);
+			$rowDept = mysql_num_rows($resultDept);
+			if(!$resultDept) die ("Table access failed: " . mysql_error());
+			/**
+				Select user information.
+			**/
+	   		$query = "SELECT * FROM userAccounts WHERE id = '$userId'";
+	   		$result = mysql_query($query);
+			if(!$result) die ("Table access failed: " . mysql_error());
+			$data = mysql_fetch_assoc($result);
+			$userId = $data['id'];
+			$userGid = $data['gid'];
+			$firstName = $data['firstName'];
+			$lastName = $data['lastName'];
+			$emailAdd = $data['emailAdd'];
+			$departments = $data['departments'];
+			$roles = $data['roles'];
+			$passwd = $data['passwd'];
+			/**
+				Form submit.
+			**/
+			if(isset($_POST['fname']) && isset($_POST['lname'])) {
+				$userId = $_POST['userId'];
+				$userGid = $_POST['currentGid'];
+				$firstName = ucwords(mysql_real_escape_string($_POST['fname']));
+				$lastName = ucwords(mysql_escape_string($_POST['lname']));
+				$emailAdd = strtolower(mysql_escape_string($_POST['login']));
+				$departments = $_POST['departments'];
+				$currentRoles = $_POST['currentRoles'];
+				$role = $_POST['roles'];
 				/**
-				 Same role and gid no change.
-				 **/
-				$newGid = $userGid;
-			} else {
-				/**
-				 Diff roles and get new gid.
-				 **/
-				if($role == "Managers") {
-					$query = "SELECT * from userAccounts WHERE roles = '$role' ORDER BY gid DESC LIMIT 1";
-					$result = mysql_query($query);
-					$row = mysql_num_rows($result);
-					if(!$result) die ("Table access failed: " . mysql_error());
-					if($row == 0) {
-						$newGid = 1001;
-					} else {
-						$row = mysql_fetch_array($result);
-						$newGid = $row['gid'];
-						$newGid++;
-					}
-				} elseif($role == "Systems") {
-					$query = "SELECT * from userAccounts WHERE roles = '$role' ORDER BY gid DESC LIMIT 1";
-					$result = mysql_query($query);
-					$row = mysql_num_rows($result);
-					if(!$result) die ("Table access failed: " . mysql_error());
-					if($row == 0) {
-						$newGid = 2001;
-					} else {
-						$row = mysql_fetch_array($result);
-						$newGid = $row['gid'];
-						$newGid++;
-					}
-				} elseif($role == "Users") {
-					$query = "SELECT * from userAccounts WHERE roles = '$role' ORDER BY gid DESC LIMIT 1";
-					$result = mysql_query($query);
-					$row = mysql_num_rows($result);
-					if(!$result) die ("Table access failed: " . mysql_error());
-					if($row == 0) {
-						$newGid = 3001;
-					} else {
-						$row = mysql_fetch_array($result);
-						$newGid = $row['gid'];
-						$newGid++;
+					Get the gid from tables
+				**/
+				if($role == $currentRoles) {
+					/**
+						Same role and gid no change.
+					**/
+					$newGid = $userGid;
+				} else {
+					/**
+						Diff roles and get new gid.
+					**/
+					if($role == "Managers") {
+						$query = "SELECT * from userAccounts WHERE roles = '$role' ORDER BY gid DESC LIMIT 1";
+						$result = mysql_query($query);
+						$row = mysql_num_rows($result);
+						if(!$result) die ("Table access failed: " . mysql_error());
+						if($row == 0) {
+							$newGid = 1001;
+						} else {
+							$row = mysql_fetch_array($result);
+							$newGid = $row['gid'];
+							$newGid++;
+						}
+					} elseif($role == "Systems") {
+						$query = "SELECT * from userAccounts WHERE roles = '$role' ORDER BY gid DESC LIMIT 1";
+						$result = mysql_query($query);
+						$row = mysql_num_rows($result);
+						if(!$result) die ("Table access failed: " . mysql_error());
+						if($row == 0) {
+							$newGid = 2001;
+						} else {
+							$row = mysql_fetch_array($result);
+							$newGid = $row['gid'];
+							$newGid++;
+						}
+					} elseif($role == "Users") {
+						$query = "SELECT * from userAccounts WHERE roles = '$role' ORDER BY gid DESC LIMIT 1";
+						$result = mysql_query($query);
+						$row = mysql_num_rows($result);
+						if(!$result) die ("Table access failed: " . mysql_error());
+						if($row == 0) {
+							$newGid = 3001;
+						} else {
+							$row = mysql_fetch_array($result);
+							$newGid = $row['gid'];
+							$newGid++;
+						}
 					}
 				}
-			}
-			/**
-			 Check password change.
-			 **/
-			$currentPasswd = $_POST['currentPasswd'];
-			if($_POST['passwd'] == "") {
-				$newPasswd = $currentPasswd;
-			} else {
-				$newPasswd = md5(mysql_escape_string($_POST['passwd']));
-			}
-			/**
-			 Update user information.
-			 **/
-			$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
-			$result = mysql_query($query);
-			$row = mysql_fetch_array($result);
-			$time = $row['dateTime'];
-			$query = "UPDATE
-							userAccounts
-						SET
-							gid = '$newGid', firstName = '$firstName', lastName = '$lastName', emailAdd = '$emailAdd',
-							departments = '$departments', roles = '$role', passwd = '$newPasswd'
-						WHERE
-							id = '$userId'";
-			print($query);
-			$result = mysql_query($query);
-			if(!$result) die ("Table access failed: " . mysql_error());
-			if($result) {
 				/**
-				 User created and redirected to dashboard.
-				 **/
-				$_SESSION['STATUS'] = 24;
-				header("Location: status.php");
+					Check password change.
+				**/
+				$currentPasswd = $_POST['currentPasswd'];
+				if($_POST['passwd'] == "") {
+					$newPasswd = $currentPasswd;
+				} else {
+					$newPasswd = md5(mysql_escape_string($_POST['passwd']));
+				}
+				/**
+					Update user information.
+				**/
+				$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
+				$result = mysql_query($query);
+				$row = mysql_fetch_array($result);
+				$time = $row['dateTime'];
+				$query = "UPDATE
+								userAccounts
+							SET
+								gid = '$newGid', firstName = '$firstName', lastName = '$lastName', emailAdd = '$emailAdd',
+								departments = '$departments', roles = '$role', passwd = '$newPasswd'
+							WHERE
+								id = '$userId'";
+				print($query);
+				$result = mysql_query($query);
+				if(!$result) die ("Table access failed: " . mysql_error());
+				if($result) {
+					/**
+						User created and redirected to dashboard.
+					**/
+					$_SESSION['STATUS'] = 24;
+					header("Location: status.php");
+				};
 			};
-		};
+		} else {
+			/**
+				Redirect to dashboard if not Superuser or Manager
+			**/
+			$_SESSION['STATUS'] = 10;
+			header('Location: status.php');
+		}
 	} else {
-		/**
-		 Redirect to dashboard if not Superuser or Manager
-		 **/
-		$_SESSION['STATUS'] = 10;
+		unset($_SESSION['STATUS']);
 		header('Location: status.php');
-	}
+	};
 } else {
+	unset($_SESSION['STATUS']);
 	header('Location: status.php');
-};
+}
 ?>
 <?php include('pages/page_menu.php'); ?>
 

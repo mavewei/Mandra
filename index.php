@@ -11,34 +11,34 @@ $result = mysql_query($query);
 $status = mysql_result($result, 0);
 if($status) {
 	/**
-	 Tables exists!. Check initial setting.
-	 **/
+		Tables exists!. Check initial setting.
+	**/
 	$query = 'SELECT status FROM initFlag';
 	$result = mysql_query($query);
 	if(!$result) die ("Table access failed: " . mysql_error());
 	$status = mysql_result($result, 0);
 	if($status != 1) {
 		/**
-		 System was initialized. Redirect to login.php
-		 **/
+			System was initialized. Redirect to login.php
+		**/
 		header('Location: login.php');
 	} else {
 		/**
-		 System not yet initialized. Redirect to admin_registration.php
-		 **/
+			System not yet initialized. Redirect to admin_registration.php
+		**/
 		$_SESSION['INIT'] = 1;
 		header('Location: admin_registration.php');
 	};
 } else {
 	/**
-	 Tables not found, create tables.
-	 **/
+		Tables not found, create tables.
+	**/
 	/**
-	 Create require tables
-	 **/
+		Create require tables
+	**/
 	/**
-	 initFlag
-	 **/
+		initFlag
+	**/
 	$query = "CREATE TABLE initFlag (
 					id INT NOT NULL AUTO_INCREMENT,
 					dateTime TIMESTAMP NULL,
@@ -47,9 +47,9 @@ if($status) {
 	$result = mysql_query($query);
 	if(!$result) die ("Tables create failed: " . mysql_error());
 	/**
-	 userAccounts
-	 IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
-	 **/
+		userAccounts
+		IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
+	**/
 	$query = "CREATE TABLE userAccounts (
 					id INT NOT NULL AUTO_INCREMENT,
 					dateTime TIMESTAMP NULL,
@@ -65,24 +65,36 @@ if($status) {
 	$result = mysql_query($query);
 	if(!$result) die ("Tables create failed: " . mysql_error());
 	/**
-	 loginDetails
-	 IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
-	 **/
+		loginDetails
+		IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
+	**/
 	$query = "CREATE TABLE loginDetails (
 					id INT NOT NULL AUTO_INCREMENT,
 					dateTimeLogin TIMESTAMP NULL,
 					dateTimeLast TIMESTAMP NULL,
 					emailAdd VARCHAR(50) NOT NULL,
 					ipAdd VARCHAR(50) NOT NULL,
-					sid VARCHAR(20) NOT NULL,
+					sid VARCHAR(100) NOT NULL,
 					loginStatus VARCHAR(20) NOT NULL,
 					PRIMARY KEY (id))";
 	$result = mysql_query($query);
 	if(!$result) die ("Tables create failed: " . mysql_error());
 	/**
-	 departments
-	 IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
-	 **/
+		tempSession
+		IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
+	**/
+	$query = "CREATE TABLE tempSession (
+					id INT NOT NULL AUTO_INCREMENT,
+					dateTime TIMESTAMP NULL,
+					emailAdd VARCHAR(50) NOT NULL,
+					sid VARCHAR(100) NOT NULL,
+					PRIMARY KEY (id))";
+	$result = mysql_query($query);
+	if(!$result) die ("Tables create failed: " . mysql_error());
+	/**
+		departments
+		IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
+	**/
 	$query = "CREATE TABLE departments (
 					id INT NOT NULL AUTO_INCREMENT,
 					dateTime TIMESTAMP NULL,
@@ -94,9 +106,9 @@ if($status) {
 	$result = mysql_query($query);
 	if(!$result) die ("Tables create failed: " . mysql_error());
 	/**
-	 company
-	 IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
-	 **/
+		company
+		IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
+	**/
 	$query = "CREATE TABLE company (
 					id INT NOT NULL AUTO_INCREMENT,
 					dateTime TIMESTAMP NULL,
@@ -109,9 +121,9 @@ if($status) {
 	$result = mysql_query($query);
 	if(!$result) die ("Tables create failed: " . mysql_error());
 	/**
-	 nationality
-	 IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
-	 **/
+		nationality
+		IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
+	**/
 	$query = "CREATE TABLE nationality (
 					id INT NOT NULL AUTO_INCREMENT,
 					dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -120,9 +132,9 @@ if($status) {
 	$result = mysql_query($query);
 	if(!$result) die ("Tables create failed: " . mysql_error());
 	/**
-	 county
-	 IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
-	 **/
+		county
+		IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
+	**/
 	$query = "CREATE TABLE county (
 					id INT NOT NULL AUTO_INCREMENT,
 					dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -132,9 +144,9 @@ if($status) {
 	$result = mysql_query($query);
 	if(!$result) die ("Tables create failed: " . mysql_error());
 	/**
-	 Unit
-	 IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
-	 **/
+		unit
+		IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
+	**/
 	$query = "CREATE TABLE unit (
 					id INT NOT NULL AUTO_INCREMENT,
 					dateTime TIMESTAMP NULL,
@@ -144,9 +156,9 @@ if($status) {
 	$result = mysql_query($query);
 	if(!$result) die ("Tables create failed: " . mysql_error());
 	/**
-	 Unit
-	 IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
-	 **/
+		position
+		IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
+	**/
 	$query = "CREATE TABLE position (
 					id INT NOT NULL AUTO_INCREMENT,
 					dateTime TIMESTAMP NULL,
@@ -156,9 +168,9 @@ if($status) {
 	$result = mysql_query($query);
 	if(!$result) die ("Tables create failed: " . mysql_error());
 	/**
-	 Tax Code
-	 IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
-	 **/
+		Tax Code
+		IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
+	**/
 	$query = "CREATE TABLE taxCode (
 					id INT NOT NULL AUTO_INCREMENT,
 					dateTime TIMESTAMP NULL,
@@ -168,9 +180,9 @@ if($status) {
 	$result = mysql_query($query);
 	if(!$result) die ("Tables create failed: " . mysql_error());
 	/**
-	 employees
-	 IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
-	 **/
+		employees
+		IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
+	**/
 	$query = "CREATE TABLE employees (
 					id INT NOT NULL AUTO_INCREMENT,
 					dateTime TIMESTAMP NULL,

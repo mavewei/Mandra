@@ -11,80 +11,104 @@
 <?php include('pages/page_meta.php'); ?>
 <?php
 require_once('db/db_config.php');
-if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
-	if($_SESSION['GID'] < 3000) {
-		$fname = $_SESSION['FNAME'];
-		$uid = $_SESSION['UID'];
-		$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
-		$lastPage = $_SESSION['LAST_PAGE'];
-		//$_SESSION['LAST_PAGE'] = 'add_department.php';
-		/**
-		 Lifetime added 5min.
-		 **/
-		if(isset($_SESSION['EXPIRETIME'])) {
-			if($_SESSION['EXPIRETIME'] < time()) {
-				unset($_SESSION['EXPIRETIME']);
-				header('Location: logout.php?TIMEOUT');
-				exit(0);
-			} else {
-				/**
-				 Session time out time 5min.
-				 **/
-				//$_SESSION['EXPIRETIME'] = time() + 300;
-				$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+/**
+	Check session id.
+**/
+$login = $_SESSION['LOGIN_ID'];
+$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+$query = "SELECT *
+			FROM
+				tempSession
+			WHERE
+				emailAdd = '$login'";
+$result = mysql_query($query);
+if(!$result) die ("Table access failed: " . mysql_error());
+$data = mysql_fetch_assoc($result);
+$sid = $data['sid'];
+if($sid == $_SESSION['SID']) {
+	if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
+		if($_SESSION['GID'] < 3000) {
+			$fname = $_SESSION['FNAME'];
+			$uid = $_SESSION['UID'];
+			$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
+			$lastPage = $_SESSION['LAST_PAGE'];
+			//$_SESSION['LAST_PAGE'] = 'add_department.php';
+			/**
+				Lifetime added 5min.
+			**/
+			if(isset($_SESSION['EXPIRETIME'])) {
+				if($_SESSION['EXPIRETIME'] < time()) {
+					unset($_SESSION['EXPIRETIME']);
+					header('Location: logout.php?TIMEOUT');
+					exit(0);
+				} else {
+					/**
+						Session time out time 5min.
+					**/
+					//$_SESSION['EXPIRETIME'] = time() + 300;
+					$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+				};
 			};
-		};
-		/**
-		 Select taxCode lists.
-   		**/
-   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-		$query = "SELECT * from taxCode ORDER BY id DESC";
-		$result = mysql_query($query);
-		$row = mysql_num_rows($result);
-		if(!$result) die ("Table access failed: " . mysql_error());
-		if($row == 0) {
-			$taxCodeId = 'TC01';
-		} else {
-			if($row < 9) {
-				$row++;
-				$taxCodeId = 'TC0' . $row;
-			} else {
-				$row++;
-				$taxCodeId = 'TC' . $row;
-			}
-		}
-
-		if(isset($_POST['taxCodeId']) && isset($_POST['taxCodeName'])) {
-			$taxCodeId = $_POST['taxCodeId'];
-			$taxCodeName = strtoupper(mysql_escape_string($_POST['taxCodeName']));
-			$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
+			/**
+				Select taxCode lists.
+	   		**/
+	   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+			$query = "SELECT *
+						FROM
+							taxCode
+						ORDER BY id DESC";
 			$result = mysql_query($query);
-			$row = mysql_fetch_array($result);
-			$time = $row['dateTime'];
-			$query = "INSERT INTO taxCode
-							(dateTime, taxCodeId, taxCodeName)
-						VALUES
-							('$time', '$taxCodeId', '$taxCodeName')";
-			$result = mysql_query($query);
+			$row = mysql_num_rows($result);
 			if(!$result) die ("Table access failed: " . mysql_error());
-			if($result) {
-				/**
-				 taxCode created and redirected to previous page.
-				 **/
-				$_SESSION['STATUS'] = 16;
-				header("Location: status.php");
+			if($row == 0) {
+				$taxCodeId = 'TC01';
+			} else {
+				if($row < 9) {
+					$row++;
+					$taxCodeId = 'TC0' . $row;
+				} else {
+					$row++;
+					$taxCodeId = 'TC' . $row;
+				}
+			}
+
+			if(isset($_POST['taxCodeId']) && isset($_POST['taxCodeName'])) {
+				$taxCodeId = $_POST['taxCodeId'];
+				$taxCodeName = strtoupper(mysql_escape_string($_POST['taxCodeName']));
+				$query = "SELECT DATE_ADD
+								(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
+				$result = mysql_query($query);
+				$row = mysql_fetch_array($result);
+				$time = $row['dateTime'];
+				$query = "INSERT INTO taxCode
+								(dateTime, taxCodeId, taxCodeName)
+							VALUES
+								('$time', '$taxCodeId', '$taxCodeName')";
+				$result = mysql_query($query);
+				if(!$result) die ("Table access failed: " . mysql_error());
+				if($result) {
+					/**
+						taxCode created and redirected to previous page.
+					**/
+					$_SESSION['STATUS'] = 16;
+					header("Location: status.php");
+				};
 			};
-		};
+		} else {
+			/**
+				Redirect to dashboard if not Superuser or Manager
+			**/
+			$_SESSION['STATUS'] = 10;
+			header('Location: status.php');
+		}
 	} else {
-		/**
-		 Redirect to dashboard if not Superuser or Manager
-		 **/
-		$_SESSION['STATUS'] = 10;
+		unset($_SESSION['STATUS']);
 		header('Location: status.php');
-	}
+	};
 } else {
+	unset($_SESSION['STATUS']);
 	header('Location: status.php');
-};
+}
 ?>
 <?php include('pages/page_menu.php'); ?>
 

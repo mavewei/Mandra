@@ -11,31 +11,33 @@
 <?php include('pages/page_meta.php'); ?>
 <?php
 require_once('db/db_config.php');
-
 if(isset($_SESSION['INIT'])) {
 	if(isset($_POST['email'])) {
 		$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 		if($dbSelected) {
 			/**
-			 Administrator account add to table
-			 **/
+				Administrator account add to table
+			**/
 			$fname = ucwords(mysql_escape_string($_POST['fname']));
 			$lname = ucfirst(mysql_escape_string($_POST['lname']));
 			$email = mysql_escape_string($_POST['email']);
 			$roles = "Superuser";
 			$passwd = md5(mysql_escape_string($_POST['passwd']));
-			$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
+			$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
 			$result = mysql_query($query);
 			$row = mysql_fetch_array($result);
 			$time = $row['dateTime'];
-			$query = "INSERT INTO userAccounts (dateTime, gid, firstName, lastName, emailAdd, departments, roles, passwd, sessionTimeout) VALUES ('$time', 1, '$fname', '$lname', '$email', 'Full', '$roles', '$passwd', 900)";
+			$query = "INSERT INTO userAccounts
+							(dateTime, gid, firstName, lastName, emailAdd, departments, roles, passwd, sessionTimeout)
+						VALUES
+							('$time', 1, '$fname', '$lname', '$email', 'Full', '$roles', '$passwd', 900)";
 			$result = mysql_query($query);
 			if(!$result) die ("Table access failed: " . mysql_error());
 			if($result) {
 				/**
-				 Set initFLAG to status = 2
-				 **/
-				$query = "UPDATE initFlag SET status = 2 WHERE id = 1";
+					Set initFLAG to status = 2
+				**/
+				$query = "UPDATE initFlag SET status = 2	WHERE id = 1";
 				$result = mysql_query($query);
 				if(!$result) die ("Table access failed: " . mysql_error());
 				if($result) {

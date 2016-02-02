@@ -12,42 +12,95 @@
 require_once('db/db_config.php');
 if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 	/**
-	 User was loggedin
-	 **/
+		User was loggedin
+	**/
 	$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 	if($dbSelected) {
 		$login = $_SESSION['LOGIN_ID'];
 		$ipaddr = @$_SERVER['REMOTE_ADDR'];
 		$sid = $_SESSION['SID'];
+
+
+		/**
+		 Add login information to loginDetails.
+		 //
+		$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
+		$result = mysql_query($query);
+		$row = mysql_fetch_array($result);
+		$timeLogin = $row['dateTime'];
+		$query = "INSERT INTO loginDetails (dateTimeLogin, emailAdd, ipAdd, sid, loginStatus) VALUES('$timeLogin', '$login', '$ipaddr', '$sid', 'Success')";
+		$result = mysql_query($query);
+		if(!$result) die ("Table access failed: " . mysql_error());
+		$_SESSION['STATUS'] = 2;
+		header('Location: status.php');
+		**/
+
+
 		$query = "SELECT sid FROM loginDetails WHERE sid = '$sid'";
 		$result = mysql_query($query);
 		if(!$result) die ("Table access failed: " . mysql_error());
 		$status = mysql_result($result, 0);
 		if($status) {
 			/**
-			 SID exists!
-			 **/
+				SID exists!
+			**/
 			$_SESSION['STATUS'] = 2;
 			header('Location: status.php');
 		} else {
 			/**
-			 SID not found. Add it!
-			 **/
-			$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
+				SID not found. Add it!
+			**/
+			$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
 			$result = mysql_query($query);
 			$row = mysql_fetch_array($result);
-			$timeLogin = $row['dateTime'];
-			$query = "INSERT INTO loginDetails (dateTimeLogin, emailAdd, ipAdd, sid, loginStatus) VALUES('$timeLogin', '$login', '$ipaddr', '$sid', 'Success')";
+			$time = $row['dateTime'];
+			/**
+				Insert login details.
+			**/
+			$query = "INSERT INTO loginDetails
+							(dateTimeLogin, emailAdd, ipAdd, sid, loginStatus)
+						VALUES
+							('$time', '$login', '$ipaddr', '$sid', 'Success')";
+			$result = mysql_query($query);
+			if(!$result) die ("Table access failed: " . mysql_error());
+			/**
+				Update other user logout time.
+			**/
+			$query = "UPDATE
+							loginDetails
+						SET
+							dateTimeLast = '$time'
+						WHERE
+							dateTimeLast IS NULL AND emailAdd = '$login' AND sid <> '$sid'";
+			$result = mysql_query($query);
+			if(!$result) die ("Table access failed: " . mysql_error());
+			/**
+				Insert session to tempSession.
+			**/
+			$query = "INSERT INTO tempSession
+							(dateTime, emailAdd, sid)
+						VALUES
+							('$time', '$login', '$sid')";
+			$result = mysql_query($query);
+			if(!$result) die ("Table access failed: " . mysql_error());
+			/**
+				Delete other user login session.
+			**/
+			$query = "DELETE FROM
+							tempSession
+						WHERE
+							emailAdd = '$login' AND sid <> '$sid'";
 			$result = mysql_query($query);
 			if(!$result) die ("Table access failed: " . mysql_error());
 			$_SESSION['STATUS'] = 2;
 			header('Location: status.php');
 		}
+
 	};
 } elseif(isset($_POST['login']) && isset($_POST['passwd'])) {
 	/**
-	 Received user login information
-	 **/
+		Received user login information
+	**/
 	$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 	if($dbSelected) {
 		$login = strtolower(mysql_escape_string($_POST['login']));
@@ -61,28 +114,27 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 			$_SESSION['GID'] = $row['gid'];
 			$_SESSION['FNAME'] = $row['firstName'];
 			$_SESSION['LNAME'] = $row['lastName'];
-			//$_SESSION['MOBILE'] = $row['mobileNum'];
 			$_SESSION['LOGIN_ID'] = $row['emailAdd'];
 			$_SESSION['DEPARTMENT'] = $row['departments'];
 			$_SESSION['SESSIONTIMEOUT'] = $row['sessionTimeout'];
 			$_SESSION['ROLE'] = $row['roles'];
-			//$_SESSION['JOBTITLE'] = $row['jobTitle'];
-			// $_SESSION['REMARK'] = $row['remark'];
 			$_SESSION['LOGGEDIN'] = 1;
-			$_SESSION['SID'] = mt_rand(1000, 99999999);
+			$randSeed = mt_rand(1000, 99999999);
+			$sid = md5(time() . $_SERVER['HTTP_ACCEPT_CHARSET'] . $_SERVER['HTTP_ACCEPT_ENCODING'] . $_SERVER['HTTP_ACCEPT_LANGUAGE'] . $_SERVER['HTTP_USER_AGENT'] . $_SERVER['REMOTE_ADDR'] . $randSeed);
+			$_SESSION['SID'] = $sid;
+			//$_SESSION['SID'] = mt_rand(1000, 99999999);
 			/**
-			 Lifetime restricted to 5mins. Just remark if don't want to restrict.
-			 **/
+				Lifetime restricted to 5mins. Just remark if don't want to restrict.
+			**/
 			$_SESSION['EXPIRETIME'] = time() + 300;
 			header("Location: login.php");
 		} else {
 			/**
-			 User information not found!
-			 **/
+				User information not found!
+			**/
 			header('Location: status.php');
 		};
 	};
-	// $query = "SELECT * FROM userDETAILS WHERE emailAdd = '" . $email . "' AND passwd = '" . $passwd . "'";
 };
 ?>
 <!-- SIGN-IN BOX BEGIN -->
