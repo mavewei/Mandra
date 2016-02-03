@@ -181,6 +181,14 @@ function deleteRecord($delUnitId) {
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
+$(function(){
+    $('#logout').click(function(){
+        if(confirm('Are you sure you want to LOGOUT?')) {
+            return true;
+        }
+        return false;
+    });
+});
 function deleteData() {
 	var unitId = document.getElementById("unitId").value;
 	if( confirm("Are you sure to DELETE this record?") == true)

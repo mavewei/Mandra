@@ -61,7 +61,7 @@
 								<a href="javascript:;"><i class="glyphicon glyphicon-lock"></i> Lock Screen </a>
 							</li> -->
 							<li>
-								<a href="logout.php"><i class="glyphicon glyphicon-log-out"></i> Log Out </a>
+								<a href="logout.php" id="logout"><i class="glyphicon glyphicon-log-out"></i> Log Out </a>
 							</li>
 						</ul>
 					</li>

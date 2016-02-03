@@ -200,8 +200,15 @@ if($sid == $_SESSION['SID']) {
 	</div>
 </div>
 <?php include('pages/page_jquery.php'); ?>
-<script src="js/jquery.slimscroll.min.js" type="text/javascript"></script>
 <script>
+$(function(){
+    $('#logout').click(function(){
+        if(confirm('Are you sure you want to LOGOUT?')) {
+            return true;
+        }
+        return false;
+    });
+});
 $(function(){
 	var row = <?php echo $rows; ?>;
 	if(row < 7) {	} else {

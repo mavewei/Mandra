@@ -309,6 +309,14 @@ if($sid == $_SESSION['SID']) {
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
+$(function(){
+    $('#logout').click(function(){
+        if(confirm('Are you sure you want to LOGOUT?')) {
+            return true;
+        }
+        return false;
+    });
+});
 function checkEmail() {
 	var emailAdd = document.getElementById("emailAdd").value;
 	if(emailAdd) {
@@ -333,7 +341,6 @@ function checkEmail() {
 		return false;
 	}
 }
-
 function checkPasswordMatch() {
 	var oriPass = document.getElementById("oriPass").value;
 	var cmpPass = document.getElementById("cmpPass").value;

@@ -224,6 +224,14 @@ function deleteRecord($delComId) {
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
+$(function(){
+    $('#logout').click(function(){
+        if(confirm('Are you sure you want to LOGOUT?')) {
+            return true;
+        }
+        return false;
+    });
+});
 function deleteData() {
 	var comId = document.getElementById("comId").value;
 	if( confirm("Are you sure to DELETE this record?") == true)

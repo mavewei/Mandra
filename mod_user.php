@@ -359,6 +359,14 @@ function deleteRecord($delUserId) {
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
+$(function(){
+    $('#logout').click(function(){
+        if(confirm('Are you sure you want to LOGOUT?')) {
+            return true;
+        }
+        return false;
+    });
+});
 function deleteData() {
 	var userId = document.getElementById("userId").value;
 	if( confirm("Are you sure to DELETE this record?") == true)
@@ -389,7 +397,6 @@ function checkEmail() {
 		return false;
 	}
 }
-
 function checkPasswordMatch() {
 	var oriPass = document.getElementById("oriPass").value;
 	var cmpPass = document.getElementById("cmpPass").value;
@@ -398,11 +405,9 @@ function checkPasswordMatch() {
     else
         document.getElementById("passwd_status").innerHTML = "";
 }
-
 $(document).ready(function() {
 	$("#cmpPass").keyup(checkPasswordMatch);
 });
-
 function validate() {
 	var emailAdd_status=document.getElementById("emailAdd_status").innerHTML;
 	var passwd_status=document.getElementById("passwd_status").innerHTML;
@@ -412,7 +417,6 @@ function validate() {
           return false;
 	}
 }
-
 /*
 function cmpPasswd() {
    	var oriPass = document.getElementById("oriPass").value;

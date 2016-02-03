@@ -207,6 +207,14 @@ function deleteRecord($delDeptId) {
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
+$(function(){
+    $('#logout').click(function(){
+        if(confirm('Are you sure you want to LOGOUT?')) {
+            return true;
+        }
+        return false;
+    });
+});
 function deleteData() {
 	var deptId = document.getElementById("deptId").value;
 	if( confirm("Are you sure to DELETE this record?") == true)

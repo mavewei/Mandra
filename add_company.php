@@ -210,6 +210,14 @@ if($sid == $_SESSION['SID']) {
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
+$(function(){
+    $('#logout').click(function(){
+        if(confirm('Are you sure you want to LOGOUT?')) {
+            return true;
+        }
+        return false;
+    });
+});
 function checkComCode() {
 	var comCode = document.getElementById("comCode").value;
 	if(comCode) {
