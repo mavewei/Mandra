@@ -409,11 +409,23 @@ if($status) {
 					('Liberia', 'Bomi'), ('Liberia', 'Bong'), ('Liberia', 'Gbarpolu'), ('Liberia', 'Grand Bassa'),
 					('Liberia', 'Grand Cape Mount'), ('Liberia', 'Grand Gedeh'), ('Liberia', 'Grand Kru'),
 					('Liberia', 'Lofa'), ('Liberia', 'Margibi'), ('Liberia', 'Maryland'), ('Liberia', 'Grand Montserrado'),
+					('Liberia', 'Nimba'), ('Liberia', 'Rivercess'), ('Liberia', 'River Gee'), ('Liberia', 'Sinoe')";
+	/**
+		Liberia and Malaysia county and state.
+	**/
+	/*
+	$query = "INSERT INTO county
+					(countyId, countyCode)
+				VALUES
+					('Liberia', 'Bomi'), ('Liberia', 'Bong'), ('Liberia', 'Gbarpolu'), ('Liberia', 'Grand Bassa'),
+					('Liberia', 'Grand Cape Mount'), ('Liberia', 'Grand Gedeh'), ('Liberia', 'Grand Kru'),
+					('Liberia', 'Lofa'), ('Liberia', 'Margibi'), ('Liberia', 'Maryland'), ('Liberia', 'Grand Montserrado'),
 					('Liberia', 'Nimba'), ('Liberia', 'Rivercess'), ('Liberia', 'River Gee'), ('Liberia', 'Sinoe'),
 					('Malaysia', 'Johor'), ('Malaysia', 'Kedah'), ('Malaysia', 'Kelantan'), ('Malaysia', 'Kuala Lumpur'),
 					('Malaysia', 'Labuan'), ('Malaysia', 'Melaka'), ('Malaysia', 'Negeri Sembilan'), ('Malaysia', 'Pahang'),
 					('Malaysia', 'Perak'), ('Malaysia', 'Perlis'), ('Malaysia', 'Penang'), ('Malaysia', 'Sabah'),
 					('Malaysia', 'Sarawak'), ('Malaysia', 'Selangor'), ('Malaysia', 'Terengganu')";
+	*/
 	$result = mysql_query($query);
 	if(!$result) die ("Tables access failed: " . mysql_error());
 	/**
