@@ -5,3 +5,4 @@
 <!-- <script src="https:\//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script> -->
 <script src="js/bootstrap-3.3.4-dist/js/bootstrap.min.js"></script>
 <script src="js/bootstrap-hover-dropdown-mod.min.js"></script>
+<script src="js/jquery.slimscroll.min.js"></script>
