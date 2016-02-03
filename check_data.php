@@ -138,7 +138,7 @@ if($dbSelected) {
 	**/
 	if(!empty($_POST['positionName'])) {
 		$positionName = $_POST['positionName'];
-		$query = "SELECT * FROM position WHERE positionName = '$positionName'";
+		$query = "SELECT * FROM position WHERE positionName = '$positionName' AND status = 'Active'";
 		$result = mysql_query($query);
 		if(!$result) die ("Table access failed: " . mysql_error());
 		$row = mysql_num_rows($result);

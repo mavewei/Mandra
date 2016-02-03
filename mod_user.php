@@ -46,10 +46,17 @@ if($sid == $_SESSION['SID']) {
 				};
 			};
 			/**
+				Remove record.
+			**/
+			if($_GET['delUserId']) {
+				$delUserId = $_GET['delUserId'];
+				deleteRecord($delUserId);
+			}
+			/**
 				Select departments lists.
 	   		**/
 	   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-			$queryDept = "SELECT * from departments ORDER BY deptName ASC";
+			$queryDept = "SELECT * from departments WHERE status = 'Active' ORDER BY deptName ASC";
 			$resultDept = mysql_query($queryDept);
 			$rowDept = mysql_num_rows($resultDept);
 			if(!$resultDept) die ("Table access failed: " . mysql_error());
@@ -178,6 +185,15 @@ if($sid == $_SESSION['SID']) {
 } else {
 	unset($_SESSION['STATUS']);
 	header('Location: status.php');
+}
+function deleteRecord($delUserId) {
+	$query = "UPDATE userAccounts SET status = 'Cancel' WHERE id = '$delUserId'";
+	print($query);
+	$result = mysql_query($query);
+	if(!$result) die ("Table access failed: " . mysql_error());
+	if($result) {
+		header('Location: users.php');
+	}
 }
 ?>
 <?php include('pages/page_menu.php'); ?>
@@ -317,7 +333,7 @@ if($sid == $_SESSION['SID']) {
 													<span class="error-status" id="passwd_status"></span>
 												</div>
 												<div class="col-md-6">
-													<input type="hidden" name="userId" value="<?php echo $userId; ?>">
+													<input type="hidden" id="userId" name="userId" value="<?php echo $userId; ?>">
 													<input type="hidden" name="currentPasswd" value="<?php echo $passwd; ?>">
 													<input type="hidden" name="currentRoles" value="<?php echo $roles; ?>">
 													<input type="hidden" name="currentGid" value="<?php echo $userGid; ?>">
@@ -328,6 +344,8 @@ if($sid == $_SESSION['SID']) {
 											<input type="submit" value="Submit" class="btn blue">
 											<!-- <button type="submit" class="btn blue">Submit</button> -->
 											<a href="users.php"><button type="button" class="btn default">Cancel</button></a>
+											<label class="cancel-or-padding">or</label>
+											<input type="button" value="DELETE" class="btn red" onclick="return deleteData();">
 										</div>
 									</form>
 								</div>
@@ -341,6 +359,12 @@ if($sid == $_SESSION['SID']) {
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
+function deleteData() {
+	var userId = document.getElementById("userId").value;
+	if( confirm("Are you sure to DELETE this record?") == true)
+		window.location="mod_user.php?delUserId=" + userId;
+	return false;
+}
 function checkEmail() {
 	var emailAdd = document.getElementById("emailAdd").value;
 	if(emailAdd) {

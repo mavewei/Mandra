@@ -47,6 +47,13 @@ if($sid == $_SESSION['SID']) {
 				};
 			};
 			/**
+				Remove record.
+			**/
+			if($_GET['delUnitId']) {
+				$delUnitId = $_GET['delUnitId'];
+				deleteRecord($delUnitId);
+			}
+			/**
 				Select unit lists.
 	   		**/
 	   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
@@ -88,6 +95,15 @@ if($sid == $_SESSION['SID']) {
 	unset($_SESSION['STATUS']);
 	header('Location: status.php');
 }
+function deleteRecord($delUnitId) {
+	$query = "UPDATE unit SET status = 'Cancel' WHERE unitId = '$delUnitId'";
+	print($query);
+	$result = mysql_query($query);
+	if(!$result) die ("Table access failed: " . mysql_error());
+	if($result) {
+		header('Location: general_settings.php');
+	}
+}
 ?>
 <?php include('pages/page_menu.php'); ?>
 <div class="page-container">
@@ -127,7 +143,7 @@ if($sid == $_SESSION['SID']) {
 												<div class="col-md-4">
 													<div class="form-group">
 														<label>Unit ID</label>
-														<input type="text" class="form-control input-lg" style="text-align: center" name="unitId" value="<?php echo $unitId; ?>" readonly>
+														<input type="text" class="form-control input-lg" style="text-align: center" name="unitId" id="unitId" value="<?php echo $unitId; ?>" readonly>
 													</div>
 												</div>
 												<div class="col-md-8">
@@ -150,9 +166,8 @@ if($sid == $_SESSION['SID']) {
 										<div class="form-actions">
 											<input type="submit" value="Update" class="btn blue">
 											<a href="<?php echo $lastPage; ?>"><button type="button" class="btn default">Close</button></a>
-											<!--
-											<label>or</label>
-											<button type="button" class="btn red">Delete</button> -->
+											<label class="cancel-or-padding">or</label>
+											<input type="button" value="DELETE" class="btn red" onclick="return deleteData();">
 										</div>
 									</form>
 								</div>
@@ -166,6 +181,12 @@ if($sid == $_SESSION['SID']) {
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
+function deleteData() {
+	var unitId = document.getElementById("unitId").value;
+	if( confirm("Are you sure to DELETE this record?") == true)
+		window.location="mod_unit.php?delUnitId=" + unitId;
+	return false;
+}
 function checkUnitName() {
 	var unitName = document.getElementById("unitName").value;
 	if(unitName) {

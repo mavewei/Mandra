@@ -81,9 +81,9 @@ if($sid == $_SESSION['SID']) {
 				$row = mysql_fetch_array($result);
 				$time = $row['dateTime'];
 				$query = "INSERT INTO taxCode
-								(dateTime, taxCodeId, taxCodeName)
+								(dateTime, taxCodeId, taxCodeName, status)
 							VALUES
-								('$time', '$taxCodeId', '$taxCodeName')";
+								('$time', '$taxCodeId', '$taxCodeName', 'Active')";
 				$result = mysql_query($query);
 				if(!$result) die ("Table access failed: " . mysql_error());
 				if($result) {

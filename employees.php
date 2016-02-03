@@ -64,7 +64,9 @@ if($sid == $_SESSION['SID']) {
 	   						INNER JOIN
 	   							departments ON employees.empDepartment = departments.deptId
 	   						INNER JOIN
-	   								position ON employees.empPosition = position.positionId
+	   							position ON employees.empPosition = position.positionId
+	   						WHERE
+	   							employees.status = 'Active'
 	   						ORDER BY
 	   							empName
 	   						ASC";

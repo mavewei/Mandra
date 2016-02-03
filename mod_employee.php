@@ -44,6 +44,13 @@ if($sid == $_SESSION['SID']) {
 					$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
 				};
 			};
+			/**
+				Remove record.
+			**/
+			if($_GET['delEmpId']) {
+				$delEmpId = $_GET['delEmpId'];
+				deleteRecord($delEmpId);
+			}
 			mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 			/**
 				Select nationality lists.
@@ -55,35 +62,35 @@ if($sid == $_SESSION['SID']) {
 			/**
 				Select company lists.
 	   		**/
-	   		$queryCompany = "SELECT * from company ORDER BY comId ASC";
+	   		$queryCompany = "SELECT * from company WHERE status = 'Active' ORDER BY comId ASC";
 			$resultCompany = mysql_query($queryCompany);
 			$rowCompany = mysql_num_rows($resultCompany);
 			if(!$resultCompany) die ("Table access failed: " . mysql_error());
 			/**
 				Select department lists.
 	   		**/
-	   		$queryDept = "SELECT * from departments ORDER BY deptName ASC";
+	   		$queryDept = "SELECT * from departments WHERE status = 'Active' ORDER BY deptName ASC";
 			$resultDept = mysql_query($queryDept);
 			$rowDept = mysql_num_rows($resultDept);
 			if(!$resultDept) die ("Table access failed: " . mysql_error());
 			/**
 				Select unit lists.
 	   		**/
-	   		$queryUnit = "SELECT * from unit ORDER BY unitName ASC";
+	   		$queryUnit = "SELECT * from unit WHERE status = 'Active' ORDER BY unitName ASC";
 			$resultUnit = mysql_query($queryUnit);
 			$rowUnit = mysql_num_rows($resultUnit);
 			if(!$resultUnit) die ("Table access failed: " . mysql_error());
 			/**
 				Select position lists.
 	   		**/
-	   		$queryPosition = "SELECT * from position ORDER BY positionName ASC";
+	   		$queryPosition = "SELECT * from position WHERE status = 'Active' ORDER BY positionName ASC";
 			$resultPosition = mysql_query($queryPosition);
 			$rowPosition = mysql_num_rows($resultPosition);
 			if(!$resultPosition) die ("Table access failed: " . mysql_error());
 			/**
 				Select taxcode lists.
 	   		**/
-	   		$queryTaxCode = "SELECT * from taxCode ORDER BY taxCodeId ASC";
+	   		$queryTaxCode = "SELECT * from taxCode WHERE status = 'Active' ORDER BY taxCodeId ASC";
 			$resultTaxCode = mysql_query($queryTaxCode);
 			$rowTaxCode = mysql_num_rows($resultTaxCode);
 			if(!$resultTaxCode) die ("Table access failed: " . mysql_error());
@@ -91,13 +98,14 @@ if($sid == $_SESSION['SID']) {
 				Select employee information.
 	   		**/
 	   		$query = "SELECT
-	   						employees.id AS userId, employees.empName AS empName, employees.empSex AS empSex,
-	   						employees.empBirth AS empBirth, employees.empNationality AS empNationality,
-	   						employees.empCounty AS empCounty, employees.empDateJoin AS empDateJoin,
-	   						employees.empSource AS empSource,	employees.empCategory AS empCategory,
-	   						company.comCode AS empCompanyCode, departments.deptCode AS empDepartment,
-	   						unit.unitName AS empUnit, position.positionName AS empPosition,
-	   						employees.empBasicSalary AS empBasicSalary, taxCode.taxCodeName AS empTaxCode
+	   						employees.id AS userId, employees.empId AS empId, employees.empName AS empName,
+	   						employees.empSex AS empSex, employees.empBirth AS empBirth,
+	   						employees.empNationality AS empNationality, employees.empCounty AS empCounty,
+	   						employees.empDateJoin AS empDateJoin, employees.empSource AS empSource,
+	   						employees.empCategory AS empCategory, company.comCode AS empCompanyCode,
+	   						departments.deptCode AS empDepartment, unit.unitName AS empUnit,
+	   						position.positionName AS empPosition, employees.empBasicSalary AS empBasicSalary,
+	   						taxCode.taxCodeName AS empTaxCode
 	   					FROM
 	   						employees
 	   					INNER JOIN
@@ -117,6 +125,7 @@ if($sid == $_SESSION['SID']) {
 			if(!$result) die ("Table access failed: " . mysql_error());
 			if($row > 0) {
 				$data = mysql_fetch_array($result);
+				$empId = $data['empId'];
 				$empName = $data['empName'];
 				$empSex = $data['empSex'];
 				$empBirth = $data['empBirth'];
@@ -189,6 +198,14 @@ if($sid == $_SESSION['SID']) {
 } else {
 	unset($_SESSION['STATUS']);
 	header('Location: status.php');
+}
+function deleteRecord($delEmpId) {
+	$query = "UPDATE employees SET status = 'Cancel' WHERE empId = '$delEmpId'";
+	$result = mysql_query($query);
+	if(!$result) die ("Table access failed: " . mysql_error());
+	if($result) {
+		header('Location: employees.php');
+	}
 }
 ?>
 <?php include('pages/page_menu.php'); ?>
@@ -285,7 +302,7 @@ if($sid == $_SESSION['SID']) {
 												</div>
 												<div class="col-md-4">
 													<div class="form-group">
-														<label>County / State</label>
+														<label>County</label>
 														<div id="empDivCounty" class="input-icon input-icon-lg"><i class="fa fa-flag"></i>
 															<input name="empCounty" type="text" class="form-control input-lg" value="<?php echo $empCounty; ?>">
 														</div>
@@ -501,6 +518,7 @@ if($sid == $_SESSION['SID']) {
 												</div>
 												<div class="col-md-6">
 													<input type="hidden" name="userId" value="<? echo $id; ?>">
+													<input type="hidden" id="empId" name="empId" value="<? echo $empId; ?>">
 												</div>
 											</div>
 										</div>
@@ -508,6 +526,8 @@ if($sid == $_SESSION['SID']) {
 											<input type="submit" value="Update" class="btn blue">
 											<!-- <button type="submit" class="btn blue">Submit</button> -->
 											<a href="<?php echo $lastPage; ?>"><button type="button" class="btn default">Close</button></a>
+											<label class="cancel-or-padding">or</label>
+											<input type="button" value="DELETE" class="btn red" onclick="return deleteData();">
 										</div>
 									</form>
 								</div>
@@ -521,6 +541,12 @@ if($sid == $_SESSION['SID']) {
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
+function deleteData() {
+	var empId = document.getElementById("empId").value;
+	if( confirm("Are you sure to DELETE this record?") == true)
+		window.location="mod_employee.php?delEmpId=" + empId;
+	return false;
+}
 function checkEmpName() {
 	var empName = document.getElementById("empName").value;
 	if(empName) {

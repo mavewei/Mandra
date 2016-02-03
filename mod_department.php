@@ -51,6 +51,13 @@ if($sid == $_SESSION['SID']) {
 				};
 			};
 			/**
+				Remove record.
+			**/
+			if($_GET['delDeptId']) {
+				$delDeptId = $_GET['delDeptId'];
+				deleteRecord($delDeptId);
+			}
+			/**
 				Select department lists.
 	   		**/
 	   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
@@ -98,6 +105,15 @@ if($sid == $_SESSION['SID']) {
 	unset($_SESSION['STATUS']);
 	header('Location: status.php');
 }
+function deleteRecord($delDeptId) {
+	$query = "UPDATE departments SET status = 'Cancel' WHERE deptId = '$delDeptId'";
+	print($query);
+	$result = mysql_query($query);
+	if(!$result) die ("Table access failed: " . mysql_error());
+	if($result) {
+		header('Location: general_settings.php');
+	}
+}
 ?>
 <?php include('pages/page_menu.php'); ?>
 <div class="page-container">
@@ -137,7 +153,7 @@ if($sid == $_SESSION['SID']) {
 												<div class="col-md-6">
 													<div class="form-group">
 														<label>Department ID</label>
-														<input type="text" class="form-control input-lg" style="text-align: center" name="deptId" value="<?php echo $deptId; ?>" readonly>
+														<input type="text" class="form-control input-lg" style="text-align: center" name="deptId" id="deptId" value="<?php echo $deptId; ?>" readonly>
 													</div>
 												</div>
 												<div class="col-md-6">
@@ -176,9 +192,8 @@ if($sid == $_SESSION['SID']) {
 										<div class="form-actions">
 											<input type="submit" value="Update" class="btn blue">
 											<a href="<?php echo $lastPage; ?>"><button type="button" class="btn default">Close</button></a>
-											<!--
-											<label>or</label>
-											<button type="button" class="btn red">Delete</button> -->
+											<label class="cancel-or-padding">or</label>
+											<input type="button" value="DELETE" class="btn red" onclick="return deleteData();">
 										</div>
 									</form>
 								</div>
@@ -192,6 +207,12 @@ if($sid == $_SESSION['SID']) {
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
+function deleteData() {
+	var deptId = document.getElementById("deptId").value;
+	if( confirm("Are you sure to DELETE this record?") == true)
+		window.location="mod_department.php?delDeptId=" + deptId;
+	return false;
+}
 function checkDeptCode() {
 	var deptCode = document.getElementById("deptCode").value;
 	if(deptCode) {

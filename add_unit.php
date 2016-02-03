@@ -80,9 +80,9 @@ if($sid == $_SESSION['SID']) {
 				$row = mysql_fetch_array($result);
 				$time = $row['dateTime'];
 				$query = "INSERT INTO unit
-								(dateTime, unitId, unitName)
+								(dateTime, unitId, unitName, status)
 							VALUES
-								('$time', '$unitId', '$unitName')";
+								('$time', '$unitId', '$unitName', 'Active')";
 				$result = mysql_query($query);
 				if(!$result) die ("Table access failed: " . mysql_error());
 				if($result) {

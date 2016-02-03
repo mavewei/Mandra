@@ -105,7 +105,7 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 	if($dbSelected) {
 		$login = strtolower(mysql_escape_string($_POST['login']));
 		$passwd = md5(mysql_escape_string($_POST['passwd']));
-		$query = "SELECT * FROM userAccounts WHERE emailAdd = '$login' AND passwd = '$passwd'";
+		$query = "SELECT * FROM userAccounts WHERE emailAdd = '$login' AND passwd = '$passwd' AND status = 'Active'";
 		$result = mysql_query($query);
 		if(!$result) die ("Table access failed: " . mysql_error());
 		if(mysql_num_rows($result) == 1) {

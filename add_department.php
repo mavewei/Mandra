@@ -78,7 +78,7 @@ if($sid == $_SESSION['SID']) {
 				$result = mysql_query($query);
 				$row = mysql_fetch_array($result);
 				$time = $row['dateTime'];
-				$query = "INSERT INTO departments (dateTime, deptId, deptCode, deptName, createdBy) VALUES('$time', '$deptId', '$deptCode', '$deptName', '$uid')";
+				$query = "INSERT INTO departments (dateTime, deptId, deptCode, deptName, status, createdBy) VALUES('$time', '$deptId', '$deptCode', '$deptName', 'Active', '$uid')";
 				$result = mysql_query($query);
 				if(!$result) die ("Table access failed: " . mysql_error());
 				if($result) {

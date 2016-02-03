@@ -52,8 +52,8 @@ if($sid == $_SESSION['SID']) {
 	   		**/
 	   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 			$queryDept = "SELECT *
-							FROM
-								departments
+							FROM departments
+							WHERE status = 'Active'
 							ORDER BY deptName ASC";
 			$resultDept = mysql_query($queryDept);
 			$rowDept = mysql_num_rows($resultDept);
@@ -127,9 +127,9 @@ if($sid == $_SESSION['SID']) {
 				$row = mysql_fetch_array($result);
 				$time = $row['dateTime'];
 				$query = "INSERT INTO userAccounts
-								(dateTime, gid, firstName, lastName, emailAdd, departments, roles, passwd, sessionTimeout)
+								(dateTime, gid, firstName, lastName, emailAdd, departments, roles, passwd, status, sessionTimeout)
 							VALUES
-								('$time', '$gid', '$fname', '$lname', '$login', '$departments', '$role', '$passwd', 600)";
+								('$time', '$gid', '$fname', '$lname', '$login', '$departments', '$role', '$passwd', 'Active', 600)";
 				$result = mysql_query($query);
 				if(!$result) die ("Table access failed: " . mysql_error());
 				if($result) {

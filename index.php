@@ -60,6 +60,7 @@ if($status) {
 					departments VARCHAR(50) NULL,
 					roles VARCHAR(25) NOT NULL,
 					passwd VARCHAR(100) NOT NULL,
+					status VARCHAR(15) NULL,
 					sessionTimeout INT(10) NULL,
 					PRIMARY KEY (id))";
 	$result = mysql_query($query);
@@ -101,6 +102,7 @@ if($status) {
 					deptId VARCHAR(10) NOT NULL,
 					deptCode VARCHAR(15) NOT NULL,
 					deptName VARCHAR(50) NOT NULL,
+					status VARCHAR(15) NULL,
 					createdBy INT NOT NULL,
 					PRIMARY KEY (id))";
 	$result = mysql_query($query);
@@ -116,6 +118,7 @@ if($status) {
 					comCode VARCHAR(15) NOT NULL,
 					comName VARCHAR(50) NOT NULL,
 					comLocation VARCHAR(50) NOT NULL,
+					status VARCHAR(15) NULL,
 					createdBy INT NOT NULL,
 					PRIMARY KEY (id))";
 	$result = mysql_query($query);
@@ -152,6 +155,7 @@ if($status) {
 					dateTime TIMESTAMP NULL,
 					unitId VARCHAR(15) NOT NULL,
 					unitName VARCHAR(50) NOT NULL,
+					status VARCHAR(15) NULL,
 					PRIMARY KEY (id))";
 	$result = mysql_query($query);
 	if(!$result) die ("Tables create failed: " . mysql_error());
@@ -164,6 +168,7 @@ if($status) {
 					dateTime TIMESTAMP NULL,
 					positionId VARCHAR(15) NOT NULL,
 					positionName VARCHAR(50) NOT NULL,
+					status VARCHAR(15) NULL,
 					PRIMARY KEY (id))";
 	$result = mysql_query($query);
 	if(!$result) die ("Tables create failed: " . mysql_error());
@@ -176,6 +181,7 @@ if($status) {
 					dateTime TIMESTAMP NULL,
 					taxCodeId VARCHAR(15) NOT NULL,
 					taxCodeName VARCHAR(50) NOT NULL,
+					status VARCHAR(15) NULL,
 					PRIMARY KEY (id))";
 	$result = mysql_query($query);
 	if(!$result) die ("Tables create failed: " . mysql_error());
@@ -201,6 +207,7 @@ if($status) {
 					empPosition VARCHAR(50) NOT NULL,
 					empBasicSalary DECIMAL(9,2) NOT NULL,
 					empTaxCode VARCHAR(50) NOT NULL,
+					status VARCHAR(15) NULL,
 					createdBy INT NOT NULL,
 					PRIMARY KEY (id))";
 	$result = mysql_query($query);

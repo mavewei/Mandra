@@ -51,35 +51,35 @@ if($sid == $_SESSION['SID']) {
 				/**
 					Select from company.
 				**/
-				$query = "SELECT * FROM company ORDER BY id DESC";
+				$query = "SELECT * FROM company WHERE status = 'Active' ORDER BY id DESC";
 				$result = mysql_query($query);
 				if(!$result) die ("Table access failed: " . mysql_error());
 				$rows = mysql_num_rows($result);
 				/**
 					Select from taxCode.
 				**/
-				$querytaxCode = "SELECT * FROM taxCode ORDER BY id DESC";
+				$querytaxCode = "SELECT * FROM taxCode WHERE status = 'Active' ORDER BY id DESC";
 				$resulttaxCode = mysql_query($querytaxCode);
 				if(!$resulttaxCode) die ("Table access failed: " . mysql_error());
 				$rowstaxCode = mysql_num_rows($resulttaxCode);
 				/**
 					Select from departments.
 				**/
-				$queryDept = "SELECT * FROM departments ORDER BY id DESC";
+				$queryDept = "SELECT * FROM departments WHERE status = 'Active' ORDER BY id DESC";
 				$resultDept = mysql_query($queryDept);
 				if(!$resultDept) die ("Table access failed: " . mysql_error());
 				$rowsDept = mysql_num_rows($resultDept);
 				/**
 					Select from unit.
 				**/
-				$queryUnit = "SELECT * FROM unit ORDER BY id DESC";
+				$queryUnit = "SELECT * FROM unit WHERE status = 'Active' ORDER BY id DESC";
 				$resultUnit = mysql_query($queryUnit);
 				if(!$resultUnit) die ("Table access failed: " . mysql_error());
 				$rowsUnit = mysql_num_rows($resultUnit);
 				/**
 					Select from position.
 				**/
-				$queryPosition = "SELECT * FROM position ORDER BY id DESC";
+				$queryPosition = "SELECT * FROM position WHERE status = 'Active' ORDER BY id DESC";
 				$resultPosition = mysql_query($queryPosition);
 				if(!$resultPosition) die ("Table access failed: " . mysql_error());
 				$rowsPosition = mysql_num_rows($resultPosition);

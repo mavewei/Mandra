@@ -47,6 +47,13 @@ if($sid == $_SESSION['SID']) {
 				};
 			};
 			/**
+				Remove record.
+			**/
+			if($_GET['delPositionId']) {
+				$delPositionId = $_GET['delPositionId'];
+				deleteRecord($delPositionId);
+			}
+			/**
 				Select position lists.
 	   		**/
 	   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
@@ -54,6 +61,7 @@ if($sid == $_SESSION['SID']) {
 	   		$result = mysql_query($query);
 			if(!$result) die ("Table access failed: " . mysql_error());
 			$data = mysql_fetch_array($result);
+			$id = $data['id'];
 			$positionName = $data['positionName'];
 			if(isset($_POST['positionId']) && isset($_POST['positionName'])) {
 				$positionId = $_POST['positionId'];
@@ -87,6 +95,15 @@ if($sid == $_SESSION['SID']) {
 } else {
 	unset($_SESSION['STATUS']);
 	header('Location: status.php');
+}
+function deleteRecord($positionId) {
+	$query = "UPDATE position SET status = 'Cancel' WHERE positionId = '$positionId'";
+	print($query);
+	$result = mysql_query($query);
+	if(!$result) die ("Table access failed: " . mysql_error());
+	if($result) {
+		header('Location: general_settings.php');
+	}
 }
 ?>
 <?php include('pages/page_menu.php'); ?>
@@ -127,7 +144,7 @@ if($sid == $_SESSION['SID']) {
 												<div class="col-md-4">
 													<div class="form-group">
 														<label>Position ID</label>
-														<input type="text" class="form-control input-lg" style="text-align: center" name="positionId" value="<?php echo $positionId; ?>" readonly>
+														<input type="text" id="positionId" class="form-control input-lg" style="text-align: center" name="positionId" value="<?php echo $positionId; ?>" readonly>
 													</div>
 												</div>
 												<div class="col-md-8">
@@ -143,6 +160,7 @@ if($sid == $_SESSION['SID']) {
 											<div class="row">
 												<div class="col-md-6">
 													<span class="error-status" id="positionName_status"></span>
+<!-- 													<input type="text" value="<? echo $id; ?>"> -->
 												</div>
 												<div class="col-md-6"></div>
 											</div>
@@ -150,9 +168,8 @@ if($sid == $_SESSION['SID']) {
 										<div class="form-actions">
 											<input type="submit" value="Update" class="btn blue">
 											<a href="<?php echo $lastPage; ?>"><button type="button" class="btn default">Close</button></a>
-											<!--
-											<label>or</label>
-											<button type="button" class="btn red">Delete</button> -->
+											<label class="cancel-or-padding">or</label>
+											<input type="button" value="DELETE" class="btn red" onclick="return deleteData();">
 										</div>
 									</form>
 								</div>
@@ -166,6 +183,12 @@ if($sid == $_SESSION['SID']) {
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
+function deleteData() {
+	var positionId = document.getElementById("positionId").value;
+	if( confirm("Are you sure to DELETE this record?") == true)
+		window.location="mod_position.php?delPositionId=" + positionId;
+	return false;
+}
 function checkPositionName() {
 	var positionName = document.getElementById("positionName").value;
 	if(positionName) {

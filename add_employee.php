@@ -17,11 +17,7 @@ require_once('db/db_config.php');
 **/
 $login = $_SESSION['LOGIN_ID'];
 $dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-$query = "SELECT *
-			FROM
-				tempSession
-			WHERE
-				emailAdd = '$login'";
+$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
 $result = mysql_query($query);
 if(!$result) die ("Table access failed: " . mysql_error());
 $data = mysql_fetch_assoc($result);
@@ -57,70 +53,49 @@ if($sid == $_SESSION['SID']) {
 	   		/**
 				Select nationality lists.
 	   		**/
-	   		$queryNationality = "SELECT *
-	   									FROM
-	   										nationality
-	   									ORDER BY nationalityName ASC";
+	   		$queryNationality = "SELECT * FROM nationality ORDER BY nationalityName ASC";
 			$resultNationality = mysql_query($queryNationality);
 			$rowNationality = mysql_num_rows($resultNationality);
 			if(!$resultNationality) die ("Table access failed: " . mysql_error());
 	   		/**
 				Select taxcode lists.
 	   		**/
-	   		$queryTaxCode = "SELECT *
-	   								FROM
-	   									taxCode
-	   								ORDER BY taxCodeId ASC";
+	   		$queryTaxCode = "SELECT * FROM taxCode WHERE status = 'Active' ORDER BY taxCodeId ASC";
 			$resultTaxCode = mysql_query($queryTaxCode);
 			$rowTaxCode = mysql_num_rows($resultTaxCode);
 			if(!$resultTaxCode) die ("Table access failed: " . mysql_error());
 	   		/**
 				Select position lists.
 	   		**/
-	   		$queryPosition = "SELECT *
-	   								FROM
-	   									position
-	   								ORDER BY positionName ASC";
+	   		$queryPosition = "SELECT * FROM position WHERE status = 'Active' ORDER BY positionName ASC";
 			$resultPosition = mysql_query($queryPosition);
 			$rowPosition = mysql_num_rows($resultPosition);
 			if(!$resultPosition) die ("Table access failed: " . mysql_error());
 	   		/**
 				Select unit lists.
 	   		**/
-	   		$queryUnit = "SELECT *
-	   							FROM
-	   								unit
-	   							ORDER BY unitName ASC";
+	   		$queryUnit = "SELECT * FROM unit WHERE status = 'Active' ORDER BY unitName ASC";
 			$resultUnit = mysql_query($queryUnit);
 			$rowUnit = mysql_num_rows($resultUnit);
 			if(!$resultUnit) die ("Table access failed: " . mysql_error());
 	   		/**
 				Select company lists.
 	   		**/
-	   		$queryCom = "SELECT *
-	   							FROM
-	   								company
-	   							ORDER BY comId ASC";
+	   		$queryCom = "SELECT * FROM	company WHERE status = 'Active' ORDER BY comId ASC";
 			$resultCom = mysql_query($queryCom);
 			$rowCom = mysql_num_rows($resultCom);
 			if(!$resultCom) die ("Table access failed: " . mysql_error());
 			/**
 				Select department lists.
 	   		**/
-	   		$queryDept = "SELECT *
-	   							FROM
-	   								departments
-	   							ORDER BY deptName ASC";
+	   		$queryDept = "SELECT * FROM departments WHERE status = 'Active' ORDER BY deptName ASC";
 			$resultDept = mysql_query($queryDept);
 			$rowDept = mysql_num_rows($resultDept);
 			if(!$resultDept) die ("Table access failed: " . mysql_error());
 			/**
 				Select employee lists.
 	   		**/
-			$query = "SELECT *
-							FROM
-								employees
-							ORDER BY id DESC";
+			$query = "SELECT * FROM employees ORDER BY id DESC";
 			$result = mysql_query($query);
 			$row = mysql_num_rows($result);
 			if(!$result) die ("Table access failed: " . mysql_error());
@@ -158,11 +133,11 @@ if($sid == $_SESSION['SID']) {
 				$query = "INSERT INTO employees
 								(dateTime, empId, empName, empSex, empBirth, empNationality, empCounty, empDateJoin,
 								empSource, empCategory, empCompanyCode, empDepartment, empUnit, empPosition,
-								empBasicSalary, empTaxCode, createdBy)
+								empBasicSalary, empTaxCode, status, createdBy)
 							VALUES
 								('$time', '$empId', '$empName', '$empSex', '$empBirth', '$empNationality', '$empCounty',
 								'$empDateJoin', '$empSource', '$empCategory', '$empCompanyCode', '$empDepartment',
-								'$empUnit', '$empPosition', '$empBasicSalary', '$empTaxCode', '$uid')";
+								'$empUnit', '$empPosition', '$empBasicSalary', '$empTaxCode', 'Active', '$uid')";
 				$result = mysql_query($query);
 				if(!$result) die ("Table access failed: " . mysql_error());
 				if($result) {
@@ -302,7 +277,7 @@ if($sid == $_SESSION['SID']) {
 												</div>
 												<div class="col-md-4">
 													<div class="form-group">
-														<label>County / State</label>
+														<label>County</label>
 															<select id="empCounty" name="empCounty" class="form-control input-lg">
 																<option value=" ">Select County</option>
 															</select>

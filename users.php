@@ -59,7 +59,7 @@ if($sid == $_SESSION['SID']) {
 							ON
 								userAccounts.departments = departments.deptId
 							WHERE
-								gid > 1000
+								userAccounts.status = 'Active' AND gid > 1000
 							ORDER BY
 								dateTime
 							DESC";
