@@ -142,6 +142,10 @@ span.error-status {
 .name-padding {
     padding-left: 7px;
 }
+.cancel-or-padding {
+	padding-right: 3px;
+	padding-left: 3px;
+}
 html, body {
 	height: 100%;
 	width: 100%;
