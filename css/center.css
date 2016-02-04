@@ -146,6 +146,11 @@ span.error-status {
 	padding-right: 3px;
 	padding-left: 3px;
 }
+.addParts-optional {
+	color: grey;
+	font-style: italic;
+/* 	padding-left: 15px; */
+}
 html, body {
 	height: 100%;
 	width: 100%;
