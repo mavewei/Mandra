@@ -194,8 +194,21 @@ if($sid == $_SESSION['SID']) {
 <?php include('pages/page_jquery.php'); ?>
 <script>
 /**
+   Alertify confirm logout.
+**/
+$(function() {
+	$('.logoutAlert').click(function() {
+		alertify.confirm("[ALERT]  Are you sure you want to LOGOUT?", function(result) {
+			if(result) {
+				window.location = "logout.php";
+			}
+		})
+	})
+})
+/**
    Bootbox alert customize.
 **/
+/*
 $(function() {
 	$('.logoutAlert').click(function(){
 		bootbox.confirm("Are you sure you want to LOGOUT?", function(result) {
@@ -205,6 +218,8 @@ $(function() {
 		});
 	})
 })
+*/
+/*
 $(function(){
     $('#logout').click(function(){
         if(confirm('Are you sure you want to LOGOUT?')) {
@@ -213,6 +228,7 @@ $(function(){
         return false;
     });
 });
+*/
 function checkTaxCode() {
 	var taxCodeName = document.getElementById("taxCodeName").value;
 	if(taxCodeName) {

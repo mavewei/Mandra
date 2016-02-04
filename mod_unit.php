@@ -182,8 +182,21 @@ function deleteRecord($delUnitId) {
 <?php include('pages/page_jquery.php'); ?>
 <script>
 /**
+   Alertify confirm logout.
+**/
+$(function() {
+	$('.logoutAlert').click(function() {
+		alertify.confirm("[ALERT]  Are you sure you want to LOGOUT?", function(result) {
+			if(result) {
+				window.location = "logout.php";
+			}
+		})
+	})
+})
+/**
    Bootbox alert customize.
 **/
+/*
 $(function() {
 	$('.logoutAlert').click(function(){
 		bootbox.confirm("Are you sure you want to LOGOUT?", function(result) {
@@ -193,30 +206,18 @@ $(function() {
 		});
 	})
 })
+*/
 $(function() {
 	var unitId = document.getElementById("unitId").value;
 	$('#unitDel').click(function(){
-		bootbox.confirm("[CAUTION]  Are you sure you want to DELETE this record?", function(result) {
+		// bootbox.confirm("[CAUTION]  Are you sure you want to DELETE this record?", function(result) {
+		alertify.confirm("[CAUTION]  Are you sure you want to DELETE this record?", function(result) {
 			if(result) {
 				window.location="mod_unit.php?delUnitId=" + unitId;
 			}
 		});
 	})
 })
-$(function(){
-    $('#logout').click(function(){
-        if(confirm('Are you sure you want to LOGOUT?')) {
-            return true;
-        }
-        return false;
-    });
-});
-function deleteData() {
-	var unitId = document.getElementById("unitId").value;
-	if( confirm("Are you sure to DELETE this record?") == true)
-		window.location="mod_unit.php?delUnitId=" + unitId;
-	return false;
-}
 function checkUnitName() {
 	var unitName = document.getElementById("unitName").value;
 	if(unitName) {

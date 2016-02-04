@@ -225,8 +225,21 @@ function deleteRecord($delComId) {
 <?php include('pages/page_jquery.php'); ?>
 <script>
 /**
+   Alertify confirm logout.
+**/
+$(function() {
+	$('.logoutAlert').click(function() {
+		alertify.confirm("[ALERT]  Are you sure you want to LOGOUT?", function(result) {
+			if(result) {
+				window.location = "logout.php";
+			}
+		})
+	})
+})
+/**
    Bootbox alert customize.
 **/
+/*
 $(function() {
 	$('.logoutAlert').click(function(){
 		bootbox.confirm("Are you sure you want to LOGOUT?", function(result) {
@@ -236,30 +249,18 @@ $(function() {
 		});
 	})
 })
+*/
 $(function() {
 	var comId = document.getElementById("comId").value;
 	$('#comDel').click(function(){
-		bootbox.confirm("[CAUTION]  Are you sure you want to DELETE this record?", function(result) {
+		// bootbox.confirm("[CAUTION]  Are you sure you want to DELETE this record?", function(result) {
+		alertify.confirm("[CAUTION]  Are you sure you want to DELETE this record?", function(result) {
 			if(result) {
 				window.location="mod_company.php?delComId=" + comId;
 			}
 		});
 	})
 })
-$(function(){
-    $('#logout').click(function(){
-        if(confirm('Are you sure you want to LOGOUT?')) {
-            return true;
-        }
-        return false;
-    });
-});
-function deleteData() {
-	var comId = document.getElementById("comId").value;
-	if( confirm("Are you sure to DELETE this record?") == true)
-		window.location="mod_company.php?delComId=" + comId;
-	return false;
-}
 function checkComCode() {
 	var comCode = document.getElementById("comCode").value;
 	if(comCode) {

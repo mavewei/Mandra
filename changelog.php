@@ -144,8 +144,21 @@ $(function() {
 	});
 });
 /**
+   Alertify confirm logout.
+**/
+$(function() {
+	$('.logoutAlert').click(function() {
+		alertify.confirm("[ALERT]  Are you sure you want to LOGOUT?", function(result) {
+			if(result) {
+				window.location = "logout.php";
+			}
+		})
+	})
+})
+/**
    Bootbox alert customize.
 **/
+/*
 $(function() {
 	$('.logoutAlert').click(function(){
 		bootbox.confirm("Are you sure you want to LOGOUT?", function(result) {
@@ -155,6 +168,7 @@ $(function() {
 		});
 	})
 })
+*/
 </script>
 <?php include('pages/page_footer.php'); ?>
 </body>

@@ -7,3 +7,4 @@
 <script src="js/bootstrap-hover-dropdown-mod.min.js"></script>
 <script src="js/jquery.slimscroll.min.js"></script>
 <script src="js/bootbox.min.js"></script>
+<script src="js/alertify.min.js"></script>

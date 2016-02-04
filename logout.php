@@ -12,19 +12,14 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 		$result = mysql_query($query);
 		$row = mysql_fetch_array($result);
 		$time = $row['dateTime'];
-		$query = "UPDATE
-						loginDetails
-					SET
-						dateTimeLast = '$time'
-					WHERE
-						emailAdd = '$email' AND sid = '$sid'";
+		$query = "UPDATE loginDetails
+					SET dateTimeLast = '$time'
+					WHERE emailAdd = '$email' AND sid = '$sid'";
 		//$query = "UPDATE loginDETAILS SET date_t_Logout = CURRENT_TIMESTAMP WHERE emailAdd = '$email' AND sid = '$sid'";
 		$result = mysql_query($query);
 		if(!$result) die ("Table access failed: " . mysql_error());
-		$query = "DELETE FROM
-						tempSession
-					WHERE
-						emailAdd = '$email' AND sid = '$sid'";
+		$query = "DELETE FROM tempSession
+					WHERE emailAdd = '$email' AND sid = '$sid'";
 		$result = mysql_query($query);
 		if(!$result) die ("Table access failed: " . mysql_error());
 	};
