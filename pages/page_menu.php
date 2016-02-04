@@ -61,7 +61,7 @@
 								<a href="javascript:;"><i class="glyphicon glyphicon-lock"></i> Lock Screen </a>
 							</li> -->
 							<li>
-								<a href="logout.php" id="logout"><i class="glyphicon glyphicon-log-out"></i> Log Out </a>
+								<a href="javascript:;" id="logoutAlert" class="logoutAlert"><i class="glyphicon glyphicon-log-out"></i> Log Out </a>
 							</li>
 						</ul>
 					</li>
@@ -84,8 +84,8 @@
 					<li class="active">
 						<a href="dashboard.php">Dashboard</a>
 					</li>
-					<!-- DASHBOARD ACTIVE END -->
-					<!-- <li class="menu-dropdown mega-menu-dropdown mega-menu-full" style="display: none;">
+					<!--
+					<li class="menu-dropdown mega-menu-dropdown mega-menu-full" style="display: none;">
 						<a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;" class="dropdown-toggle"> Car <i class="fa fa-angle-down"></i></a>
 						<ul class="dropdown-menu">
 							<li>
@@ -108,10 +108,11 @@
 								</div>
 							</li>
 						</ul>
-					</li> -->
+					</li>
+					-->
 
 					<li class="menu-dropdown classic-menu-dropdown">
-						<a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;"> Human Resources <i class="fa fa-angle-down"></i></a>
+						<a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;"> Human Resources <!-- <i class="fa fa-angle-down"></i> --></a>
 						<ul class="dropdown-menu pull-left">
 							<li class="dropdown-submenu">
 								<a href="javascript:;"><i class="fa fa-users"></i> HR Data </a>
@@ -127,9 +128,7 @@
 									<li>
 										<a href="javascript:;"> Function 1 </a>
 									</li>
-									<!-- <li class=" ">
-										<a href="db_restore.php"> Rebuild </a>
-									</li>
+									<!--
 									<li class=" ">
 										<a href="db_reset.php"> Destroy </a>
 									</li> -->
@@ -138,8 +137,13 @@
 						</ul>
 					</li>
 					<li class="menu-dropdown classic-menu-dropdown">
-						<a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;"> Procurement <i class="fa fa-angle-down"></i></a>
+						<a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;"> Procurement <!-- <i class="fa fa-angle-down"></i> --></a>
 						<ul class="dropdown-menu pull-left">
+							<li>
+								<a href="parts_mfile.php" class="nav-link">Parts Master File</a>
+							</li>
+
+							<!--
 							<li class="dropdown-submenu">
 								<a href="javascript:;"><i class="fa fa-users"></i> Parts Master File </a>
 								<ul class="dropdown-menu" style="display:none;">
@@ -154,12 +158,6 @@
 									<li>
 										<a href="javascript:;"> Function1 </a>
 									</li>
-									<!-- <li class=" ">
-										<a href="db_restore.php"> Rebuild </a>
-									</li>
-									<li class=" ">
-										<a href="db_reset.php"> Destroy </a>
-									</li> -->
 								</ul>
 							</li>
 							<li class="dropdown-submenu">
@@ -168,12 +166,6 @@
 									<li>
 										<a href="javascript:;"> Function1 </a>
 									</li>
-									<!-- <li class=" ">
-										<a href="db_restore.php"> Rebuild </a>
-									</li>
-									<li class=" ">
-										<a href="db_reset.php"> Destroy </a>
-									</li> -->
 								</ul>
 							</li>
 							<li class="dropdown-submenu">
@@ -182,18 +174,16 @@
 									<li>
 										<a href="javascript:;"> Function1 </a>
 									</li>
-									<!-- <li class=" ">
-										<a href="db_restore.php"> Rebuild </a>
-									</li>
-									<li class=" ">
-										<a href="db_reset.php"> Destroy </a>
-									</li> -->
 								</ul>
 							</li>
+							-->
+
+
+
 						</ul>
 					</li>
 					<li class="menu-dropdown classic-menu-dropdown">
-						<a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;"> Parts Inventory <i class="fa fa-angle-down"></i></a>
+						<a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;"> Parts Inventory <!-- <i class="fa fa-angle-down"></i> --></a>
 						<ul class="dropdown-menu pull-left">
 							<!--
 							<li class="dropdown-submenu">
@@ -216,7 +206,7 @@
 						</ul>
 					</li>
 					<li class="menu-dropdown classic-menu-dropdown">
-						<a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;"> Fuel <i class="fa fa-angle-down"></i></a>
+						<a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;"> Fuel <!-- <i class="fa fa-angle-down"></i> --></a>
 						<!--
 						<ul class="dropdown-menu pull-left">
 							<li class="dropdown-submenu">
@@ -239,7 +229,7 @@
 						-->
 					</li>
 					<li class="menu-dropdown classic-menu-dropdown">
-						<a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;"> Equipment <i class="fa fa-angle-down"></i></a>
+						<a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;"> Equipment <!-- <i class="fa fa-angle-down"></i> --></a>
 						<!--
 						<ul class="dropdown-menu pull-left">
 							<li class="dropdown-submenu">
@@ -262,7 +252,7 @@
 						-->
 					</li>
 					<li class="menu-dropdown classic-menu-dropdown">
-						<a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;"> Logs Data <i class="fa fa-angle-down"></i></a>
+						<a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;"> Logs Data <!-- <i class="fa fa-angle-down"></i> --></a>
 						<!--
 						<ul class="dropdown-menu pull-left">
 							<li class="dropdown-submenu">
@@ -285,7 +275,7 @@
 						-->
 					</li>
 					<li class="menu-dropdown classic-menu-dropdown">
-						<a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;"> Reports <i class="fa fa-angle-down"></i></a>
+						<a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;"> Reports <!-- <i class="fa fa-angle-down"></i> --></a>
 						<ul class="dropdown-menu pull-left">
 							<!--
 							<li class="dropdown-submenu">
@@ -505,7 +495,7 @@
 					-->
 
 					<li class="menu-dropdown classic-menu-dropdown">
-						<a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;"> Extras <i class="fa fa-angle-down"></i></a>
+						<a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;"> Extras <!-- <i class="fa fa-angle-down"></i> --></a>
 						<ul class="dropdown-menu pull-left">
 							<li class="dropdown-submenu">
 								<a href="javascript:;"><i class="fa fa-users"></i> General </a>
@@ -534,6 +524,14 @@
 									</li>
 									<li>
 										<a href="db/db_reset.php"> Destroy </a>
+									</li>
+								</ul>
+							</li>
+							<li class="dropdown-submenu">
+								<a href="javascript:;"><i class="fa fa-users"></i> ChangeLogs </a>
+								<ul class="dropdown-menu" style="display:none;">
+									<li class=" ">
+										<a href="changelog.php"> History </a>
 									</li>
 								</ul>
 							</li>
