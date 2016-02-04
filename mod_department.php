@@ -193,7 +193,7 @@ function deleteRecord($delDeptId) {
 											<input type="submit" value="Update" class="btn blue">
 											<a href="<?php echo $lastPage; ?>"><button type="button" class="btn default">Close</button></a>
 											<label class="cancel-or-padding">or</label>
-											<input type="button" value="DELETE" class="btn red" onclick="return deleteData();">
+											<input type="button" id="deptDel" value="DELETE" class="btn red">
 										</div>
 									</form>
 								</div>
@@ -207,6 +207,28 @@ function deleteRecord($delDeptId) {
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
+/**
+   Bootbox alert customize.
+**/
+$(function() {
+	$('.logoutAlert').click(function(){
+		bootbox.confirm("Are you sure you want to LOGOUT?", function(result) {
+			if(result) {
+				window.location = "logout.php";
+			}
+		});
+	})
+})
+$(function() {
+	var deptId = document.getElementById("deptId").value;
+	$('#deptDel').click(function(){
+		bootbox.confirm("[CAUTION]  Are you sure you want to DELETE this record?", function(result) {
+			if(result) {
+				window.location="mod_department.php?delDeptId=" + deptId;
+			}
+		});
+	})
+})
 $(function(){
     $('#logout').click(function(){
         if(confirm('Are you sure you want to LOGOUT?')) {

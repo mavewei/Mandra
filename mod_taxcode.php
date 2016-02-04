@@ -167,7 +167,8 @@ function deleteRecord($delTaxCodeId) {
 											<input type="submit" value="Update" class="btn blue">
 											<a href="<?php echo $lastPage; ?>"><button type="button" class="btn default">Close</button></a>
 											<label class="cancel-or-padding">or</label>
-											<input type="button" value="DELETE" class="btn red" onclick="return deleteData();">
+											<!-- <input type="button" value="DELETE" class="btn red" onclick="return deleteData();"> -->
+											<input type="button" id="taxCodeDel" value="DELETE" class="btn red">
 										</div>
 									</form>
 								</div>
@@ -181,6 +182,28 @@ function deleteRecord($delTaxCodeId) {
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
+/**
+   Bootbox alert customize.
+**/
+$(function() {
+	$('.logoutAlert').click(function(){
+		bootbox.confirm("Are you sure you want to LOGOUT?", function(result) {
+			if(result) {
+				window.location = "logout.php";
+			}
+		});
+	})
+})
+$(function() {
+	var taxCodeId = document.getElementById("taxCodeId").value;
+	$('#taxCodeDel').click(function(){
+		bootbox.confirm("[CAUTION]  Are you sure you want to DELETE this record?", function(result) {
+			if(result) {
+				window.location="mod_taxcode.php?delTaxCodeId=" + taxCodeId;
+			}
+		});
+	})
+})
 $(function(){
     $('#logout').click(function(){
         if(confirm('Are you sure you want to LOGOUT?')) {

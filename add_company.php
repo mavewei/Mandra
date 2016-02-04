@@ -78,7 +78,10 @@ if($sid == $_SESSION['SID']) {
 				$result = mysql_query($query);
 				$row = mysql_fetch_array($result);
 				$time = $row['dateTime'];
-				$query = "INSERT INTO company (dateTime, comId, comCode, comName, comLocation, status, createdBy) VALUES('$time', '$comId', '$comCode', '$comName', '$comLocation', 'Active', '$uid')";
+				$query = "INSERT INTO company
+								(dateTime, comId, comCode, comName, comLocation, status, createdBy)
+							VALUES
+								('$time', '$comId', '$comCode', '$comName', '$comLocation', 'Active', '$uid')";
 				$result = mysql_query($query);
 				if(!$result) die ("Table access failed: " . mysql_error());
 				if($result) {
@@ -210,6 +213,18 @@ if($sid == $_SESSION['SID']) {
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
+/**
+   Bootbox alert customize.
+**/
+$(function() {
+	$('.logoutAlert').click(function(){
+		bootbox.confirm("Are you sure you want to LOGOUT?", function(result) {
+			if(result) {
+				window.location = "logout.php";
+			}
+		});
+	})
+})
 $(function(){
     $('#logout').click(function(){
         if(confirm('Are you sure you want to LOGOUT?')) {

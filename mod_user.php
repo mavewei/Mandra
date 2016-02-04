@@ -341,11 +341,12 @@ function deleteRecord($delUserId) {
 											</div>
 										</div>
 										<div class="form-actions">
-											<input type="submit" value="Submit" class="btn blue">
+											<input type="submit" value="Update" class="btn blue">
 											<!-- <button type="submit" class="btn blue">Submit</button> -->
-											<a href="users.php"><button type="button" class="btn default">Cancel</button></a>
+											<a href="users.php"><button type="button" class="btn default">Close</button></a>
 											<label class="cancel-or-padding">or</label>
-											<input type="button" value="DELETE" class="btn red" onclick="return deleteData();">
+											<!-- <input type="button" value="DELETE" class="btn red" onclick="return deleteData();"> -->
+											<input type="button" id="userDel" value="DELETE" class="btn red">
 										</div>
 									</form>
 								</div>
@@ -359,6 +360,28 @@ function deleteRecord($delUserId) {
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
+/**
+   Bootbox alert customize.
+**/
+$(function() {
+	$('.logoutAlert').click(function(){
+		bootbox.confirm("Are you sure you want to LOGOUT?", function(result) {
+			if(result) {
+				window.location = "logout.php";
+			}
+		});
+	})
+})
+$(function() {
+	var userId = document.getElementById("userId").value;
+	$('#userDel').click(function(){
+		bootbox.confirm("[CAUTION]  Are you sure you want to DELETE this record?", function(result) {
+			if(result) {
+				window.location="mod_user.php?delUserId=" + userId;
+			}
+		});
+	})
+})
 $(function(){
     $('#logout').click(function(){
         if(confirm('Are you sure you want to LOGOUT?')) {

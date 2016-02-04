@@ -527,7 +527,7 @@ function deleteRecord($delEmpId) {
 											<!-- <button type="submit" class="btn blue">Submit</button> -->
 											<a href="<?php echo $lastPage; ?>"><button type="button" class="btn default">Close</button></a>
 											<label class="cancel-or-padding">or</label>
-											<input type="button" value="DELETE" class="btn red" onclick="return deleteData();">
+											<input type="button" id="empDel" value="DELETE" class="btn red">
 										</div>
 									</form>
 								</div>
@@ -541,6 +541,28 @@ function deleteRecord($delEmpId) {
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
+/**
+   Bootbox alert customize.
+**/
+$(function() {
+	$('.logoutAlert').click(function(){
+		bootbox.confirm("Are you sure you want to LOGOUT?", function(result) {
+			if(result) {
+				window.location = "logout.php";
+			}
+		});
+	})
+})
+$(function() {
+	var empId = document.getElementById("empId").value;
+	$('#empDel').click(function(){
+		bootbox.confirm("[CAUTION]  Are you sure you want to DELETE this record?", function(result) {
+			if(result) {
+				window.location="mod_employee.php?delEmpId=" + empId;
+			}
+		});
+	})
+})
 $(function(){
     $('#logout').click(function(){
         if(confirm('Are you sure you want to LOGOUT?')) {

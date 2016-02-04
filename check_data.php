@@ -151,5 +151,23 @@ if($dbSelected) {
 			return true;
 		}
 	}
+	/**
+		Validate data for parts details.
+	**/
+	if(!empty($_POST['partsNumber'])) {
+		$partsNumber = $_POST['partsNumber'];
+		$query = "SELECT * FROM partsMasterFile WHERE partsNumber = '$partsNumber' AND status = 'Active'";
+		$result = mysql_query($query);
+		if(!$result) die ("Table access failed: " . mysql_error());
+		$row = mysql_num_rows($result);
+		if($row > 0) {
+			/**
+				Parts information found.
+			**/
+			echo "[Error] Parts number already exist!";
+		} else {
+			return true;
+		}
+	}
 }
 ?>
