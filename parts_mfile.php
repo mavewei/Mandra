@@ -129,7 +129,7 @@ if($sid == $_SESSION['SID']) {
 													$dateCreated = $match[1];
 												};
 												echo "<tr><td class='fit'>";
-												echo "<img class='parts-pic' src='images/parts2.png'></td>";
+												echo "<img class='parts-pic' src='images/parts.png'></td>";
 												echo "<td><a href='mod_parts.php?partsId=$partsId' class='primary-link'>$partsId</a></td>";
 												echo "<td align='left'>$partsNumber</td>";
 												echo "<td align='left'>$partsDescription</td>";
