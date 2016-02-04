@@ -308,6 +308,20 @@ case "25":
 	echo "<div class='media-body'><h2 class='media-heading'>Employee Infor Updated!</h2>You'll be redirected to previous page in 3 seconds.</div></div></div></div>";
 	echo "<meta http-equiv='refresh' content='3;$lastPage'>";
 	break;
+case "26":
+	echo "<div class='block' style='height:100%'><div class='centered-login-status'><div class='media'>";
+	echo "<div class='media-left media-middle'><a href='javascript:;'><div class='container-login-status'>";
+	echo "<img class='media-object image-middle-login-status' src='images/success.png' alt></div></a></div>";
+	echo "<div class='media-body'><h2 class='media-heading'>New Parts Created!</h2>You'll be redirected to previous page in 3 seconds.</div></div></div></div>";
+	echo "<meta http-equiv='refresh' content='3;parts_mfile.php'>";
+	break;
+case "27":
+	echo "<div class='block' style='height:100%'><div class='centered-login-status'><div class='media'>";
+	echo "<div class='media-left media-middle'><a href='javascript:;'><div class='container-login-status'>";
+	echo "<img class='media-object image-middle-login-status' src='images/success.png' alt></div></a></div>";
+	echo "<div class='media-body'><h2 class='media-heading'>Parts Details Updated!</h2>You'll be redirected to previous page in 3 seconds.</div></div></div></div>";
+	echo "<meta http-equiv='refresh' content='3;parts_mfile.php'>";
+	break;
 default:
 	echo "<div class='block' style='height:100%'><div class='centered-login-status'>";
 	echo "<div class='media'><div class='media-left media-middle'>";
