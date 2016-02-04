@@ -213,6 +213,26 @@ if($status) {
 	$result = mysql_query($query);
 	if(!$result) die ("Tables create failed: " . mysql_error());
 	/**
+		Parts Master File
+	**/
+	$query = "CREATE TABLE partsMasterFile (
+					id INT NOT NULL AUTO_INCREMENT,
+					dateTime TIMESTAMP NULL,
+					partsId VARCHAR(10) NOT NULL,
+					partsNumber VARCHAR(30) NOT NULL,
+					partsDescription VARCHAR(50) NULL,
+					partsUom VARCHAR(10) NULL,
+					partsBrand VARCHAR(30) NULL,
+					partsModel VARCHAR(30) NULL,
+					partsWhereUsedI VARCHAR(100) NULL,
+					partsWhereUsedII VARCHAR(100) NULL,
+					status VARCHAR(15) NULL,
+					createdBy INT NOT NULL,
+					PRIMARY KEY (id))";
+					// idZeroFill INT(5) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+	$result = mysql_query($query);
+	if(!$result) die ("Tables create failed: " . mysql_error());
+	/**
 	 supplierLISTS
 	 **/
 	/*
