@@ -17,10 +17,8 @@ require_once('db/db_config.php');
 **/
 $login = $_SESSION['LOGIN_ID'];
 $dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-$query = "SELECT *
-			FROM
-				tempSession
-			WHERE emailAdd = '$login'";
+$query = "SELECT * FROM tempSession
+			 WHERE emailAdd = '$login'";
 $result = mysql_query($query);
 if(!$result) die ("Table access failed: " . mysql_error());
 $data = mysql_fetch_assoc($result);
@@ -70,12 +68,9 @@ if($sid == $_SESSION['SID']) {
 				**/
 				$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 				if($role == "Managers") {
-					$query = "SELECT *
-								FROM
-									userAccounts
-								WHERE
-									roles = '$role'
-								ORDER BY gid DESC LIMIT 1";
+					$query = "SELECT * FROM userAccounts
+								 WHERE roles = '$role'
+								 ORDER BY gid DESC LIMIT 1";
 					$result = mysql_query($query);
 					$row = mysql_num_rows($result);
 					if(!$result) die ("Table access failed: " . mysql_error());
