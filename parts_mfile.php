@@ -98,6 +98,27 @@ if($sid == $_SESSION['SID']) {
 					<div class="portlet light">
 						<div class="portlet-title">
 							<div class="caption">
+								<span class="caption-subjet font-green-sharp bold uppercase">Search</span>
+							</div>
+						</div>
+						<div class="portlet-body">
+							<div class="row">
+								<div class="col-md-3"></div>
+								<div class="col-md-3"></div>
+								<div class="col-md-3"></div>
+								<div class="col-md-3"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-1"></div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-10">
+					<div class="portlet light">
+						<div class="portlet-title">
+							<div class="caption">
 								<span class="caption-subjet font-green-sharp bold uppercase">Parts Master File</span>
 							</div>
 							<div class="actions btn-set">
@@ -106,15 +127,15 @@ if($sid == $_SESSION['SID']) {
 							<div class="tools"></div>
 						</div>
 						<div class="portlet-body">
-							<div id="slimScrollUsers">
+							<div id="slimScrollParts">
 								<div class="table-scrollable table-scrollable-borderless">
 									<table class="table table-hover table-light">
 										<?php
 										if($rows > 0) {
 											echo "<thead><tr class='uppercase'><th colspan='2'>S/N</th>";
-											echo "<th class='left'>Parts Number</th>";
-											echo "<th class='left'>Description</th><th class='center'>Brand</th>";
-											echo "<th class='center'>Model</th><th class='center'>Date Created</th>";
+											echo "<th class='left th-width-15'>Parts Number</th>";
+											echo "<th class='left th-width-15'>Description</th>";
+											echo "<th class='center th-width-15'>Date Created</th>";
 											echo "</tr></thead><tbody>";
 											for($j = 0; $j < $rows; ++$j) {
 												$partsId = ucfirst(mysql_result($result, $j, 'partsId'));
@@ -133,7 +154,6 @@ if($sid == $_SESSION['SID']) {
 												echo "<td><a href='mod_parts.php?partsId=$partsId' class='primary-link'>$partsId</a></td>";
 												echo "<td align='left'>$partsNumber</td>";
 												echo "<td align='left'>$partsDescription</td>";
-												echo "<td align='center'>$partsBrand</td><td align='center'>$partsModel</td>";
 												echo "<td align='center'>$dateCreated</td></tr>";
 											};
 											echo "</tbody>";
@@ -185,12 +205,18 @@ $(function() {
 })
 */
 $(function(){
+	$('#slimScrollParts').slimScroll({
+	    		height: '325px',
+    		});
+/*
     var row = <?php echo $rows; ?>;
 	if(row < 7) {	} else {
-		$('#slimScrollUsers').slimScroll({
-	    		height: '335px'
+		$('#slimScrollParts').slimScroll({
+	    		height: '325px',
+	    		touchScrollStep: 50
     		});
 	}
+*/
 });
 </script>
 <?php include('pages/page_footer.php'); ?>

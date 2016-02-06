@@ -513,6 +513,14 @@
 									</li>
 								</ul>
 							</li>
+							<li class="dropdown-submenu">
+								<a href="javascript:;"><i class="fa fa-users"></i> Import & Export </a>
+								<ul class="dropdown-menu" style="display:none;">
+									<li class=" ">
+										<a href="import_export.php"> Parts Master File </a>
+									</li>
+								</ul>
+							</li>
 							<li class="dropdown-submenu" <?php if($gid > 1000) echo "style='display: none'"; ?>>
 								<a href="javascript:;"><i class="fa fa-database"></i> Database </a>
 								<ul class="dropdown-menu" style="display:none;">
