@@ -151,6 +151,9 @@ span.error-status {
 	font-style: italic;
 /* 	padding-left: 15px; */
 }
+#import-export-submitBtn {
+	display: none;
+}
 html, body {
 	height: 100%;
 	width: 100%;
