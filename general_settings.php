@@ -175,7 +175,7 @@ if($sid == $_SESSION['SID']) {
 											 No company account.
 											 **/
 											echo "<div class='block' style='height:100%'><div class='centered-users'>";
-											echo "<h3 class='no-users'> No company infor. found!</h3></tbody></div></div>";
+											echo "<h3 class='no-users'> No company infor found!</h3></tbody></div></div>";
 										}
 										?>
 									</table>
@@ -218,7 +218,7 @@ if($sid == $_SESSION['SID']) {
 											 No users account.
 											 **/
 											echo "<div class='block' style='height:100%'><div class='centered-users'>";
-											echo "<h3 class='no-users'> No tax code infor. found!</h3></tbody></div></div>";
+											echo "<h3 class='no-users'> No tax code infor found!</h3></tbody></div></div>";
 										}
 										?>
 									</table>
@@ -264,7 +264,7 @@ if($sid == $_SESSION['SID']) {
 											 No users account.
 											 **/
 											echo "<div class='block' style='height:100%'><div class='centered-users'>";
-											echo "<h3 class='no-users'> No department infor. found!</h3></tbody></div></div>";
+											echo "<h3 class='no-users'> No department infor found!</h3></tbody></div></div>";
 										}
 										?>
 									</table>
@@ -307,7 +307,7 @@ if($sid == $_SESSION['SID']) {
 											 No users account.
 											 **/
 											echo "<div class='block' style='height:100%'><div class='centered-users'>";
-											echo "<h3 class='no-users'> No unit infor. found!</h3></tbody></div></div>";
+											echo "<h3 class='no-users'> No unit infor found!</h3></tbody></div></div>";
 										}
 										?>
 									</table>
