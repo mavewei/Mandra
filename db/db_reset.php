@@ -28,10 +28,16 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 		$query = "DROP TABLE nationality";
 		$result = mysql_query($query);
 		if(!$result) die ("Table access failed: " . mysql_error());
+		$query = "DROP TABLE partsMasterFile";
+		$result = mysql_query($query);
+		if(!$result) die ("Table access failed: " . mysql_error());
 		$query = "DROP TABLE position";
 		$result = mysql_query($query);
 		if(!$result) die ("Table access failed: " . mysql_error());
 		$query = "DROP TABLE taxCode";
+		$result = mysql_query($query);
+		if(!$result) die ("Table access failed: " . mysql_error());
+		$query = "DROP TABLE tempSession";
 		$result = mysql_query($query);
 		if(!$result) die ("Table access failed: " . mysql_error());
 		$query = "DROP TABLE unit";
