@@ -525,15 +525,45 @@
 								<a href="javascript:;"><i class="fa fa-database"></i> Database </a>
 								<ul class="dropdown-menu" style="display:none;">
 									<li>
-										<a href="db/db_backup.php"> Backup </a>
+										<a href="javascript:;" class="dbBackup"> Backup </a>
 									</li>
 									<li>
-										<a href="db/db_restore.php"> Rebuild </a>
+										<a href="javascript:;" class="dbRestore"> Rebuild </a>
 									</li>
 									<li>
-										<a href="db/db_reset.php"> Destroy </a>
+										<a href="javascript:;" class="dbDestroy"> Destroy </a>
 									</li>
 								</ul>
+								<script src="js/jquery-2.1.3.min.js"></script>
+								<script>
+									$(function() {
+										$('.dbBackup').click(function() {
+											alertify.confirm("[ALERT]  Are you sure you want to BACKUP databases?", function(result) {
+												if(result) {
+													window.location = "db/db_backup.php";
+												}
+											})
+										})
+									})
+									$(function() {
+										$('.dbRestore').click(function() {
+											alertify.confirm("[ALERT]  Are you sure you want to RESTORE databases?", function(result) {
+												if(result) {
+													window.location = "db/db_restore.php";
+												}
+											})
+										})
+									})
+									$(function() {
+										$('.dbDestroy').click(function() {
+											alertify.confirm("[ALERT]  Are you sure you want to DESTROY databases?", function(result) {
+												if(result) {
+													window.location = "db/db_reset.php";
+												}
+											})
+										})
+									})
+								</script>
 							</li>
 							<li class="dropdown-submenu">
 								<a href="javascript:;"><i class="fa fa-users"></i> ChangeLogs </a>
