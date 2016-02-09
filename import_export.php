@@ -270,19 +270,18 @@ if($sid == $_SESSION['SID']) {
 <?php include('pages/page_jquery.php'); ?>
 <script src="js/jasny-bootstrap.min.js"></script>
 <script>
-/*
-$body = $("body");
-$('#finished').on('change', function(evt) {
-	ajaxStart: function() { $body.addClass("loading");    },
-    ajaxStop: function() { $body.removeClass("loading"); }
+/**
+   Alertify confirm logout.
+**/
+$(function() {
+	$('.logoutAlert').click(function() {
+		alertify.confirm("[ALERT]  Are you sure you want to LOGOUT?", function(result) {
+			if(result) {
+				window.location = "logout.php";
+			}
+		})
+	})
 })
-*/
-/*
-$(document).on({
-    ajaxStart: function() { $body.addClass("loading");    },
-     ajaxStop: function() { $body.removeClass("loading"); }
-});
-*/
 $('#importFile').on('change', function(evt) {
     var file = evt.target.files[0];
     if(file)
