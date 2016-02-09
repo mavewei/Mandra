@@ -381,7 +381,10 @@ if($status) {
 	 Insert root account by default for maintenance
 	 **/
 	$password = md5('toor');
-	$query = "INSERT INTO userAccounts (dateTime, gid, firstName, lastName, emailAdd, departments, roles, passwd, sessionTimeout) VALUES('$time', 0, 'Root', 'Toor', 'root@mandra', 'Full', 'root', '$password', 3600)";
+	$query = "INSERT INTO userAccounts
+					(dateTime, gid, firstName, lastName, emailAdd, departments, roles, passwd, status, sessionTimeout)
+				VALUES
+					('$time', 0, 'Root', 'Toor', 'root@mandra', 'Full', 'root', '$password', 'Active', 3600)";
 	$result = mysql_query($query);
 	if(!$result) die ("Tables access failed: " . mysql_error());
 	/**
