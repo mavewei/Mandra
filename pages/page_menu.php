@@ -517,7 +517,10 @@
 								<a href="javascript:;"><i class="fa fa-users"></i> Import & Export </a>
 								<ul class="dropdown-menu" style="display:none;">
 									<li class=" ">
-										<a href="import_export.php"> Parts Master File </a>
+										<a href="import_export.php#pmf"> Parts Master File </a>
+									</li>
+									<li class=" ">
+										<a href="import_export.php#emp"> Employees Data </a>
 									</li>
 								</ul>
 							</li>

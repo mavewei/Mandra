@@ -64,7 +64,7 @@ if($sid == $_SESSION['SID']) {
 			$taxCodeName = $data['taxCodeName'];
 			if(isset($_POST['taxCodeId']) && isset($_POST['taxCodeName'])) {
 				$taxCodeId = $_POST['taxCodeId'];
-				$taxCodeName = strtoupper(mysql_escape_string($_POST['taxCodeName']));
+				$taxCodeName = mysql_escape_string($_POST['taxCodeName']);
 				$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
 				$result = mysql_query($query);
 				$row = mysql_fetch_array($result);
@@ -97,7 +97,6 @@ if($sid == $_SESSION['SID']) {
 }
 function deleteRecord($delTaxCodeId) {
 	$query = "UPDATE taxCode SET status = 'Cancel' WHERE taxCodeId = '$delTaxCodeId'";
-	print($query);
 	$result = mysql_query($query);
 	if(!$result) die ("Table access failed: " . mysql_error());
 	if($result) {

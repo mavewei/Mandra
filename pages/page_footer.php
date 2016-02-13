@@ -36,7 +36,7 @@
 					<li>
 						<a href="javascript:;" data-original-title="linkedin" class="fa fa-linkedin"></a>
 					</li>
-				</ul>--> 
+				</ul>-->
 			</div>
 			<div class="col-md-3 footer-block">
 				<h2>Contacts</h2>
@@ -48,16 +48,18 @@
 		</div>
 	</div>
 </div>
-<!-- PAGE PREFOOTER END --> 
+<!-- PAGE PREFOOTER END -->
 
 <!-- PAGE FOOTER BEGIN -->
 <div class="page-footer">
 	<div class="container">2015 <i class="fa fa-copyright"></i> Ms Wan-Jin, Sio. All Rights Reserved.</div>
 </div>
-<!-- PAGE FOOTER END --> 
+<!-- PAGE FOOTER END -->
 
 <!-- UP ARROW BEGIN -->
+<!--
 <div class="scroll-to-top" style="display: none;">
 	<i class="glyphicon glyphicon-circle-arrow-up"></i>
 </div>
+-->
 <!-- UP ARROW END -->

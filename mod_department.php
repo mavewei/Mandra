@@ -107,7 +107,6 @@ if($sid == $_SESSION['SID']) {
 }
 function deleteRecord($delDeptId) {
 	$query = "UPDATE departments SET status = 'Cancel' WHERE deptId = '$delDeptId'";
-	print($query);
 	$result = mysql_query($query);
 	if(!$result) die ("Table access failed: " . mysql_error());
 	if($result) {

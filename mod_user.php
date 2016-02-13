@@ -188,7 +188,6 @@ if($sid == $_SESSION['SID']) {
 }
 function deleteRecord($delUserId) {
 	$query = "UPDATE userAccounts SET status = 'Cancel' WHERE id = '$delUserId'";
-	print($query);
 	$result = mysql_query($query);
 	if(!$result) die ("Table access failed: " . mysql_error());
 	if($result) {
@@ -274,7 +273,7 @@ function deleteRecord($delUserId) {
 																/**
 																 Found departments lists.
 																 **/
-																echo "<option value=' '>Select Department</option>";
+																echo "<option value=''>Select Department</option>";
 																for($i = 0; $i < $rowDept; ++$i) {
 																	$deptId = mysql_result($resultDept, $i, 'deptId');
 																	$deptCode = mysql_result($resultDept, $i, 'deptCode');
