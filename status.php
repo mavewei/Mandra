@@ -1,4 +1,7 @@
 <?php include('pages/page_header.php'); ?>
+<link href="css/flexbox.css" rel="stylesheet" type="text/css" />
+<link href="css/status.css" rel="stylesheet" type="text/css" />
+
 <link href="css/center.css" rel="stylesheet" type="text/css" />
 <script type = "text/javascript">
 	history.pushState(null, null, 'status.php');
@@ -28,12 +31,19 @@ case "2":
 	/**
 		User authentication successful!
 	**/
-	echo "<div class=\"block\" style=\"height:100%\"><div class=\"centered-login-status\">";
-	echo "<div class=\"media\"><div class=\"media-left media-middle\">";
-	echo "<a href=\"javascript:;\"><div class=\"container-login-status\">";
-	echo "<img class=\"media-object image-middle-login-status\" src=\"images/success.png\" alt></div></a></div>";
-	echo "<div class=\"media-body\"><h2 class=\"media-heading\">Authentication Successful!</h2>You'll be redirected to dashboard in 3 seconds.</div></div></div></div>";
-	echo "<meta http-equiv=\"refresh\" content=\"3;dashboard.php\">";
+	echo "<div class='container'>";
+	echo "<div class='row vcenter'>";
+	echo "<div class='col-xs-6 col-sm-6 col-md-5'>";
+	echo "<div class='media'>";
+	echo "<div class='media-left media-middle'>";
+	echo "<a href='javascript:;'>";
+	echo "<div class='status-img'>";
+	echo "<img class='media-object image-middle-status' src='images/success.png' alt>";
+	echo "</div></a></div>";
+	echo "<div class='media-body'>";
+	echo "<h2 class='media-heading'>Authentication Success!</h2>You'll be redirected to dashboard in 3 seconds.";
+	echo "</div></div></div></div></div>";
+	echo "<meta http-equiv='refresh' content='3;dashboard.php'>";
 	break;
 case "3":
 	echo "<div class='block' style='height:100%'><div class='centered-login-status'><div class='media'>";
@@ -328,6 +338,60 @@ case "28":
 	echo "<img class='media-object image-middle-login-status' src='images/success.png' alt></div></a></div>";
 	echo "<div class='media-body'><h2 class='media-heading'>Parts Details Uploaded!</h2>You'll be redirected to previous page in 3 seconds.</div></div></div></div>";
 	echo "<meta http-equiv='refresh' content='3;parts_mfile.php'>";
+	break;
+case "29":
+	/**
+		status add successful!
+	**/
+	echo "<div class='container'>";
+	echo "<div class='row vcenter'>";
+	echo "<div class='col-xs-6 col-sm-6 col-md-5'>";
+	echo "<div class='media'>";
+	echo "<div class='media-left media-middle'>";
+	echo "<a href='javascript:;'>";
+	echo "<div class='status-img'>";
+	echo "<img class='media-object image-middle-status' src='images/success.png' alt>";
+	echo "</div></a></div>";
+	echo "<div class='media-body'>";
+	echo "<h2 class='media-heading'>Status Details Added!</h2>You'll be redirected to previous page in 3 seconds.";
+	echo "</div></div></div></div></div>";
+	echo "<meta http-equiv='refresh' content='3;$lastPage'>";
+	break;
+case "30":
+	/**
+		status add successful!
+	**/
+	echo "<div class='container'>";
+	echo "<div class='row vcenter'>";
+	echo "<div class='col-xs-6 col-sm-6 col-md-5'>";
+	echo "<div class='media'>";
+	echo "<div class='media-left media-middle'>";
+	echo "<a href='javascript:;'>";
+	echo "<div class='status-img'>";
+	echo "<img class='media-object image-middle-status' src='images/success.png' alt>";
+	echo "</div></a></div>";
+	echo "<div class='media-body'>";
+	echo "<h2 class='media-heading'>Status Details Updated!</h2>You'll be redirected to previous page in 3 seconds.";
+	echo "</div></div></div></div></div>";
+	echo "<meta http-equiv='refresh' content='3;$lastPage'>";
+	break;
+case "31":
+	/**
+		status add successful!
+	**/
+	echo "<div class='container'>";
+	echo "<div class='row vcenter'>";
+	echo "<div class='col-xs-6 col-sm-6 col-md-5'>";
+	echo "<div class='media'>";
+	echo "<div class='media-left media-middle'>";
+	echo "<a href='javascript:;'>";
+	echo "<div class='status-img'>";
+	echo "<img class='media-object image-middle-status' src='images/success.png' alt>";
+	echo "</div></a></div>";
+	echo "<div class='media-body'>";
+	echo "<h2 class='media-heading'>Employees Uploaded!</h2>You'll be redirected to previous page in 3 seconds.";
+	echo "</div></div></div></div></div>";
+	echo "<meta http-equiv='refresh' content='3;employees.php'>";
 	break;
 default:
 	echo "<div class='block' style='height:100%'><div class='centered-login-status'>";
