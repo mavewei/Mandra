@@ -1,0 +1,25 @@
+@charset "UTF-8";
+/* CSS Document */
+
+.th-width-26 {
+	width: 26%;
+}
+.center.th-width-8 {
+	width: 8%;
+}
+.center.th-width-10 {
+	width: 10%;
+}
+.center.th-width-12 {
+	width: 12%;
+}
+.center.th-width-20 {
+	width: 20%;
+}
+.center.th-width-24 {
+	width: 24%;
+}
+.no-users {
+	color: silver;
+	text-align: center;
+}

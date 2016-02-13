@@ -1,0 +1,11 @@
+@charset "UTF-8";
+/* CSS Document */
+
+.status-img {
+	width: 69px;
+	height: 69px;
+}
+.image-middle-status {
+	width: 100%;
+	height: auto;
+}
