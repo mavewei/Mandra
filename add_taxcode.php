@@ -53,10 +53,7 @@ if($sid == $_SESSION['SID']) {
 				Select taxCode lists.
 	   		**/
 	   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-			$query = "SELECT *
-						FROM
-							taxCode
-						ORDER BY id DESC";
+			$query = "SELECT * FROM taxCode ORDER BY id DESC";
 			$result = mysql_query($query);
 			$row = mysql_num_rows($result);
 			if(!$result) die ("Table access failed: " . mysql_error());
@@ -74,7 +71,7 @@ if($sid == $_SESSION['SID']) {
 
 			if(isset($_POST['taxCodeId']) && isset($_POST['taxCodeName'])) {
 				$taxCodeId = $_POST['taxCodeId'];
-				$taxCodeName = strtoupper(mysql_escape_string($_POST['taxCodeName']));
+				$taxCodeName = mysql_escape_string($_POST['taxCodeName']);
 				$query = "SELECT DATE_ADD
 								(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
 				$result = mysql_query($query);

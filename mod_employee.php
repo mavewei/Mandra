@@ -88,26 +88,26 @@ if($sid == $_SESSION['SID']) {
 			$rowPosition = mysql_num_rows($resultPosition);
 			if(!$resultPosition) die ("Table access failed: " . mysql_error());
 			/**
+				Select status lists.
+			**/
+			/*
+			$queryStatus = "SELECT * from status WHERE status = 'Active' ORDER BY statusName ASC";
+			$resultStatus = mysql_query($queryStatus);
+			$rowStatus = mysql_num_rows($resultStatus);
+			if(!$resultStatus) die ("Table access failed: " . mysql_error());
+			*/
+			/**
 				Select taxcode lists.
-	   		**/
-	   		$queryTaxCode = "SELECT * from taxCode WHERE status = 'Active' ORDER BY taxCodeId ASC";
+			**/
+			$queryTaxCode = "SELECT * from taxCode WHERE status = 'Active' ORDER BY taxCodeId ASC";
 			$resultTaxCode = mysql_query($queryTaxCode);
 			$rowTaxCode = mysql_num_rows($resultTaxCode);
 			if(!$resultTaxCode) die ("Table access failed: " . mysql_error());
 			/**
 				Select employee information.
-	   		**/
-	   		$query = "SELECT
-	   						employees.id AS userId, employees.empId AS empId, employees.empName AS empName,
-	   						employees.empSex AS empSex, employees.empBirth AS empBirth,
-	   						employees.empNationality AS empNationality, employees.empCounty AS empCounty,
-	   						employees.empDateJoin AS empDateJoin, employees.empSource AS empSource,
-	   						employees.empCategory AS empCategory, company.comCode AS empCompanyCode,
-	   						departments.deptCode AS empDepartment, unit.unitName AS empUnit,
-	   						position.positionName AS empPosition, employees.empBasicSalary AS empBasicSalary,
-	   						taxCode.taxCodeName AS empTaxCode
-	   					FROM
-	   						employees
+			**/
+			$query = "SELECT * FROM employees WHERE employees.id = '$id'";
+	   					/*
 	   					INNER JOIN
 	   						company ON employees.empCompanyCode = company.comId
 	   					INNER JOIN
@@ -118,8 +118,9 @@ if($sid == $_SESSION['SID']) {
 	   						position ON employees.empPosition = position.positionId
 	   					INNER JOIN
 	   						taxCode ON employees.empTaxCode = taxCode.taxCodeId
-	   					WHERE
-	   						employees.id = '$id'";
+	   					INNER JOIN
+	   						status ON employees.empStatus = status.statusId
+						*/
 			$result = mysql_query($query);
 			$row = mysql_num_rows($result);
 			if(!$result) die ("Table access failed: " . mysql_error());
@@ -132,7 +133,7 @@ if($sid == $_SESSION['SID']) {
 				$empNationality = $data['empNationality'];
 				$empCounty = $data['empCounty'];
 				$empDateJoin = $data['empDateJoin'];
-				$empSource = $data['empSource'];
+				$empStatus = $data['empStatus'];
 				$empCategory = $data['empCategory'];
 				$empCompanyCode = $data['empCompanyCode'];
 				$empDepartment = $data['empDepartment'];
@@ -152,7 +153,7 @@ if($sid == $_SESSION['SID']) {
 				$empNationality = $_POST['empNationality'];
 				$empCounty = ucwords(mysql_escape_string($_POST['empCounty']));
 				$empDateJoin = $_POST['empDateJoin'];
-				$empSource = $_POST['empSource'];
+				$empStatus = $_POST['empStatus'];
 				$empCategory = $_POST['empCategory'];
 				$empCompanyCode = $_POST['empCompanyCode'];
 				$empDepartment = $_POST['empDepartment'];
@@ -169,7 +170,7 @@ if($sid == $_SESSION['SID']) {
 							SET
 								empName = '$empName', empSex = '$empSex', empBirth = '$empBirth',
 								empNationality = '$empNationality', empCounty = '$empCounty', empDateJoin = '$empDateJoin',
-								empSource = '$empSource', empCategory = '$empCategory', empCompanyCode = '$empCompanyCode',
+								empStatus = '$empStatus', empCategory = '$empCategory', empCompanyCode = '$empCompanyCode',
 								empDepartment = '$empDepartment', empUnit = '$empUnit', empPosition = '$empPosition',
 								empBasicSalary = '$empBasicSalary', empTaxCode = '$empTaxCode'
 							WHERE
@@ -280,12 +281,12 @@ function deleteRecord($delEmpId) {
 																	/**
 																	 No nationality were created.
 																	 **/
-																	echo "<option value=' '>No Nationality Found</option>";
+																	echo "<option value=''>No Nationality Found</option>";
 																} else {
 																	/**
 																	 Found nationality lists.
 																	 **/
-																	echo "<option value=' '>Select Nationality</option>";
+																	echo "<option value=''>Select Nationality</option>";
 																	for($i = 0; $i < $rowNationality; ++$i) {
 																		$nationalityName = mysql_result($resultNationality, $i, 'nationalityName');
 																		if($empNationality == $nationalityName) {
@@ -320,16 +321,18 @@ function deleteRecord($delEmpId) {
 											<div class="row">
 												<div class="col-md-4">
 													<div class="form-group">
-														<label>Source</label>
-														<select name="empSource" class="form-control input-lg" required>
-															<option value=" ">Select Source</option>
+														<label>Status</label>
+														<select name="empStatus" class="form-control input-lg" required>
+															<option value="">Select Status</option>
 															<?php
-																if($empSource == "Local") {
-																	echo "<option value='Local' selected='selected'>Local</option>";
-																	echo "<option value='Expatiate'>Expatiate</option>";
-																} else {
-																	echo "<option value='Local'>Local</option>";
-																	echo "<option value='Expatiate' selected='selected'>Expatiate</option>";
+																$listStatus = array("On Duty", "Long Sick Leave", "Suspended", "Resigned", "Terminated");
+																$length = count($listStatus);
+																for($i = 0; $i < $length; ++$i) {
+																	if($empStatus == $listStatus[$i]) {
+																		echo "<option value='$listStatus[$i]' selected='selected'>$listStatus[$i]</option>";
+																	} else {
+																		echo "<option value='$listStatus[$i]'>$listStatus[$i]</option>";
+																	}
 																}
 															?>
 														</select>
@@ -339,9 +342,9 @@ function deleteRecord($delEmpId) {
 													<div class="form-group">
 														<label>Category</label>
 														<select name="empCategory" class="form-control input-lg" required>
-															<option value=" ">Select Category</option>
+															<option value="">Select Category</option>
 															<?php
-															$listCategory = array("Casual", "Temporary", "Contract", "Expatriate", "Contractors");
+																$listCategory = array("Casual", "Temporary", "Contract", "Expatriate", "Contractors");
 																$length = count($listCategory);
 																for($i = 0; $i < $length; ++$i) {
 																	if($empCategory == $listCategory[$i]) {
@@ -363,19 +366,18 @@ function deleteRecord($delEmpId) {
 																/**
 																 No company were created.
 																 **/
-																echo "<option value=' '>No Company Found</option>";
+																echo "<option value=''>No Company Found</option>";
 															} else {
 																/**
 																 Found company lists.
 																 **/
-																echo "<option value=' '>Select Company</option>";
+																echo "<option value=''>Select Company</option>";
 																for($i = 0; $i < $rowCompany; ++$i) {
-																	$comId = mysql_result($resultCompany, $i, 'comId');
-																	$comCode = mysql_result($resultCompany, $i, 'comCode');
-																	if($empCompanyCode == $comCode) {
-																		echo "<option value='$comId' selected='selected'>$comCode</option>";
+																	$comName = mysql_result($resultCompany, $i, 'comName');
+																	if($empCompanyCode == $comName) {
+																		echo "<option value='$comName' selected='selected'>$comName</option>";
 																	} else {
-																		echo "<option value='$comId'>$comCode</option>";
+																		echo "<option value='$comName'>$comName</option>";
 																	}
 																}
 															}
@@ -394,19 +396,18 @@ function deleteRecord($delEmpId) {
 																/**
 																 No department were created.
 																 **/
-																echo "<option value=' '>No Department Found</option>";
+																echo "<option value=''>No Department Found</option>";
 															} else {
 																/**
 																 Found department lists.
 																 **/
-																echo "<option value=' '>Select Department</option>";
+																echo "<option value=''>Select Department</option>";
 																for($i = 0; $i < $rowDept; ++$i) {
-																	$deptId = mysql_result($resultDept, $i, 'deptId');
 																	$deptCode = mysql_result($resultDept, $i, 'deptCode');
 																	if($empDepartment == $deptCode) {
-																		echo "<option value='$deptId' selected='selected'>$deptCode</option>";
+																		echo "<option value='$deptCode' selected='selected'>$deptCode</option>";
 																	} else {
-																		echo "<option value='$deptId'>$deptCode</option>";
+																		echo "<option value='$deptCode'>$deptCode</option>";
 																	}
 																}
 															}
@@ -423,19 +424,18 @@ function deleteRecord($delEmpId) {
 																/**
 																 No unit were created.
 																 **/
-																echo "<option value=' '>No Unit Found</option>";
+																echo "<option value=''>No Unit Found</option>";
 															} else {
 																/**
 																 Found unit lists.
 																 **/
-																echo "<option value=' '>Select Unit</option>";
+																echo "<option value=''>Select Unit</option>";
 																for($i = 0; $i < $rowUnit; ++$i) {
-																	$unitId = mysql_result($resultUnit, $i, 'unitId');
 																	$unitName = mysql_result($resultUnit, $i, 'unitName');
 																	if($empUnit == $unitName) {
-																		echo "<option value='$unitId' selected='selected'>$unitName</option>";
+																		echo "<option value='$unitName' selected='selected'>$unitName</option>";
 																	} else {
-																		echo "<option value='$unitId'>$unitName</option>";
+																		echo "<option value='$unitName'>$unitName</option>";
 																	}
 																}
 															}
@@ -452,19 +452,18 @@ function deleteRecord($delEmpId) {
 																/**
 																 No position were created.
 																 **/
-																echo "<option value=' '>No Position Found</option>";
+																echo "<option value=''>No Position Found</option>";
 															} else {
 																/**
 																 Found position lists.
 																 **/
-																echo "<option value=' '>Select Position</option>";
+																echo "<option value=''>Select Position</option>";
 																for($i = 0; $i < $rowPosition; ++$i) {
-																	$positionId = mysql_result($resultPosition, $i, 'positionId');
 																	$positionName = mysql_result($resultPosition, $i, 'positionName');
 																	if($empPosition == $positionName) {
-																		echo "<option value='$positionId' selected='selected'>$positionName</option>";
+																		echo "<option value='$positionName' selected='selected'>$positionName</option>";
 																	} else {
-																		echo "<option value='$positionId'>$positionName</option>";
+																		echo "<option value='$positionName'>$positionName</option>";
 																	}
 																}
 															}
@@ -491,19 +490,18 @@ function deleteRecord($delEmpId) {
 																/**
 																 No tax code were created.
 																 **/
-																echo "<option value=' '>No Tax Code Found</option>";
+																echo "<option value=''>No Tax Code Found</option>";
 															} else {
 																/**
 																 Found tax code information.
 																 **/
-																echo "<option value=' '>Select Tax Code</option>";
+																echo "<option value=''>Select Tax Code</option>";
 																for($i = 0; $i < $rowTaxCode; ++$i) {
-																	$taxCodeId = mysql_result($resultTaxCode, $i, 'taxCodeId');
 																	$taxCodeName = mysql_result($resultTaxCode, $i, 'taxCodeName');
 																	if($empTaxCode == $taxCodeName) {
-																		echo "<option value='$taxCodeId' selected='selected'>$taxCodeName</option>";
+																		echo "<option value='$taxCodeName' selected='selected'>$taxCodeName</option>";
 																	} else {
-																		echo "<option value='$taxCodeId'>$taxCodeName</option>";
+																		echo "<option value='$taxCodeName'>$taxCodeName</option>";
 																	}
 																}
 															}

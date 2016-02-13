@@ -93,6 +93,15 @@ if($sid == $_SESSION['SID']) {
 			$rowDept = mysql_num_rows($resultDept);
 			if(!$resultDept) die ("Table access failed: " . mysql_error());
 			/**
+				Select status lists.
+			**/
+			/*
+			$queryStatus = "SELECT * FROM status WHERE status = 'Active' ORDER BY statusName ASC";
+			$resultStatus = mysql_query($queryStatus);
+			$rowStatus = mysql_num_rows($resultStatus);
+			if(!$resultStatus) die ("Table access failed: " . mysql_error());
+			*/
+			/**
 				Select employee lists.
 	   		**/
 			$query = "SELECT * FROM employees ORDER BY id DESC";
@@ -118,7 +127,7 @@ if($sid == $_SESSION['SID']) {
 				$empNationality = $_POST['empNationality'];
 				$empCounty = ucwords(mysql_escape_string($_POST['empCounty']));
 				$empDateJoin = $_POST['empDateJoin'];
-				$empSource = $_POST['empSource'];
+				$empStatus = $_POST['empStatus'];
 				$empCategory = $_POST['empCategory'];
 				$empCompanyCode = $_POST['empCompanyCode'];
 				$empDepartment = $_POST['empDepartment'];
@@ -132,11 +141,11 @@ if($sid == $_SESSION['SID']) {
 				$time = $row['dateTime'];
 				$query = "INSERT INTO employees
 								(dateTime, empId, empName, empSex, empBirth, empNationality, empCounty, empDateJoin,
-								empSource, empCategory, empCompanyCode, empDepartment, empUnit, empPosition,
+								empStatus, empCategory, empCompanyCode, empDepartment, empUnit, empPosition,
 								empBasicSalary, empTaxCode, status, createdBy)
 							VALUES
 								('$time', '$empId', '$empName', '$empSex', '$empBirth', '$empNationality', '$empCounty',
-								'$empDateJoin', '$empSource', '$empCategory', '$empCompanyCode', '$empDepartment',
+								'$empDateJoin', '$empStatus', '$empCategory', '$empCompanyCode', '$empDepartment',
 								'$empUnit', '$empPosition', '$empBasicSalary', '$empTaxCode', 'Active', '$uid')";
 				$result = mysql_query($query);
 				if(!$result) die ("Table access failed: " . mysql_error());
@@ -231,7 +240,7 @@ if($sid == $_SESSION['SID']) {
 													<div class="form-group">
 														<label>Date of Birth</label>
 														<div class="input-icon input-icon-lg"><i class="fa fa-calendar"></i>
-															<input type="date" class="form-control input-lg" name="empBirth" id="empBirth" style="text-align: center" max="<?php echo $maxDoB; ?>" required>
+															<input type="date" class="form-control input-lg" name="empBirth" id="empBirth" style="text-align: center" max="<?php echo $maxDoB; ?>">
 														</div>
 													</div>
 												</div>
@@ -247,12 +256,12 @@ if($sid == $_SESSION['SID']) {
 																	/**
 																	 No nationality were created.
 																	 **/
-																	echo "<option value=' '>No Nationality Found</option>";
+																	echo "<option value=''>No Nationality Found</option>";
 																} else {
 																	/**
 																	 Found nationality lists.
 																	 **/
-																	echo "<option value=' '>Select Nationality</option>";
+																	echo "<option value=''>Select Nationality</option>";
 																	for($i = 0; $i < $rowNationality; ++$i) {
 																		$nationalityName = mysql_result($resultNationality, $i, 'nationalityName');
 																		echo "<option value='$nationalityName'>$nationalityName</option>";
@@ -288,7 +297,7 @@ if($sid == $_SESSION['SID']) {
 														<label>Date of Join</label>
 														<div class="input-icon input-icon-lg">
 															<i class="fa fa-calendar"></i>
-															<input type="date" class="form-control input-lg" name="empDateJoin" style="text-align: center" max="<?php echo $maxDoB; ?>" required>
+															<input type="date" class="form-control input-lg" name="empDateJoin" style="text-align: center" max="<?php echo $maxDoB; ?>">
 														</div>
 													</div>
 												</div>
@@ -296,11 +305,34 @@ if($sid == $_SESSION['SID']) {
 											<div class="row">
 												<div class="col-md-4">
 													<div class="form-group">
-														<label>Source</label>
-														<select name="empSource" class="form-control input-lg" required>
-															<option value="">Select Source</option>
-															<option value="Local">Local</option>
-															<option value="Expatiate">Expatiate</option>
+														<label>Status</label>
+														<select name="empStatus" class="form-control input-lg" required>
+															<option value="">Select Status</option>
+															<option value="On Duty">On Duty</option>
+															<option value="Long Sick Leave">Long Sick Leave</option>
+															<option value="Suspended">Suspended</option>
+															<option value="Resigned">Resigned</option>
+															<option value="Terminated">Terminated</option>
+															<?php
+																/*
+																if($rowStatus < 1) {
+																	/**
+																		No status were created.
+																	//
+																	echo "<option value=''>No Status Found</option>";
+																} else {
+																	/**
+																		Found status lists.
+																	//
+																	echo "<option value=''>Select Status</option>";
+																	for($i = 0; $i < $rowStatus; ++$i) {
+																		$statusId = mysql_result($resultStatus, $i, 'statusId');
+																		$statusName = mysql_result($resultStatus, $i, 'statusName');
+																		echo "<option value=$statusId>$statusName</option>";
+																	}
+																}
+																*/
+															?>
 														</select>
 													</div>
 												</div>
@@ -322,22 +354,21 @@ if($sid == $_SESSION['SID']) {
 														<label>Company Code <!-- <small class="company-not-found">Create <a href="add_company.php">here!</a></small> --></label>
 														<select name="empCompanyCode" class="form-control input-lg" required>
 															<?php
-															if($rowCom < 1) {
-																/**
-																 No company were created.
-																 **/
-																echo "<option value=''>No Company Code Found</option>";
-															} else {
-																/**
-																 Found company lists.
-																 **/
-																echo "<option value=''>Select Company Code</option>";
-																for($i = 0; $i < $rowCom; ++$i) {
-																	$comId = mysql_result($resultCom, $i, 'comId');
-																	$comCode = mysql_result($resultCom, $i, 'comCode');
-																	echo "<option value=$comId>$comCode</option>";
+																if($rowCom < 1) {
+																	/**
+																		No company were created.
+																	**/
+																	echo "<option value=''>No Company Name Found</option>";
+																} else {
+																	/**
+																		Found company lists.
+																	**/
+																	echo "<option value=''>Select Company Name</option>";
+																	for($i = 0; $i < $rowCom; ++$i) {
+																		$comName = mysql_result($resultCom, $i, 'comName');
+																		echo "<option value='$comName'>$comName</option>";
+																	}
 																}
-															}
 															?>
 														</select>
 													</div>
@@ -360,10 +391,8 @@ if($sid == $_SESSION['SID']) {
 																 **/
 																echo "<option value=''>Select Department</option>";
 																for($i = 0; $i < $rowDept; ++$i) {
-																	$deptId = mysql_result($resultDept, $i, 'deptId');
 																	$deptCode = mysql_result($resultDept, $i, 'deptCode');
-																	// $deptName = mysql_result($resultDept, $i, 'deptName');
-																	echo "<option value=$deptId>$deptCode</option>";
+																	echo "<option value='$deptCode'>$deptCode</option>";
 																}
 															}
 															?>
@@ -384,11 +413,10 @@ if($sid == $_SESSION['SID']) {
 																/**
 																 Found unit lists.
 																 **/
-																echo "<option value=' '>Select Unit</option>";
+																echo "<option value=''>Select Unit</option>";
 																for($i = 0; $i < $rowUnit; ++$i) {
-																	$unitId = mysql_result($resultUnit, $i, 'unitId');
 																	$unitName = mysql_result($resultUnit, $i, 'unitName');
-																	echo "<option value=$unitId>$unitName</option>";
+																	echo "<option value='$unitName'>$unitName</option>";
 																}
 															}
 															?>
@@ -409,11 +437,10 @@ if($sid == $_SESSION['SID']) {
 																/**
 																 Found position lists.
 																 **/
-																echo "<option value=' '>Select Position</option>";
+																echo "<option value=''>Select Position</option>";
 																for($i = 0; $i < $rowPosition; ++$i) {
-																	$positionId = mysql_result($resultPosition, $i, 'positionId');
 																	$positionName = mysql_result($resultPosition, $i, 'positionName');
-																	echo "<option value=$positionId>$positionName</option>";
+																	echo "<option value='$positionName'>$positionName</option>";
 																}
 															}
 															?>
@@ -445,11 +472,10 @@ if($sid == $_SESSION['SID']) {
 																/**
 																 Found taxcode lists.
 																 **/
-																echo "<option value=' '>Select Tax Code</option>";
+																echo "<option value=''>Select Tax Code</option>";
 																for($i = 0; $i < $rowTaxCode; ++$i) {
-																	$taxCodeId = mysql_result($resultTaxCode, $i, 'taxCodeId');
 																	$taxCodeName = mysql_result($resultTaxCode, $i, 'taxCodeName');
-																	echo "<option value=$taxCodeId>$taxCodeName</option>";
+																	echo "<option value='$taxCodeName'>$taxCodeName</option>";
 																}
 															}
 															?>
@@ -575,7 +601,7 @@ function showCounty(idx) {
 					county.replaceWith('<select id="empCounty" name="empCounty" class="form-control input-lg">');
 					var county = $('#empCounty');
 					county.empty();
-					county.append('<option value=" ">Select County</option>');
+					county.append('<option value="">Select County</option>');
 					var data = $.parseJSON(response);
 					for (var i = 0; i < data.length; ++i) {
 						county.append('<option value="' + data[i].countyCode + '">' + data[i].countyCode + '</option>');

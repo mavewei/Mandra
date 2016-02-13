@@ -83,6 +83,15 @@ if($sid == $_SESSION['SID']) {
 				$resultPosition = mysql_query($queryPosition);
 				if(!$resultPosition) die ("Table access failed: " . mysql_error());
 				$rowsPosition = mysql_num_rows($resultPosition);
+				/**
+					Select from status.
+				**/
+				/*
+				$queryStatus = "SELECT * FROM status WHERE status = 'Active' ORDER BY id DESC";
+				$resultStatus = mysql_query($queryStatus);
+				if(!$resultStatus) die ("Table access failed: " . mysql_error());
+				$rowsStatus = mysql_num_rows($resultStatus);
+				*/
 			};
 		} else {
 			/**
@@ -361,7 +370,49 @@ if($sid == $_SESSION['SID']) {
 						</div>
 					</div>
 				</div>
-				<div class="col-md-6"></div>
+				<div class="col-md-6" style="display: none">
+					<div class="portlet light">
+						<div class="portlet-title">
+							<div class="caption">
+								<span class="caption-subjet font-green-sharp bold uppercase">Status</span>
+							</div>
+							<div class="actions btn-set">
+								<a class="btn green-haze btn-circle" href="add_status.php"><i class="fa fa-plus"></i> Add </a>
+							</div>
+						</div>
+						<div class="portlet-body">
+							<div id="slimScrollStatus">
+								<div class="table-scrollable table-scrollable-borderless">
+									<table class="table table-hover table-light">
+										<?php
+										if($rowsStatus > 0) {
+											echo "<thead><tr class='uppercase'><th class='center th-width-25'>ID</th>";
+											echo "<th class='left th-width-40'>Name</th><th class='center th-width-35'>Date Created</th>";
+											echo "</tr></thead><tbody>";
+											for($j = 0; $j < $rowsStatus; ++$j) {
+												$statusId = mysql_result($resultStatus, $j, 'statusId');
+												$statusName = mysql_result($resultStatus, $j, 'statusName');
+												$string = mysql_result($resultStatus, $j, 'dateTime');
+												if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
+													$datejoin = $match[1];
+												};
+												echo "<tr><td align='center'><a href='mod_status.php?statusId=$statusId' class='primary-link'>$statusId</td><td align='left'>$statusName</td><td align='center'>$datejoin</td></tr>";
+											};
+											echo "</tbody>";
+										} else {
+											/**
+											 No users account.
+											 **/
+											echo "<div class='block' style='height:100%'><div class='centered-users'>";
+											echo "<h3 class='no-users'> No status details found!</h3></div></div>";
+										}
+										?>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -393,16 +444,6 @@ $(function() {
 		});
 	})
 })
-*/
-/*
-$(function(){
-    $('#logout').click(function(){
-        if(confirm('Are you sure you want to LOGOUT?')) {
-            return true;
-        }
-        return false;
-    });
-});
 */
 $(function(){
 	var row = <?php echo $rows; ?>;
@@ -444,6 +485,16 @@ $(function(){
     		});
 	}
 });
+/*
+$(function(){
+	var row = <?php echo $rowsStatus; ?>;
+	if(row < 6) {	} else {
+		$('#slimScrollStatus').slimScroll({
+	    		height: '230px'
+    		});
+	}
+});
+*/
 </script>
 <?php include('pages/page_footer.php'); ?>
 </body>

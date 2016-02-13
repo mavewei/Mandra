@@ -169,5 +169,23 @@ if($dbSelected) {
 			return true;
 		}
 	}
+	/**
+		Validate data for employee status.
+	**/
+	if(!empty($_POST['statusName'])) {
+		$statusName = $_POST['statusName'];
+		$query = "SELECT * FROM status WHERE statusName = '$statusName' AND status = 'Active'";
+		$result = mysql_query($query);
+		if(!$result) die ("Table access failed: " . mysql_error());
+		$row = mysql_num_rows($result);
+		if($row > 0) {
+			/**
+				Status details found.
+			**/
+			echo "[Error] Status already exist!";
+		} else {
+			return true;
+		}
+	}
 }
 ?>

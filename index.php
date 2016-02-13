@@ -173,6 +173,21 @@ if($status) {
 	$result = mysql_query($query);
 	if(!$result) die ("Tables create failed: " . mysql_error());
 	/**
+		status for Employee
+		IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
+	**/
+	/*
+	$query = "CREATE TABLE status (
+					id INT NOT NULL AUTO_INCREMENT,
+					dateTime TIMESTAMP NULL,
+					statusId VARCHAR(15) NOT NULL,
+					statusName VARCHAR(50) NOT NULL,
+					status VARCHAR(15) NULL,
+					PRIMARY KEY (id))";
+	$result = mysql_query($query);
+	if(!$result) die ("Tables create failed: " . mysql_error());
+	*/
+	/**
 		Tax Code
 		IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
 	**/
@@ -195,13 +210,13 @@ if($status) {
 					empId VARCHAR(10) NOT NULL,
 					empName VARCHAR(50) NOT NULL,
 					empSex VARCHAR(10) NOT NULL,
-					empBirth DATE,
+					empBirth DATE NULL,
 					empNationality VARCHAR(50) NOT NULL,
-					empCounty VARCHAR(50) NOT NULL,
-					empDateJoin DATE,
-					empSource VARCHAR(50) NOT NULL,
+					empCounty VARCHAR(50) NULL,
+					empDateJoin DATE NULL,
+					empStatus VARCHAR(50) NULL,
 					empCategory VARCHAR(20) NOT NULL,
-					empCompanyCode VARCHAR(10) NOT NULL,
+					empCompanyCode VARCHAR(50) NOT NULL,
 					empDepartment VARCHAR(50) NOT NULL,
 					empUnit VARCHAR(50) NOT NULL,
 					empPosition VARCHAR(50) NOT NULL,
