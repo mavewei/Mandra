@@ -34,6 +34,9 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 		$query = "DROP TABLE position";
 		$result = mysql_query($query);
 		if(!$result) die ("Table access failed: " . mysql_error());
+		$query = "DROP TABLE status";
+		$result = mysql_query($query);
+		if(!$result) die ("Table access failed: " . mysql_error());
 		$query = "DROP TABLE taxCode";
 		$result = mysql_query($query);
 		if(!$result) die ("Table access failed: " . mysql_error());
