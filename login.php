@@ -1,6 +1,6 @@
 <?php include('pages/page_header.php'); ?>
-<link href="css/center.css" rel="stylesheet" type="text/css">
-<link href="css/signin.css" rel="stylesheet" type="text/css">
+<link href="css/flexbox.css" rel="stylesheet" type="text/css" />
+<link href="css/login.css" rel="stylesheet" type="text/css" />
 <script type = "text/javascript">
 	history.pushState(null, null, 'login.php');
 	window.addEventListener('popstate', function(event) {
@@ -19,8 +19,6 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 		$login = $_SESSION['LOGIN_ID'];
 		$ipaddr = @$_SERVER['REMOTE_ADDR'];
 		$sid = $_SESSION['SID'];
-
-
 		/**
 		 Add login information to loginDetails.
 		 //
@@ -34,8 +32,6 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 		$_SESSION['STATUS'] = 2;
 		header('Location: status.php');
 		**/
-
-
 		$query = "SELECT sid FROM loginDetails WHERE sid = '$sid'";
 		$result = mysql_query($query);
 		if(!$result) die ("Table access failed: " . mysql_error());
@@ -137,25 +133,19 @@ if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 	};
 };
 ?>
-<!-- SIGN-IN BOX BEGIN -->
-<div class="block" style="height:100%">
-	<div class="centered">
-		<form class="form-signin" action="login.php" method="post">
-			<h2 class="form-signin-head">Mandra Forestry Liberia Limited</h2>
-			<h4 class="form-signin-bottom">Management Information System</h4>
-			<!-- <h4 class="form-signin-head">Please sign-in</h4> -->
-			<label for="input_email" class="sr-only">Email address</label>
-			<input type="email" id="input_email" class="form-control" placeholder="User ID (email address)" name="login" required autofocus autocomplete="off">
-			<label for="input_password" class="sr-only">Password</label>
-			<input type="password" id="input_password" class="form-control" placeholder="Password" name="passwd" required>
-			<!-- <div class="checkbox">
-				<label><input type="checkbox" value="remember"> Remember me</label>
-			</div> -->
-			<button class="btn btn-lg btn-primary btn-block" type="submit" id="submit-btn">Sign in</button>
-		</form>
+<div class="container">
+	<div class="row vcenter">
+		<div class="col-xs-6 col-sm-6 col-md-6">
+			<form class="form-login" action="login.php" method="post">
+				<h2 style="text-align: center">Mandra Forestry Liberia Limited</h2>
+				<h4 class="form-login-bottom" style="text-align: center">Management Information System</h4>
+				<input type="email" id="input_email" class="form-control" placeholder="User ID (email address)" name="login" required autofocus autocomplete="off">
+				<input type="password" id="input_password" class="form-control" placeholder="Password" name="passwd" required>
+				<button class="btn btn-lg btn-primary btn-block" type="submit" id="submit-btn">Sign in</button>
+			</form>
+		</div>
 	</div>
 </div>
-<!-- SIGN-IN BOX END -->
 <?php include('pages/page_jquery.php'); ?>
 </body>
 </html>
