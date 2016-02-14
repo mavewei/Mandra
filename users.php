@@ -1,87 +1,77 @@
 <?php include('pages/page_header.php'); ?>
-<!-- <link href="css/center.css" rel="stylesheet" type="text/css" /> -->
+<link href="css/users.css" rel="stylesheet" type="text/css" />
 <link href="css/components.css" rel="stylesheet" type="text/css" />
 <link href="css/layout.css" rel="stylesheet" type="text/css" />
-<link href="css/center.css" rel="stylesheet" type="text/css">
-<link href="css/signin.css" rel="stylesheet" type="text/css">
+<!-- <link href="css/center.css" rel="stylesheet" type="text/css"> -->
+<!-- <link href="css/signin.css" rel="stylesheet" type="text/css"> -->
 <!-- <link href="css/setadmin.css" rel="stylesheet" type="text/css" /> -->
 <script type = "text/javascript">
-	history.pushState(null, null, 'users.php');
+	history.pushState(null, null, '');
 	window.addEventListener('popstate', function(event) {
-		history.pushState(null, null, 'users.php');
+		history.pushState(null, null, '');
 	});
 </script>
 <?php include('pages/page_meta.php'); ?>
 <?php
-require_once('db/db_config.php');
-/**
-	Check session id.
-**/
-$login = $_SESSION['LOGIN_ID'];
-$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
-$result = mysql_query($query);
-if(!$result) die ("Table access failed: " . mysql_error());
-$data = mysql_fetch_assoc($result);
-$sid = $data['sid'];
-if($sid == $_SESSION['SID']) {
-	if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
-		if($_SESSION['GID'] < 4000) {
-			$fname = $_SESSION['FNAME'];
-			$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
-			$_SESSION['LAST_PAGE'] = "users.php";
-			// $role = $_SESSION['ROLE'];
-			/**
-				Lifetime added 5min.
-			**/
-			if(isset($_SESSION['EXPIRETIME'])) {
-				if($_SESSION['EXPIRETIME'] < time()) {
-					unset($_SESSION['EXPIRETIME']);
-					header('Location: logout.php?TIMEOUT');
-					exit(0);
-				} else {
-					/**
-						Session time out time 5min.
-					**/
-					//$_SESSION['EXPIRETIME'] = time() + 300;
-					$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+	require_once('db/db_config.php');
+	/**
+		Check session id.
+	**/
+	$login = $_SESSION['LOGIN_ID'];
+	$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+	$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
+	$result = mysql_query($query);
+	if(!$result) die ("Table access failed: " . mysql_error());
+	$data = mysql_fetch_assoc($result);
+	$sid = $data['sid'];
+	if($sid == $_SESSION['SID']) {
+		if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
+			if($_SESSION['GID'] < 4000) {
+				$fname = $_SESSION['FNAME'];
+				$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
+				$_SESSION['LAST_PAGE'] = "users.php";
+				// $role = $_SESSION['ROLE'];
+				/**
+					Lifetime added 5min.
+				**/
+				if(isset($_SESSION['EXPIRETIME'])) {
+					if($_SESSION['EXPIRETIME'] < time()) {
+						unset($_SESSION['EXPIRETIME']);
+						header('Location: logout.php?TIMEOUT');
+						exit(0);
+					} else {
+						/**
+							Session time out time 5min.
+						**/
+						//$_SESSION['EXPIRETIME'] = time() + 300;
+						$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+					};
 				};
-			};
-			$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-			if($dbSelected) {
-				$query = "SELECT
-								userAccounts.id As uid, userAccounts.dateTime AS dateTime, gid, firstName, lastName,
-								emailAdd, departments.deptName AS departments, roles
-							FROM
-								userAccounts
-							INNER JOIN
-								departments
-							ON
-								userAccounts.departments = departments.deptId
-							WHERE
-								userAccounts.status = 'Active' AND gid > 1000
-							ORDER BY
-								dateTime
-							DESC";
-				$result = mysql_query($query);
-				if(!$result) die ("Table access failed: " . mysql_error());
-				$rows = mysql_num_rows($result);
+				$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+				if($dbSelected) {
+					$query = "SELECT
+									id, dateTime, gid, firstName, lastName,	emailAdd, departments, roles
+								FROM userAccounts WHERE userAccounts.status = 'Active' AND gid > 1000
+								ORDER BY dateTime DESC";
+					$result = mysql_query($query);
+					if(!$result) die ("Table access failed: " . mysql_error());
+					$rows = mysql_num_rows($result);
+				};
+			} else {
+				/**
+					Redirect to dashboard if not Superuser or Manager.
+				**/
+				$_SESSION['STATUS'] = 10;
+				header('Location: status.php');
 			};
 		} else {
-			/**
-				Redirect to dashboard if not Superuser or Manager.
-			**/
-			$_SESSION['STATUS'] = 10;
+			unset($_SESSION['STATUS']);
 			header('Location: status.php');
 		};
 	} else {
 		unset($_SESSION['STATUS']);
 		header('Location: status.php');
-	};
-} else {
-	unset($_SESSION['STATUS']);
-	header('Location: status.php');
-}
+	}
 ?>
 <?php include('pages/page_menu.php'); ?>
 <div class="page-container">
@@ -136,7 +126,7 @@ if($sid == $_SESSION['SID']) {
 											echo "<th class='center'>Date Created</th>";
 											echo "<th class='center'>Status</th></tr></thead><tbody>";
 											for($j = 0; $j < $rows; ++$j) {
-												$uid = ucfirst(mysql_result($result, $j, 'uid'));
+												$id = ucfirst(mysql_result($result, $j, 'id'));
 												$firstname = ucfirst(mysql_result($result, $j, 'firstName'));
 												$emailaddress = mysql_result($result, $j, 'emailAdd');
 												$departments = mysql_result($result, $j, 'departments');
@@ -151,7 +141,7 @@ if($sid == $_SESSION['SID']) {
 												if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
 													$datejoin = $match[1];
 												};
-												echo "<tr><td class='fit'><img class='user-pic' src='images/user_unknown.png'></td><td><a href='mod_user.php?userId=$uid' class='primary-link'>$firstname</a></td>";
+												echo "<tr><td class='fit'><img class='user-pic' src='images/user_unknown.png'></td><td><a href='mod_user.php?userId=$id' class='primary-link'>$firstname</a></td>";
 												echo "<td align='center'>$emailaddress</td><td align='center'>$departments</td><td align='center'>$roles</td><td align='center'>$datejoin</td><td align='center'><span class='bold theme-font'>Active</span></td></tr>";
 											};
 											echo "</tbody>";
@@ -159,8 +149,7 @@ if($sid == $_SESSION['SID']) {
 											/**
 											 No users account.
 											 **/
-											echo "<div class='block' style='height:100%'><div class='centered-users'>";
-											echo "<h3 class='no-users'>No users account found!</h3></tbody></div></div>";
+											echo "<h3 class='no-users'>No users account found!</h3>";
 										}
 										?>
 									</table>
@@ -169,9 +158,7 @@ if($sid == $_SESSION['SID']) {
 						</div>
 					</div>
 				</div>
-
 				<div class="col-md-1"></div>
-
 			</div>
 		</div>
 	</div>

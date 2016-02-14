@@ -1,127 +1,125 @@
 <?php include('pages/page_header.php'); ?>
+<link href="css/parts-mfile.css" rel="stylesheet" type="text/css" />
 <link href="css/components.css" rel="stylesheet" type="text/css" />
 <link href="css/layout.css" rel="stylesheet" type="text/css" />
-<link href="css/center.css" rel="stylesheet" type="text/css" />
-<link href="css/signin.css" rel="stylesheet" type="text/css" />
 <script type = "text/javascript">
-	history.pushState(null, null, 'parts_mfile.php');
+	history.pushState(null, null, '');
 	window.addEventListener('popstate', function(event) {
-		history.pushState(null, null, 'parts_mfile.php');
+		history.pushState(null, null, '');
 	});
 </script>
 <?php include('pages/page_meta.php'); ?>
 <?php
-require_once('db/db_config.php');
-/**
-	Check session id.
-**/
-$login = $_SESSION['LOGIN_ID'];
-$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
-$result = mysql_query($query);
-if(!$result) die ("Table access failed: " . mysql_error());
-$data = mysql_fetch_assoc($result);
-$sid = $data['sid'];
-if($sid == $_SESSION['SID']) {
-	if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
-		if($_SESSION['GID'] < 3000) {
-			$fname = $_SESSION['FNAME'];
-			$uid = $_SESSION['UID'];
-			$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
-			/**
-				Lifetime added 5min.
-			**/
-			if(isset($_SESSION['EXPIRETIME'])) {
-				if($_SESSION['EXPIRETIME'] < time()) {
-					unset($_SESSION['EXPIRETIME']);
-					header('Location: logout.php?TIMEOUT');
-					exit(0);
+	require_once('db/db_config.php');
+	/**
+		Check session id.
+	**/
+	$login = $_SESSION['LOGIN_ID'];
+	$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+	$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
+	$result = mysql_query($query);
+	if(!$result) die ("Table access failed: " . mysql_error());
+	$data = mysql_fetch_assoc($result);
+	$sid = $data['sid'];
+	if($sid == $_SESSION['SID']) {
+		if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
+			if($_SESSION['GID'] < 3000) {
+				$fname = $_SESSION['FNAME'];
+				$uid = $_SESSION['UID'];
+				$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
+				/**
+					Lifetime added 5min.
+				**/
+				if(isset($_SESSION['EXPIRETIME'])) {
+					if($_SESSION['EXPIRETIME'] < time()) {
+						unset($_SESSION['EXPIRETIME']);
+						header('Location: logout.php?TIMEOUT');
+						exit(0);
+					} else {
+						/**
+							Session time out.
+						**/
+						$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+					};
+				};
+				/**
+					Get parts details from master file.
+				**/
+				mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+				$query = "SELECT * from partsMasterFile WHERE status = 'Active' ORDER BY id DESC";
+				$result = mysql_query($query);
+				$rows = mysql_num_rows($result);
+				if(!$result) die ("Table access failed: " . mysql_error());
+				/**
+					Pagination
+				**/
+				/**
+					number of rows to show per page.
+				**/
+				$rowsPerPage = 8;
+				/**
+					find out total pages
+				**/
+				$totalPages = ceil($rows / $rowsPerPage);
+				/**
+					get the current page or set a default
+				**/
+				if(isset($_GET['currentPage']) && is_numeric($_GET['currentPage'])) {
+					/**
+						cast var as int
+					**/
+					$currentPage = (int) $_GET['currentPage'];
 				} else {
 					/**
-						Session time out.
+						default page num
 					**/
-					$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
-				};
-			};
-			/**
-				Get parts details from master file.
-			**/
-			mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-			$query = "SELECT * from partsMasterFile WHERE status = 'Active' ORDER BY id DESC";
-			$result = mysql_query($query);
-			$rows = mysql_num_rows($result);
-			if(!$result) die ("Table access failed: " . mysql_error());
-			/**
-				Pagination
-			**/
-
-			/**
-				number of rows to show per page.
-			**/
-			$rowsPerPage = 8;
-			/**
-				find out total pages
-			**/
-			$totalPages = ceil($rows / $rowsPerPage);
-			/**
-				get the current page or set a default
-			**/
-			if(isset($_GET['currentPage']) && is_numeric($_GET['currentPage'])) {
+					$currentPage = 1;
+				}
 				/**
-					cast var as int
+					if current page is greater than total pages
 				**/
-				$currentPage = (int) $_GET['currentPage'];
+				if($currentPage > $totalPages) {
+					/**
+						set current page to last page
+					**/
+					$currentPage = $totalPages;
+				}
+				/**
+					if current page is less than first page
+				**/
+				if($currentPage < 1) {
+					/**
+						set current page to first page
+					**/
+					$currentPage = 1;
+				}
+				/**
+					The offset of the list, based on current page
+				**/
+				$offset = ($currentPage - 1) * $rowsPerPage;
+				/**
+					get the info from the db
+				**/
+				$query = "SELECT * FROM partsMasterFile WHERE status = 'Active' ORDER BY id DESC LIMIT $offset, $rowsPerPage";
+
+				$result = mysql_query($query);
+				$rows = mysql_num_rows($result);
+				// $result = mysql_query($sql, $conn) or trigger_error("SQL", E_USER_ERROR);
 			} else {
 				/**
-					default page num
+					Redirect to dashboard if not Superuser or Manager
 				**/
-				$currentPage = 1;
+				$_SESSION['STATUS'] = 10;
+				header('Location: status.php');
 			}
-			/**
-				if current page is greater than total pages
-			**/
-			if($currentPage > $totalPages) {
-				/**
-					set current page to last page
-				**/
-				$currentPage = $totalPages;
-			}
-			/**
-				if current page is less than first page
-			**/
-			if($currentPage < 1) {
-				/**
-					set current page to first page
-				**/
-				$currentPage = 1;
-			}
-			/**
-				The offset of the list, based on current page
-			**/
-			$offset = ($currentPage - 1) * $rowsPerPage;
-			/**
-				get the info from the db
-			**/
-			$query = "SELECT * FROM partsMasterFile WHERE status = 'Active' ORDER BY id DESC LIMIT $offset, $rowsPerPage";
-
-			$result = mysql_query($query);
-			$rows = mysql_num_rows($result);
-			// $result = mysql_query($sql, $conn) or trigger_error("SQL", E_USER_ERROR);
 		} else {
-			/**
-				Redirect to dashboard if not Superuser or Manager
-			**/
-			$_SESSION['STATUS'] = 10;
+			unset($_SESSION['STATUS']);
 			header('Location: status.php');
-		}
+		};
 	} else {
 		unset($_SESSION['STATUS']);
 		header('Location: status.php');
-	};
-} else {
-	unset($_SESSION['STATUS']);
-	header('Location: status.php');
-}
+	}
 ?>
 <?php include('pages/page_menu.php'); ?>
 <div class="page-container">
@@ -214,10 +212,11 @@ if($sid == $_SESSION['SID']) {
 									<table class="table table-hover table-light">
 										<?php
 										if($rows > 0) {
-											echo "<thead><tr class='uppercase'><th colspan='2'>S/N</th>";
-											echo "<th class='left'>Parts Number</th>";
-											echo "<th class='left'>Description</th>";
-											echo "<th class='center'>Date Created</th>";
+											echo "<thead><tr class='uppercase'><th style='width: 20%'>S/N</th>";
+											//echo "<thead><tr class='uppercase'><th colspan='2'>S/N</th>";
+											echo "<th class='left' style='width: 30%'>Parts Number</th>";
+											echo "<th class='left' style='width: 30%'>Description</th>";
+											echo "<th class='center' style='width: 20%'>Date Created</th>";
 											echo "</tr></thead><tbody>";
 											for($j = 0; $j < $rows; ++$j) {
 												$partsId = ucfirst(mysql_result($result, $j, 'partsId'));
@@ -231,9 +230,8 @@ if($sid == $_SESSION['SID']) {
 												if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
 													$dateCreated = $match[1];
 												};
-												echo "<tr><td class='fit'>";
-												echo "<img class='parts-pic' src='images/parts.png'></td>";
-												echo "<td><a href='mod_parts.php?partsId=$partsId' class='primary-link'>$partsId</a></td>";
+												echo "<tr><td class='fit'><img class='parts-pic' src='images/parts.png'>";
+												echo "<a href='mod_parts.php?partsId=$partsId' class='name-padding primary-link'>$partsId</a></td>";
 												echo "<td align='left'>$partsNumber</td>";
 												echo "<td align='left'>$partsDescription</td>";
 												echo "<td align='center'>$dateCreated</td></tr>";
@@ -243,8 +241,7 @@ if($sid == $_SESSION['SID']) {
 											/**
 											 No master file.
 											 **/
-											echo "<div class='block' style='height:100%'><div class='centered-users'>";
-											echo "<h3 class='no-users'>No parts master file found!</h3></div></div>";
+											echo "<h3 class='no-parts'>No parts master file found!</h3>";
 										}
 										?>
 									</table>

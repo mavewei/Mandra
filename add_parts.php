@@ -1,109 +1,110 @@
 <?php include('pages/page_header.php'); ?>
-<link href="css/center.css" rel="stylesheet" type="text/css" />
 <link href="css/components.css" rel="stylesheet" type="text/css" />
 <link href="css/layout.css" rel="stylesheet" type="text/css" />
 <script type = "text/javascript">
-	history.pushState(null, null, 'add_parts.php');
+	history.pushState(null, null, '');
 	window.addEventListener('popstate', function(event) {
-		history.pushState(null, null, 'add_parts.php');
+		history.pushState(null, null, '');
 	});
 </script>
 <?php include('pages/page_meta.php'); ?>
 <?php
-require_once('db/db_config.php');
-/**
-	Check session id.
-**/
-$login = $_SESSION['LOGIN_ID'];
-$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
-$result = mysql_query($query);
-if(!$result) die ("Table access failed: " . mysql_error());
-$data = mysql_fetch_assoc($result);
-$sid = $data['sid'];
-if($sid == $_SESSION['SID']) {
-	if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
-		if($_SESSION['GID'] < 3000) {
-			$fname = $_SESSION['FNAME'];
-			$uid = $_SESSION['UID'];
-			$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
-			/**
-				Lifetime added 5min.
-			**/
-			if(isset($_SESSION['EXPIRETIME'])) {
-				if($_SESSION['EXPIRETIME'] < time()) {
-					unset($_SESSION['EXPIRETIME']);
-					header('Location: logout.php?TIMEOUT');
-					exit(0);
-				} else {
-					/**
-						Session time out.
-					**/
-					$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
-				};
-			};
-			/**
-				Select parts lists.
-	   		**/
-	   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-			$query = "SELECT * from partsMasterFile ORDER BY id DESC";
-			$result = mysql_query($query);
-			$row = mysql_num_rows($result);
-			if(!$result) die ("Table access failed: " . mysql_error());
-			if($row == 0) {
-				$partsId = 'P000001';
-			} else {
-				$row++;
-				$partsId = 'P' . sprintf('%06d', $row);
-			}
-			/**
-				Get post data and submit to database.
-			**/
-			if(isset($_POST['serialNumber']) && isset($_POST['partsNumber'])) {
-				$partsId = $_POST['serialNumber'];
-				$partsNumber = strtoupper(mysql_escape_string($_POST['partsNumber']));
-				$partsDescription = ucwords(mysql_escape_string($_POST['description']));
-				$partsUom = ucwords(mysql_escape_string($_POST['uom']));
-				$partsBrand = ucwords(mysql_escape_string($_POST['brand']));
-				$partsModel = ucwords(mysql_escape_string($_POST['model']));
-				$partsWhereUsedI = ucwords(mysql_escape_string($_POST['whereUsedI']));
-				$partsWhereUsedII = ucwords(mysql_escape_string($_POST['whereUsedII']));
+	require_once('db/db_config.php');
+	/**
+		Check session id.
+	**/
+	$login = $_SESSION['LOGIN_ID'];
+	$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+	$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
+	$result = mysql_query($query);
+	if(!$result) die ("Table access failed: " . mysql_error());
+	$data = mysql_fetch_assoc($result);
+	$sid = $data['sid'];
+	if($sid == $_SESSION['SID']) {
+		if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
+			if($_SESSION['GID'] < 3000) {
+				$fname = $_SESSION['FNAME'];
+				$uid = $_SESSION['UID'];
+				$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
 				/**
-					Insert record.
+					Lifetime added 5min.
 				**/
-				$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
-				$result = mysql_query($query);
-				$row = mysql_fetch_array($result);
-				$time = $row['dateTime'];
-				$query = "INSERT INTO partsMasterFile
-								(dateTime, partsId, partsNumber, partsDescription, partsUom, partsBrand, partsModel, partsWhereUsedI, partsWhereUsedII, status, createdBy)
-							VALUES
-								('$time', '$partsId', '$partsNumber', '$partsDescription', '$partsUom', '$partsBrand', '$partsModel', '$partsWhereUsedI', '$partsWhereUsedII', 'Active', '$uid')";
-				$result = mysql_query($query);
-				if(!$result) die ("Table access failed: " . mysql_error());
-				if($result) {
-					/**
-						Parts information created and redirected to previous page.
-					**/
-					$_SESSION['STATUS'] = 26;
-					header("Location: status.php");
+				if(isset($_SESSION['EXPIRETIME'])) {
+					if($_SESSION['EXPIRETIME'] < time()) {
+						unset($_SESSION['EXPIRETIME']);
+						header('Location: logout.php?TIMEOUT');
+						exit(0);
+					} else {
+						/**
+							Session time out.
+						**/
+						$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+					};
 				};
-			};
+				/**
+					Select parts lists.
+		   		**/
+		   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+				$query = "SELECT * from partsMasterFile ORDER BY id DESC";
+				$result = mysql_query($query);
+				$row = mysql_num_rows($result);
+				if(!$result) die ("Table access failed: " . mysql_error());
+				if($row == 0) {
+					$partsId = 'P000001';
+				} else {
+					$row++;
+					$partsId = 'P' . sprintf('%06d', $row);
+				}
+				/**
+					Get post data and submit to database.
+				**/
+				if(isset($_POST['serialNumber']) && isset($_POST['partsNumber'])) {
+					$partsId = $_POST['serialNumber'];
+					$partsNumber = strtoupper(mysql_escape_string($_POST['partsNumber']));
+					$partsDescription = ucwords(mysql_escape_string($_POST['description']));
+					$partsUom = ucwords(mysql_escape_string($_POST['uom']));
+					$partsBrand = ucwords(mysql_escape_string($_POST['brand']));
+					$partsModel = ucwords(mysql_escape_string($_POST['model']));
+					$partsWhereUsedI = ucwords(mysql_escape_string($_POST['whereUsedI']));
+					$partsWhereUsedII = ucwords(mysql_escape_string($_POST['whereUsedII']));
+					/**
+						Insert record.
+					**/
+					$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
+					$result = mysql_query($query);
+					$row = mysql_fetch_array($result);
+					$time = $row['dateTime'];
+					$query = "INSERT INTO partsMasterFile
+									(dateTime, partsId, partsNumber, partsDescription, partsUom, partsBrand,
+									partsModel, partsWhereUsedI, partsWhereUsedII, status, createdBy)
+								VALUES
+									('$time', '$partsId', '$partsNumber', '$partsDescription', '$partsUom', '$partsBrand',
+									'$partsModel', '$partsWhereUsedI', '$partsWhereUsedII', 'Active', '$uid')";
+					$result = mysql_query($query);
+					if(!$result) die ("Table access failed: " . mysql_error());
+					if($result) {
+						/**
+							Parts information created and redirected to previous page.
+						**/
+						$_SESSION['STATUS'] = 26;
+						header("Location: status.php");
+					};
+				};
+			} else {
+				/**
+					Redirect to dashboard if not Superuser or Manager
+				**/
+				$_SESSION['STATUS'] = 10;
+				header('Location: status.php');
+			}
 		} else {
-			/**
-				Redirect to dashboard if not Superuser or Manager
-			**/
-			$_SESSION['STATUS'] = 10;
+			unset($_SESSION['STATUS']);
 			header('Location: status.php');
-		}
+		};
 	} else {
 		unset($_SESSION['STATUS']);
 		header('Location: status.php');
-	};
-} else {
-	unset($_SESSION['STATUS']);
-	header('Location: status.php');
-}
+	}
 ?>
 <?php include('pages/page_menu.php'); ?>
 <div class="page-container">
@@ -130,10 +131,11 @@ if($sid == $_SESSION['SID']) {
 					Add Parts
 				</li>
 			</ul>
-			<div class="block" style="height:100%">
-				<div class="centered-usereg">
-					<div class="row">
-						<div class="col-md-12">
+			<!-- <div class="block" style="height:100%"> -->
+				<!-- <div class="centered-usereg"> -->
+					<div class="row margin-top-10">
+						<div class="col-md-3"></div>
+						<div class="col-md-6">
 							<div class="portlet light">
 								<div class="portlet-title">
 									<div class="caption"><span class="caption-subject font-green-sharp bold uppercase">Add Parts</span></div>
@@ -146,16 +148,13 @@ if($sid == $_SESSION['SID']) {
 												<div class="col-md-6">
 													<div class="form-group">
 														<label>S/N</label>
-															<input type="text" class="form-control input-lg" name="serialNumber" style="text-align: center" value="<?php echo $partsId; ?>" readonly>
+														<input type="text" class="form-control input-lg" name="serialNumber" style="text-align: center" value="<?php echo $partsId; ?>" readonly>
 													</div>
 												</div>
 												<div class="col-md-6">
 													<div class="form-group">
 														<label>Date</label>
-														<div class="input-icon input-icon-lg">
-															<i class="fa fa-calendar"></i>
-															<input type="text" class="form-control input-lg" name="dateTime" value="<?php echo date("d/m/Y"); ?>" disabled>
-														</div>
+														<input type="text" class="form-control input-lg" name="dateTime" style="text-align: center" value="<?php echo date("d/m/Y"); ?>" disabled>
 													</div>
 												</div>
 											</div>
@@ -234,7 +233,7 @@ if($sid == $_SESSION['SID']) {
 												</div>
 											</div>
 										</div>
-										<div class="form-actions">
+										<div class="form-actions" style="text-align: center">
 											<input type="submit" value="Submit" class="btn blue">
 											<!-- <button type="submit" class="btn blue">Submit</button> -->
 											<a href="parts_mfile.php"><button type="button" class="btn default">Cancel</button></a>
@@ -243,9 +242,10 @@ if($sid == $_SESSION['SID']) {
 								</div>
 							</div>
 						</div>
+						<div class="col-md-3"></div>
 					</div>
-				</div>
-			</div>
+				<!-- </div> -->
+			<!-- </div> -->
 		</div>
 	</div>
 </div>

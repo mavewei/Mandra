@@ -1,12 +1,11 @@
 <?php include('pages/page_header.php'); ?>
 <link href="css/components.css" rel="stylesheet" type="text/css" />
 <link href="css/layout.css" rel="stylesheet" type="text/css" />
-<link href="css/center.css" rel="stylesheet" type="text/css">
 <link href="css/employees.css" rel="stylesheet" type="text/css">
 <script type = "text/javascript">
-	history.pushState(null, null, 'employees.php');
+	history.pushState(null, null, '');
 	window.addEventListener('popstate', function(event) {
-		history.pushState(null, null, 'employees.php');
+		history.pushState(null, null, '');
 	});
 </script>
 <?php include('pages/page_meta.php'); ?>
@@ -175,25 +174,17 @@
 									<table class="table table-hover table-light">
 										<?php
 										if($rows > 0) {
-											echo "<thead><tr class='uppercase'><th class='th-width-26'>Name</th>";
-											echo "<th class='center th-width-8'>Sex</th>";
-											echo "<th class='center th-width-12'>Nationality</th>";
-											echo "<th class='center th-width-24'>Company</th>";
-											echo "<th class='center th-width-10'>Department</th>";
-											echo "<th class='center th-width-20'>Position</th>";
+											echo "<thead><tr class='uppercase'><th style='width: 12%'>S/N</th>";
+											echo "<th class='left' style='width: 18%'>Name</th>";
+											echo "<th class='center' style='width: 6%'>Sex</th>";
+											echo "<th class='center' style='width: 12%'>Nationality</th>";
+											echo "<th class='center' style='width: 24%'>Company</th>";
+											echo "<th class='center' style='width: 10%'>Department</th>";
+											echo "<th class='center' style='width: 18%'>Position</th>";
 											echo "</tr></thead><tbody>";
-											/*
-											echo "<thead><tr class='uppercase'><th colspan='2'>Name</th>";
-											echo "<th class='center'>Sex</th><th class='center'>Birth</th>";
-											echo "<th class='center'>Nationality</th><th class='center'>Country</th>";
-											echo "<th class='center'>Date Join</th><th class='center'>Source</th>";
-											echo "<th class='center'>Category</th><th class='center'>Company Code</th>";
-											echo "<th class='center'>Department</th><th class='center'>Unit</th>";
-											echo "<th class='center'>Position</th><th class='center'>Basic Salary</th>";
-											echo "<th class='center'>Tax Code</th></tr></thead><tbody>";
-											*/
 											for($j = 0; $j < $rows; ++$j) {
 												$id = mysql_result($result, $j, 'id');
+												$empId = ucfirst(mysql_result($result, $j, 'empId'));
 												$empName = ucfirst(mysql_result($result, $j, 'empName'));
 												$empSex = mysql_result($result, $j, 'empSex');
 												$empBirth = mysql_result($result, $j, 'empBirth');
@@ -214,16 +205,21 @@
 													$datejoin = $match[1];
 												};
 												*/
-												echo "<tr><td class='fit'><img class='user-pic' src='images/user_unknown.png'><a href='mod_employee.php?uid=$id' class='name-padding primary-link'>$empName</a></td>";
-												echo "<td align='center'>$empSex</td><td align='center'>$empNationality</td><td align='center'>$empCompanyCode</td><td align='center'>$empDepartment</td><td align='center'>$empPosition</td></tr>";
+												echo "<tr><td class='fit'><img class='user-pic' src='images/user_unknown.png'>";
+												echo "<a href='mod_employee.php?uid=$id' class='name-padding primary-link'>$empId</a></td>";
+												echo "<td align='left'>$empName</td><td align='center'>$empSex</td>";
+												echo "<td align='center'>$empNationality</td>";
+												echo "<td align='center'>$empCompanyCode</td>";
+												echo "<td align='center'>$empDepartment</td>";
+												echo "<td align='center'>$empPosition</td></tr>";
 											};
 											echo "</tbody>";
 										} else {
 											/**
 											 No employee information.
 											 **/
-											echo "<div class='block' style='height:100%'><div class='centered-users'>";
-											echo "<h3 class='no-users'> No employess information found!</h3></div></div>";
+											//echo "<div class='block' style='height:100%'><div class='centered-users'>";
+											echo "<h3 class='no-employee'>No employess information found!</h3>";
 										}
 										?>
 									</table>
