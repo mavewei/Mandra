@@ -1,0 +1,11 @@
+@charset "UTF-8";
+/* CSS Document */
+
+.cancel-or-padding {
+	padding-right: 3px;
+	padding-left: 3px;
+}
+.no-users {
+	color: silver;
+	text-align: center;
+}
