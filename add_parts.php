@@ -10,9 +10,7 @@
 <?php include('pages/page_meta.php'); ?>
 <?php
 	require_once('db/db_config.php');
-	/**
-		Check session id.
-	**/
+	// Check session id.
 	$login = $_SESSION['LOGIN_ID'];
 	$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 	$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
@@ -26,25 +24,19 @@
 				$fname = $_SESSION['FNAME'];
 				$uid = $_SESSION['UID'];
 				$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
-				/**
-					Lifetime added 5min.
-				**/
+				// Lifetime added 5min.
 				if(isset($_SESSION['EXPIRETIME'])) {
 					if($_SESSION['EXPIRETIME'] < time()) {
 						unset($_SESSION['EXPIRETIME']);
 						header('Location: logout.php?TIMEOUT');
 						exit(0);
 					} else {
-						/**
-							Session time out.
-						**/
+						// Session time out.
 						$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
 					};
 				};
-				/**
-					Select parts lists.
-		   		**/
-		   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+				// Select parts lists.
+				mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 				$query = "SELECT * from partsMasterFile ORDER BY id DESC";
 				$result = mysql_query($query);
 				$row = mysql_num_rows($result);
@@ -55,9 +47,7 @@
 					$row++;
 					$partsId = 'P' . sprintf('%06d', $row);
 				}
-				/**
-					Get post data and submit to database.
-				**/
+				// Get post data and submit to database.
 				if(isset($_POST['serialNumber']) && isset($_POST['partsNumber'])) {
 					$partsId = $_POST['serialNumber'];
 					$partsNumber = strtoupper(mysql_escape_string($_POST['partsNumber']));
@@ -69,9 +59,7 @@
 					$partsEquipType = ucwords(strtolower(mysql_escape_string($_POST['equipType'])));
 					$partsWhereUsedI = ucwords(mysql_escape_string($_POST['whereUsedI']));
 					$partsWhereUsedII = ucwords(mysql_escape_string($_POST['whereUsedII']));
-					/**
-						Insert record.
-					**/
+					// Insert record.
 					$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
 					$result = mysql_query($query);
 					$row = mysql_fetch_array($result);
@@ -86,17 +74,13 @@
 					$result = mysql_query($query);
 					if(!$result) die ("Table access failed: " . mysql_error());
 					if($result) {
-						/**
-							Parts information created and redirected to previous page.
-						**/
+						// Parts information created and redirected to previous page.
 						$_SESSION['STATUS'] = 26;
 						header("Location: status.php");
 					};
 				};
 			} else {
-				/**
-					Redirect to dashboard if not Superuser or Manager
-				**/
+				// Redirect to dashboard if not Superuser or Manager
 				$_SESSION['STATUS'] = 10;
 				header('Location: status.php');
 			}
@@ -135,8 +119,8 @@
 				</li>
 			</ul>
 			<div class="row margin-top-10">
-				<div class="col-md-3"></div>
-				<div class="col-md-6">
+				<div class="col-md-2"></div>
+				<div class="col-md-8">
 					<div class="portlet light">
 						<div class="portlet-title">
 							<div class="caption"><span class="caption-subject font-green-sharp bold uppercase">Add Parts</span></div>
@@ -146,13 +130,13 @@
 							<form role="form" action="add_parts.php" method="post" onsubmit="return validate();">
 								<div class="form-body text-left">
 									<div class="row">
-										<div class="col-md-6">
+										<div class="col-md-3">
 											<div class="form-group">
 												<label>S/N</label>
 												<input type="text" class="form-control input-lg" name="serialNumber" style="text-align: center" value="<?php echo $partsId; ?>" readonly>
 											</div>
 										</div>
-										<div class="col-md-6">
+										<div class="col-md-9" style="display: none">
 											<div class="form-group">
 												<label>Date</label>
 												<input type="text" class="form-control input-lg" name="dateTime" style="text-align: center" value="<?php echo date("d/m/Y"); ?>" disabled>
@@ -169,7 +153,7 @@
 												</div>
 											</div>
 										</div>
-										<div class="col-md-5">
+										<div class="col-md-6">
 											<div class="form-group">
 												<label>Description</label>
 												<div class="input-icon input-icon-lg">
@@ -178,7 +162,7 @@
 												</div>
 											</div>
 										</div>
-										<div class="col-md-3">
+										<div class="col-md-2">
 											<div class="form-group">
 												<label>UOM</label>
 												<div class="input-icon input-icon-lg">
@@ -254,78 +238,73 @@
 								</div>
 								<div class="form-actions" style="text-align: center">
 									<input type="submit" value="Submit" class="btn blue">
-									<!-- <button type="submit" class="btn blue">Submit</button> -->
 									<a href="parts_mfile.php"><button type="button" class="btn default">Cancel</button></a>
 								</div>
 							</form>
 						</div>
 					</div>
 				</div>
-				<div class="col-md-3"></div>
+				<div class="col-md-2"></div>
 			</div>
 		</div>
 	</div>
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
-/**
-   Alertify confirm logout.
-**/
-$(function() {
-	$('.logoutAlert').click(function() {
-		alertify.confirm("[ALERT]  Are you sure you want to LOGOUT?", function(result) {
-			if(result) {
-				window.location = "logout.php";
-			}
+	// Alertify confirm logout.
+	$(function() {
+		$('.logoutAlert').click(function() {
+			alertify.confirm("[ALERT]  Are you sure you want to LOGOUT?", function(result) {
+				if(result) {
+					window.location = "logout.php";
+				}
+			})
 		})
 	})
-})
-/**
-   Bootbox alert customize.
-**/
-/*
-$(function() {
-	$('.logoutAlert').click(function(){
-		bootbox.confirm("Are you sure you want to LOGOUT?", function(result) {
-			if(result) {
-				window.location = "logout.php";
-			}
-		});
+	// Bootbox alert customize.
+	/*
+	$(function() {
+		$('.logoutAlert').click(function(){
+			bootbox.confirm("Are you sure you want to LOGOUT?", function(result) {
+				if(result) {
+					window.location = "logout.php";
+				}
+			});
+		})
 	})
-})
-*/
-function checkPartsNumber() {
-	var partsNumber = document.getElementById("partsNumber").value;
-	if(partsNumber) {
-		$.ajax({
-			type: 'post',
-			url: 'check_data.php',
-			data: {
-				partsNumber: partsNumber,
-			},
-			success: function (response) {
-				if(response == "true") {
-					$('#partsNumber_status').html("");
-					return true;
-				} else {
-					$('#partsNumber_status').html(response);
-					return false;
-               }
-            }
-		});
-	} else {
-		$('#partsNumber_status').html("");
-		return false;
+	*/
+	function checkPartsNumber() {
+		var partsNumber = document.getElementById("partsNumber").value;
+		if(partsNumber) {
+			$.ajax({
+				type: 'post',
+				url: 'check_data.php',
+				data: {
+					partsNumber: partsNumber,
+				},
+				success: function (response) {
+					if(response == "true") {
+						$('#partsNumber_status').html("");
+						return true;
+					} else {
+						$('#partsNumber_status').html(response);
+						return false;
+	               }
+	            }
+			});
+		} else {
+			$('#partsNumber_status').html("");
+			return false;
+		}
 	}
-}
-function validate() {
-	var partsNumber_status = document.getElementById("partsNumber_status").innerHTML;
-	if(partsNumber_status == "") {
-		return true;
-	} else {
-          return false;
+	function validate() {
+		var partsNumber_status = document.getElementById("partsNumber_status").innerHTML;
+		if(partsNumber_status == "") {
+			return true;
+		} else {
+	          return false;
+		}
 	}
-}
 </script>
 <?php include('pages/page_footer.php'); ?>
 </body>
