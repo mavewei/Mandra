@@ -66,8 +66,10 @@
 				$partsNumber = $data['partsNumber'];
 				$partsDescription = $data['partsDescription'];
 				$partsUom = $data['partsUom'];
+				$partsCategory = $data['partsCategory'];
 				$partsBrand = $data['partsBrand'];
 				$partsModel = $data['partsModel'];
+				$partsEquipType = $data['partsEquipType'];
 				$partsWhereUsedI = $data['partsWhereUsedI'];
 				$partsWhereUsedII = $data['partsWhereUsedII'];
 				/**
@@ -75,11 +77,13 @@
 				**/
 				if(isset($_POST['serialNumber']) && isset($_POST['partsNumber'])) {
 					$partsId = $_POST['serialNumber'];
-					$partsNumber = strtoupper(mysql_escape_string($_POST['partsNumber']));
-					$partsDescription = ucwords(mysql_escape_string($_POST['partsDescription']));
-					$partsUom = ucwords(mysql_escape_string($_POST['partsUom']));
+					$partsNumber = ucwords(strtolower(mysql_escape_string($_POST['partsNumber'])));
+					$partsDescription = ucwords(strtolower(mysql_escape_string($_POST['partsDescription'])));
+					$partsUom = ucwords(strtolower(mysql_escape_string($_POST['partsUom'])));
+					$partsCategory = ucwords(strtolower(mysql_escape_string($_POST['partsCategory'])));
 					$partsBrand = ucwords(mysql_escape_string($_POST['partsBrand']));
 					$partsModel = ucwords(mysql_escape_string($_POST['partsModel']));
+					$partsEquipType = ucwords(strtolower(mysql_escape_string($_POST['partsEquipType'])));
 					$partsWhereUsedI = ucwords(mysql_escape_string($_POST['partsWhereUsedI']));
 					$partsWhereUsedII = ucwords(mysql_escape_string($_POST['partsWhereUsedII']));
 					/**
@@ -92,7 +96,8 @@
 					$query = "UPDATE partsMasterFile
 								SET
 									partsNumber = '$partsNumber', partsDescription = '$partsDescription',
-									partsUom = '$partsUom', partsBrand = '$partsBrand', partsModel = '$partsModel',
+									partsUom = '$partsUom', partsCategory = '$partsCategory', partsBrand = '$partsBrand',
+									partsModel = '$partsModel', partsEquipType = '$partsEquipType',
 									partsWhereUsedI = '$partsWhereUsedI', partsWhereUsedII = '$partsWhereUsedII'
 								WHERE partsId = '$partsId'";
 					print($query);
@@ -210,7 +215,16 @@
 										</div>
 									</div>
 									<div class="row">
-										<div class="col-md-6">
+										<div class="col-md-4">
+											<div class="form-group">
+												<label>Category</label>
+												<div class="input-icon input-icon-lg">
+													<i class="fa fa-tags"></i>
+													<input type="text" class="form-control input-lg" name="partsCategory" placeholder="Category" value="<?php echo $partsCategory; ?>" required>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-4">
 											<div class="form-group">
 												<label>Brand</label>
 												<div class="input-icon input-icon-lg">
@@ -219,7 +233,7 @@
 												</div>
 											</div>
 										</div>
-										<div class="col-md-6">
+										<div class="col-md-4">
 											<div class="form-group">
 												<label>Model</label>
 												<div class="input-icon input-icon-lg">
@@ -230,16 +244,25 @@
 										</div>
 									</div>
 									<div class="row">
-										<div class="col-md-6">
+										<div class="col-md-4">
+											<div class="form-group">
+												<label>Equipment Type</label>
+												<div class="input-icon input-icon-lg">
+													<i class="fa fa-tags"></i>
+													<input type="text" class="form-control input-lg" name="partsEquipType" placeholder="Equipment Type" value="<?php echo $partsEquipType; ?>" required>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-4">
 											<div class="form-group">
 												<label>Where Used I</label>
 												<div class="input-icon input-icon-lg">
 													<i class="fa fa-map-marker"></i>
-													<input type="text" class="form-control input-lg" name="partsWhereUsedI" placeholder="Where Used I" value="<?php echo $partsWhereUsedI; ?>" required>
+													<input type="text" class="form-control input-lg" name="partsWhereUsedI" placeholder="Where Used I" value="<?php echo $partsWhereUsedI; ?>">
 												</div>
 											</div>
 										</div>
-										<div class="col-md-6">
+										<div class="col-md-4">
 											<div class="form-group">
 												<label>Where Used II <small class="addParts-optional"> - Optional</small></label>
 												<div class="input-icon input-icon-lg">

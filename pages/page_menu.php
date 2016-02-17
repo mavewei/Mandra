@@ -513,7 +513,7 @@
 									</li>
 								</ul>
 							</li>
-							<li class="dropdown-submenu">
+							<li class="dropdown-submenu" style="display: none">
 								<a href="javascript:;"><i class="fa fa-users"></i> Import & Export </a>
 								<ul class="dropdown-menu" style="display:none;">
 									<li class=" ">

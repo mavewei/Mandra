@@ -63,8 +63,10 @@
 					$partsNumber = strtoupper(mysql_escape_string($_POST['partsNumber']));
 					$partsDescription = ucwords(mysql_escape_string($_POST['description']));
 					$partsUom = ucwords(mysql_escape_string($_POST['uom']));
+					$partsCategory = ucwords(strtolower(mysql_escape_string($_POST['category'])));
 					$partsBrand = ucwords(mysql_escape_string($_POST['brand']));
 					$partsModel = ucwords(mysql_escape_string($_POST['model']));
+					$partsEquipType = ucwords(strtolower(mysql_escape_string($_POST['equipType'])));
 					$partsWhereUsedI = ucwords(mysql_escape_string($_POST['whereUsedI']));
 					$partsWhereUsedII = ucwords(mysql_escape_string($_POST['whereUsedII']));
 					/**
@@ -75,11 +77,12 @@
 					$row = mysql_fetch_array($result);
 					$time = $row['dateTime'];
 					$query = "INSERT INTO partsMasterFile
-									(dateTime, partsId, partsNumber, partsDescription, partsUom, partsBrand,
-									partsModel, partsWhereUsedI, partsWhereUsedII, status, createdBy)
+									(dateTime, partsId, partsNumber, partsDescription, partsUom, partsCategory, partsBrand,
+									partsModel, partsEquipType, partsWhereUsedI, partsWhereUsedII, status, createdBy)
 								VALUES
-									('$time', '$partsId', '$partsNumber', '$partsDescription', '$partsUom', '$partsBrand',
-									'$partsModel', '$partsWhereUsedI', '$partsWhereUsedII', 'Active', '$uid')";
+									('$time', '$partsId', '$partsNumber', '$partsDescription', '$partsUom', '$partsCategory',
+									'$partsBrand', '$partsModel', '$partsEquipType', '$partsWhereUsedI', '$partsWhereUsedII',
+									'Active', '$uid')";
 					$result = mysql_query($query);
 					if(!$result) die ("Table access failed: " . mysql_error());
 					if($result) {
@@ -131,121 +134,135 @@
 					Add Parts
 				</li>
 			</ul>
-			<!-- <div class="block" style="height:100%"> -->
-				<!-- <div class="centered-usereg"> -->
-					<div class="row margin-top-10">
-						<div class="col-md-3"></div>
-						<div class="col-md-6">
-							<div class="portlet light">
-								<div class="portlet-title">
-									<div class="caption"><span class="caption-subject font-green-sharp bold uppercase">Add Parts</span></div>
-									<div class="tools"></div>
-								</div>
-								<div class="portlet-body form">
-									<form role="form" action="add_parts.php" method="post" onsubmit="return validate();">
-										<div class="form-body text-left">
-											<div class="row">
-												<div class="col-md-6">
-													<div class="form-group">
-														<label>S/N</label>
-														<input type="text" class="form-control input-lg" name="serialNumber" style="text-align: center" value="<?php echo $partsId; ?>" readonly>
-													</div>
-												</div>
-												<div class="col-md-6">
-													<div class="form-group">
-														<label>Date</label>
-														<input type="text" class="form-control input-lg" name="dateTime" style="text-align: center" value="<?php echo date("d/m/Y"); ?>" disabled>
-													</div>
-												</div>
-											</div>
-											<div class="row">
-												<div class="col-md-4">
-													<div class="form-group">
-														<label>Parts Number</label>
-														<div class="input-icon input-icon-lg">
-															<i class="fa fa-code"></i>
-															<input type="text" class="form-control input-lg" name="partsNumber" placeholder="Parts Number" id="partsNumber" onkeyup="checkPartsNumber();" autofocus="on" required>
-														</div>
-													</div>
-												</div>
-												<div class="col-md-5">
-													<div class="form-group">
-														<label>Description</label>
-														<div class="input-icon input-icon-lg">
-															<i class="fa fa-info"></i>
-															<input type="text" class="form-control input-lg" name="description" placeholder="Description" required>
-														</div>
-													</div>
-												</div>
-												<div class="col-md-3">
-													<div class="form-group">
-														<label>UOM</label>
-														<div class="input-icon input-icon-lg">
-															<i class="fa fa-balance-scale"></i>
-															<input type="text" class="form-control input-lg" name="uom" placeholder="UOM" required>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="row">
-												<div class="col-md-6">
-													<div class="form-group">
-														<label>Brand</label>
-														<div class="input-icon input-icon-lg">
-															<i class="fa fa-tags"></i>
-															<input type="text" class="form-control input-lg" name="brand" placeholder="Brand" required>
-														</div>
-													</div>
-												</div>
-												<div class="col-md-6">
-													<div class="form-group">
-														<label>Model</label>
-														<div class="input-icon input-icon-lg">
-															<i class="fa fa-tags"></i>
-															<input type="text" class="form-control input-lg" name="model" placeholder="Model" required>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="row">
-												<div class="col-md-6">
-													<div class="form-group">
-														<label>Where Used I</label>
-														<div class="input-icon input-icon-lg">
-															<i class="fa fa-map-marker"></i>
-															<input type="text" class="form-control input-lg" name="whereUsedI" placeholder="Where Used I" required>
-														</div>
-													</div>
-												</div>
-												<div class="col-md-6">
-													<div class="form-group">
-														<label>Where Used II <small class="addParts-optional"> - Optional</small></label>
-														<div class="input-icon input-icon-lg">
-															<i class="fa fa-map-marker"></i>
-															<input type="text" class="form-control input-lg" name="whereUsedII" placeholder="Where Used II - Optional">
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="row">
-												<div class="col-md-6">
-													<span class="error-status" id="partsNumber_status"></span>
-												</div>
-											</div>
-										</div>
-										<div class="form-actions" style="text-align: center">
-											<input type="submit" value="Submit" class="btn blue">
-											<!-- <button type="submit" class="btn blue">Submit</button> -->
-											<a href="parts_mfile.php"><button type="button" class="btn default">Cancel</button></a>
-										</div>
-									</form>
-								</div>
-							</div>
+			<div class="row margin-top-10">
+				<div class="col-md-3"></div>
+				<div class="col-md-6">
+					<div class="portlet light">
+						<div class="portlet-title">
+							<div class="caption"><span class="caption-subject font-green-sharp bold uppercase">Add Parts</span></div>
+							<div class="tools"></div>
 						</div>
-						<div class="col-md-3"></div>
+						<div class="portlet-body form">
+							<form role="form" action="add_parts.php" method="post" onsubmit="return validate();">
+								<div class="form-body text-left">
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>S/N</label>
+												<input type="text" class="form-control input-lg" name="serialNumber" style="text-align: center" value="<?php echo $partsId; ?>" readonly>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Date</label>
+												<input type="text" class="form-control input-lg" name="dateTime" style="text-align: center" value="<?php echo date("d/m/Y"); ?>" disabled>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<div class="form-group">
+												<label>Parts Number</label>
+												<div class="input-icon input-icon-lg">
+													<i class="fa fa-code"></i>
+													<input type="text" class="form-control input-lg" name="partsNumber" placeholder="Parts Number" id="partsNumber" onkeyup="checkPartsNumber();" autofocus="on" required>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-5">
+											<div class="form-group">
+												<label>Description</label>
+												<div class="input-icon input-icon-lg">
+													<i class="fa fa-info"></i>
+													<input type="text" class="form-control input-lg" name="description" placeholder="Description" required>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-3">
+											<div class="form-group">
+												<label>UOM</label>
+												<div class="input-icon input-icon-lg">
+													<i class="fa fa-balance-scale"></i>
+													<input type="text" class="form-control input-lg" name="uom" placeholder="UOM" required>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<div class="form-group">
+												<label>Category</label>
+												<div class="input-icon input-icon-lg">
+													<i class="fa fa-tags"></i>
+													<input type="text" class="form-control input-lg" name="category" placeholder="Category" required>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-4">
+											<div class="form-group">
+												<label>Brand</label>
+												<div class="input-icon input-icon-lg">
+													<i class="fa fa-tags"></i>
+													<input type="text" class="form-control input-lg" name="brand" placeholder="Brand" required>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-4">
+											<div class="form-group">
+												<label>Model</label>
+												<div class="input-icon input-icon-lg">
+													<i class="fa fa-tags"></i>
+													<input type="text" class="form-control input-lg" name="model" placeholder="Model" required>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<div class="form-group">
+												<label>Equipment Type</label>
+												<div class="input-icon input-icon-lg">
+													<i class="fa fa-tags"></i>
+													<input type="text" class="form-control input-lg" name="equipType" placeholder="Equipment Type" required>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-4">
+											<div class="form-group">
+												<label>Where Used I</label>
+												<div class="input-icon input-icon-lg">
+													<i class="fa fa-map-marker"></i>
+													<input type="text" class="form-control input-lg" name="whereUsedI" placeholder="Where Used I">
+												</div>
+											</div>
+										</div>
+										<div class="col-md-4">
+											<div class="form-group">
+												<label>Where Used II <small class="addParts-optional"> - Optional</small></label>
+												<div class="input-icon input-icon-lg">
+													<i class="fa fa-map-marker"></i>
+													<input type="text" class="form-control input-lg" name="whereUsedII" placeholder="Where Used II - Optional">
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">
+											<span class="error-status" id="partsNumber_status"></span>
+										</div>
+									</div>
+								</div>
+								<div class="form-actions" style="text-align: center">
+									<input type="submit" value="Submit" class="btn blue">
+									<!-- <button type="submit" class="btn blue">Submit</button> -->
+									<a href="parts_mfile.php"><button type="button" class="btn default">Cancel</button></a>
+								</div>
+							</form>
+						</div>
 					</div>
-				<!-- </div> -->
-			<!-- </div> -->
+				</div>
+				<div class="col-md-3"></div>
+			</div>
 		</div>
 	</div>
 </div>
