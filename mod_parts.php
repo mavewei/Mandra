@@ -67,13 +67,13 @@
 					$partsId = $_POST['serialNumber'];
 					$partsNumber = ucwords(strtolower(mysql_escape_string($_POST['partsNumber'])));
 					$partsDescription = ucwords(strtolower(mysql_escape_string($_POST['partsDescription'])));
-					$partsUom = ucwords(strtolower(mysql_escape_string($_POST['partsUom'])));
-					$partsCategory = ucwords(strtolower(mysql_escape_string($_POST['partsCategory'])));
-					$partsBrand = ucwords(mysql_escape_string($_POST['partsBrand']));
-					$partsModel = ucwords(mysql_escape_string($_POST['partsModel']));
-					$partsEquipType = ucwords(strtolower(mysql_escape_string($_POST['partsEquipType'])));
-					$partsWhereUsedI = ucwords(mysql_escape_string($_POST['partsWhereUsedI']));
-					$partsWhereUsedII = ucwords(mysql_escape_string($_POST['partsWhereUsedII']));
+					$partsUom = mysql_escape_string($_POST['partsUom']);
+					$partsCategory = mysql_escape_string($_POST['partsCategory']);
+					$partsBrand = mysql_escape_string($_POST['partsBrand']);
+					$partsModel = mysql_escape_string($_POST['partsModel']);
+					$partsEquipType = mysql_escape_string($_POST['partsEquipType']);
+					$partsWhereUsedI = ucwords(strtolower(mysql_escape_string($_POST['partsWhereUsedI'])));
+					$partsWhereUsedII = ucwords(strtolower(mysql_escape_string($_POST['partsWhereUsedII'])));
 					// Insert record.
 					$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
 					$result = mysql_query($query);
@@ -151,7 +151,7 @@
 							<div class="tools"></div>
 						</div>
 						<div class="portlet-body form">
-							<form role="form" action="mod_parts.php" method="post" onsubmit="return validate();">
+							<form role="form" action="" method="post" onsubmit="return validate();">
 								<div class="form-body text-left">
 									<div class="row">
 										<div class="col-md-3">
@@ -177,7 +177,7 @@
 												</div>
 											</div>
 										</div>
-										<div class="col-md-6">
+										<div class="col-md-5">
 											<div class="form-group">
 												<label>Description</label>
 												<div class="input-icon input-icon-lg">
@@ -186,13 +186,31 @@
 												</div>
 											</div>
 										</div>
-										<div class="col-md-2">
+										<div class="col-md-3">
 											<div class="form-group">
 												<label>UOM</label>
-												<div class="input-icon input-icon-lg">
-													<i class="fa fa-balance-scale"></i>
-													<input type="text" class="form-control input-lg" name="partsUom" placeholder="UOM" value="<?php echo $partsUom; ?>" required>
-												</div>
+												<select name="partsUom" class="form-control input-lg" required>
+													<option value="">Select Uom</option>
+													<?php
+														$list = array("5 Pipe Con", "Bags", "Bails", "Bales", "Books", "Bottles",
+																		"Boxes", "Buckets", "Bundles", "Cans", "Cartons", "CASE 580SL",
+																		"Coils", "Cotter", "Cups", "Cylinder H", "Dozens", "Engine",
+																		"Exhaust", "Feet", "First", "Frontidle", "Gallons", "H",
+																		"Injector", "Intake", "Kgs", "Link", "Link Weig", "Litres",
+																		"Master", "Meters", "O", "Oil", "Packs", "Pairs", "Pcs",
+																		"Quarts", "Reams", "Ring", "Rolls", "Round File", "Second",
+																		"Sets", "Sheets", "Spring", "Suits", "Suzuki Sid", "Tins",
+																		"Transfer", "Units", "Valve ADJ", "Weight", "Yards");
+														$length = count($list);
+														for($i = 0; $i < $length; ++$i) {
+															if($partsUom == $list[$i]) {
+																echo "<option value='$list[$i]' selected='selected'>$list[$i]</option>";
+															} else {
+																echo "<option value='$list[$i]'>$list[$i]</option>";
+															}
+														}
+													?>
+												</select>
 											</div>
 										</div>
 									</div>
@@ -200,28 +218,75 @@
 										<div class="col-md-4">
 											<div class="form-group">
 												<label>Category</label>
-												<div class="input-icon input-icon-lg">
-													<i class="fa fa-tags"></i>
-													<input type="text" class="form-control input-lg" name="partsCategory" placeholder="Category" value="<?php echo $partsCategory; ?>" required>
-												</div>
+												<select name="partsCategory" class="form-control input-lg" required>
+													<option value="">Select Category</option>
+													<?php
+														$list = array("43 & 44 Mix", "Asset", "Backhoe", "Battery", "Bolt & Nut",
+																		"Camp Supply", "Electrical Supply", "Gears", "General Supply",
+																		"Lubricant & Oil", "Oil Seal", "Parts", "Parts Book", "Pcs",
+																		"Pinon With Washer", "Production Supply", "Ring", "Sets",
+																		"Stationary", "Tools", "Tyre", "Workshop Supply");
+														$length = count($list);
+														for($i = 0; $i < $length; ++$i) {
+															if($partsCategory == $list[$i]) {
+																echo "<option value='$list[$i]' selected='selected'>$list[$i]</option>";
+															} else {
+																echo "<option value='$list[$i]'>$list[$i]</option>";
+															}
+														}
+													?>
+												</select>
 											</div>
 										</div>
 										<div class="col-md-4">
 											<div class="form-group">
 												<label>Brand</label>
-												<div class="input-icon input-icon-lg">
-													<i class="fa fa-tags"></i>
-													<input type="text" class="form-control input-lg" name="partsBrand" placeholder="Brand" value="<?php echo $partsBrand; ?>" required>
-												</div>
+												<select name="partsBrand" class="form-control input-lg" required>
+													<option value="">Select Brand</option>
+													<?php
+														$list = array("Beiben Mecedez", "Brand", "Camings", "CASE", "CAT",
+																		"Chine White", "DAYUN", "Dong Feng", "Good Year", "ISUZU",
+																		"Kama", "Komatsu", "Mercedez", "Mitsubishi", "Nissan",
+																		"Pairs", "Parts", "Pcs", "Perkins", "Rhino", "SAE", "SEM",
+																		"Shan Tui", "Suzuki", "Tools", "Toyota", "XG3200S",
+																		"Xu Gong");
+														$length = count($list);
+														for($i = 0; $i < $length; ++$i) {
+															if($partsBrand == $list[$i]) {
+																echo "<option value='$list[$i]' selected='selected'>$list[$i]</option>";
+															} else {
+																echo "<option value='$list[$i]'>$list[$i]</option>";
+															}
+														}
+													?>
+												</select>
 											</div>
 										</div>
 										<div class="col-md-4">
 											<div class="form-group">
 												<label>Model</label>
-												<div class="input-icon input-icon-lg">
-													<i class="fa fa-tags"></i>
-													<input type="text" class="form-control input-lg" name="partsModel" placeholder="Model" value="<?php echo $partsModel; ?>" required>
-												</div>
+												<select name="partsModel" class="form-control input-lg" required>
+													<option value="">Select Model</option>
+													<?php
+														$list = array("528B", "Beiben 2541KZ", "Beiben Mecedez", "C6121",
+																		"CASE 580SL", "CAT", "CAT 140G", "CAT 528", "CAT 962G",
+																		"CAT 966C", "CAT D6G", "CAT D7G", "DY125-B", "EQ1258KB",
+																		"Gears", "Mitsubishi L200", "Model", "Montero",
+																		"Nissan Frontier", "Nissan March", "Nissan V8", "Parts",
+																		"PC200-6", "SC8DK230Q3", "SD16", "SD22", "SEM 660B",
+																		"Shan Tui", "TACOMA", "Toyota", "Toyota 4 Runner",
+																		"Toyota Fortuna", "Toyota Hilux", "Toyota Land Cruiser",
+																		"TS654");
+														$length = count($list);
+														for($i = 0; $i < $length; ++$i) {
+															if($partsModel == $list[$i]) {
+																echo "<option value='$list[$i]' selected='selected'>$list[$i]</option>";
+															} else {
+																echo "<option value='$list[$i]'>$list[$i]</option>";
+															}
+														}
+													?>
+												</select>
 											</div>
 										</div>
 									</div>
@@ -229,10 +294,27 @@
 										<div class="col-md-4">
 											<div class="form-group">
 												<label>Equipment Type</label>
-												<div class="input-icon input-icon-lg">
-													<i class="fa fa-tags"></i>
-													<input type="text" class="form-control input-lg" name="partsEquipType" placeholder="Equipment Type" value="<?php echo $partsEquipType; ?>" required>
-												</div>
+												<select name="partsEquipType" class="form-control input-lg" required>
+													<option value="">Select Equipment Type</option>
+													<?php
+														$list = array("Air Compressor", "Backhoe", "Beiben 2541KZ",
+																		"Beiben Mecedez", "Bulldozer", "Chain Saw", "Crane",
+																		"Cutting Machine", "Dump Truck", "Equip", "Excavator",
+																		"Farm Tractor", "Forklift", "Fuel Tanker", "Gasoline Car",
+																		"Generator", "Jeep", "Lathe Machine", "Logging Truck",
+																		"Lorry", "Low Bed", "Motor Bike", "Motor Grader", "Pickup",
+																		"Radio", "SD16", "SD22", "Skid Tanker", "Skidder",
+																		"Small Car", "Suzuki", "Type", "Wheel Loader");
+														$length = count($list);
+														for($i = 0; $i < $length; ++$i) {
+															if($partsEquipType == $list[$i]) {
+																echo "<option value='$list[$i]' selected='selected'>$list[$i]</option>";
+															} else {
+																echo "<option value='$list[$i]'>$list[$i]</option>";
+															}
+														}
+													?>
+												</select>
 											</div>
 										</div>
 										<div class="col-md-4">
