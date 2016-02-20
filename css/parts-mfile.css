@@ -8,6 +8,10 @@
 .name-padding {
     padding-left: 7px;
 }
+.no-infor {
+	color: silver;
+	text-align: center;
+}
 .no-parts {
 	color: silver;
 	text-align: center;
