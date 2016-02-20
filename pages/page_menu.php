@@ -29,8 +29,8 @@
 						</ul>
 					</li>
 					<li class="dropdown dropdown-extended dropdown-dark dropdown-tasks" id="header_tasks">
-						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"><i class="glyphicon glyphicon-envelope"></i><span class="badge badge-default">12</span></a>
-						<ul class="dropdown-menu">
+						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"><i class="glyphicon glyphicon-envelope"></i><span class="badge badge-default" style="display: none">12</span></a>
+						<ul class="dropdown-menu" style="display: none">
 							<li class="external">
 								<h3>You have<strong> 12 unread </strong>mails</h3>
 								<a href="javascript:;"> view all </a>
