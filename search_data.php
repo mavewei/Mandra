@@ -57,8 +57,8 @@ if($dbSelected) {
 			**/
 			//echo "<div id='searchDiv' class='table-scrollable table-scrollable-borderless'>";
 			$message = "<table class='table table-hover table-light'>";
-			$message .= "<div class='block' style='height:100%'><div class='centered-users'>";
-			$message .= "<h3 class='no-users'>No parts master file found!</h3></div></div></table></div>";
+			//$message .= "<div class='block' style='height:100%'><div class='centered-users'>";
+			$message .= "<h3 class='no-infor'>No parts master file found!</h3></table></div>";
 			echo $message;
 			//return true;
 		}
@@ -116,8 +116,8 @@ if($dbSelected) {
 				No master file.
 			**/
 			$message = "<table class='table table-hover table-light'>";
-			$message .= "<div class='block' style='height:100%'><div class='centered-users'>";
-			$message .= "<h3 class='no-users'>No parts master file found!</h3></div></div></table></div>";
+			//$message .= "<div class='block' style='height:100%'><div class='centered-users'>";
+			$message .= "<h3 class='no-infor'>No parts master file found!</h3></table></div>";
 			echo $message;
 		}
 	}
@@ -174,8 +174,8 @@ if($dbSelected) {
 				No master file.
 			**/
 			$message = "<table class='table table-hover table-light'>";
-			$message .= "<div class='block' style='height:100%'><div class='centered-users'>";
-			$message .= "<h3 class='no-users'>No parts master file found!</h3></div></div></table></div>";
+			//$message .= "<div class='block' style='height:100%'><div class='centered-users'>";
+			$message .= "<h3 class='no-infor'>No parts master file found!</h3></table></div>";
 			echo $message;
 		}
 	}

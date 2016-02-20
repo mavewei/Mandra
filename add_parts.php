@@ -167,7 +167,6 @@
 												<label>UOM</label>
 												<select name="uom" class="form-control input-lg" required>
 													<option value="">Select UOM</option>
-													<option value="5 Pipe Con">5 Pipe Con</option>
 													<option value="Bags">Bags</option>
 													<option value="Bails">Bails</option>
 													<option value="Bales">Bales</option>
@@ -178,48 +177,25 @@
 													<option value="Bundles">Bundles</option>
 													<option value="Cans">Cans</option>
 													<option value="Cartons">Cartons</option>
-													<option value="CASE 580SL">CASE 580SL</option>
 													<option value="Coils">Coils</option>
-													<option value="Cotter">Cotter</option>
 													<option value="Cups">Cups</option>
-													<option value="Cylinder H">Cylinder H</option>
 													<option value="Dozens">Dozens</option>
-													<option value="Engine">Engine</option>
-													<option value="Exhaust">Exhaust</option>
 													<option value="Feet">Feet</option>
-													<option value="First">First</option>
-													<option value="Frontidle">Frontidle</option>
 													<option value="Gallons">Gallons</option>
-													<option value="H">H</option>
-													<option value="Injector">Injector</option>
-													<option value="Intake">Intake</option>
 													<option value="Kgs">Kgs</option>
-													<option value="Link">Link</option>
-													<option value="Link Weig">Link Weig</option>
 													<option value="Litres">Litres</option>
-													<option value="Master">Master</option>
 													<option value="Meters">Meters</option>
-													<option value="O">O</option>
-													<option value="Oil">Oil</option>
 													<option value="Packs">Packs</option>
 													<option value="Pairs">Pairs</option>
 													<option value="Pcs">Pcs</option>
 													<option value="Quarts">Quarts</option>
 													<option value="Reams">Reams</option>
-													<option value="Ring">Ring</option>
 													<option value="Rolls">Rolls</option>
-													<option value="Round File">Round File</option>
-													<option value="Second">Second</option>
 													<option value="Sets">Sets</option>
 													<option value="Sheets">Sheets</option>
-													<option value="Spring">Spring</option>
 													<option value="Suits">Suits</option>
-													<option value="Suzuki Sid">Suzuki Sid</option>
 													<option value="Tins">Tins</option>
-													<option value="Transfer">Transfer</option>
 													<option value="Units">Units</option>
-													<option value="Valve ADJ">Valve ADJ</option>
-													<option value="Weight">Weight</option>
 													<option value="Yards">Yards</option>
 												</select>
 											</div>
@@ -231,9 +207,7 @@
 												<label>Category</label>
 												<select name="category" class="form-control input-lg" required>
 													<option value="">Select Category</option>
-													<option value="43 & 44 Mix">43 & 44 Mix</option>
 													<option value="Asset">Asset</option>
-													<option value="Backhoe">Backhoe</option>
 													<option value="Battery">Battery</option>
 													<option value="Bolt & Nut">Bolt & Nut</option>
 													<option value="Camp Supply">Camp Supply</option>
@@ -244,11 +218,7 @@
 													<option value="Oil Seal">Oil Seal</option>
 													<option value="Parts">Parts</option>
 													<option value="Parts Book">Parts Book</option>
-													<option value="Pcs">Pcs</option>
-													<option value="Pinon With Washer">Pinon With Washer</option>
 													<option value="Production Supply">Production Supply</option>
-													<option value="Ring">Ring</option>
-													<option value="Sets">Sets</option>
 													<option value="Stationary">Stationary</option>
 													<option value="Tools">Tools</option>
 													<option value="Tyre">Tyre</option>
@@ -262,7 +232,6 @@
 												<select name="brand" class="form-control input-lg" required>
 													<option value="">Select Brand</option>
 													<option value="Beiben Mecedez">Beiben Mecedez</option>
-													<option value="Brand">Brand</option>
 													<option value="Camings">Camings</option>
 													<option value="CASE">CASE</option>
 													<option value="CAT">CAT</option>
@@ -276,16 +245,12 @@
 													<option value="Mercedez">Mercedez</option>
 													<option value="Mitsubishi">Mitsubishi</option>
 													<option value="Nissan">Nissan</option>
-													<option value="Pairs">Pairs</option>
-													<option value="Parts">Parts</option>
-													<option value="Pcs">Pcs</option>
 													<option value="Perkins">Perkins</option>
 													<option value="Rhino">Rhino</option>
 													<option value="SAE">SAE</option>
 													<option value="SEM">SEM</option>
 													<option value="Shan Tui">Shan Tui</option>
 													<option value="Suzuki">Suzuki</option>
-													<option value="Tools">Tools</option>
 													<option value="Toyota">Toyota</option>
 													<option value="XG3200S">XG3200S</option>
 													<option value="Xu Gong">Xu Gong</option>
@@ -299,10 +264,8 @@
 													<option value="">Select Model</option>
 													<option value="528B">528B</option>
 													<option value="Beiben 2541KZ">Beiben 2541KZ</option>
-													<option value="Beiben Mecedez">Beiben Mecedez</option>
 													<option value="C6121">C6121</option>
 													<option value="CASE 580SL">CASE 580SL</option>
-													<option value="CAT">CAT</option>
 													<option value="CAT 140G">CAT 140G</option>
 													<option value="CAT 528">CAT 528</option>
 													<option value="CAT 962G">CAT 962G</option>
@@ -311,22 +274,17 @@
 													<option value="CAT D7G">CAT D7G</option>
 													<option value="DY125-B">DY125-B</option>
 													<option value="EQ1258KB">EQ1258KB</option>
-													<option value="Gears">Gears</option>
 													<option value="Mitsubishi L200">Mitsubishi L200</option>
-													<option value="Model">Model</option>
 													<option value="Montero">Montero</option>
 													<option value="Nissan Frontier">Nissan Frontier</option>
 													<option value="Nissan March">Nissan March</option>
 													<option value="Nissan V8">Nissan V8</option>
-													<option value="Parts">Parts</option>
 													<option value="PC200-6">PC200-6</option>
 													<option value="SC8DK230Q3">SC8DK230Q3</option>
 													<option value="SD16">SD16</option>
 													<option value="SD22">SD22</option>
 													<option value="SEM 660B">SEM 660B</option>
-													<option value="Shan Tui">Shan Tui</option>
 													<option value="TACOMA">TACOMA</option>
-													<option value="Toyota">Toyota</option>
 													<option value="Toyota 4 Runner">Toyota 4 Runner</option>
 													<option value="Toyota Fortuna">Toyota Fortuna</option>
 													<option value="Toyota Hilux">Toyota Hilux</option>
@@ -344,14 +302,11 @@
 													<option value="">Select Equipment Type</option>
 													<option value="Air Compressor">Air Compressor</option>
 													<option value="Backhoe">Backhoe</option>
-													<option value="Beiben 2541KZ">Beiben 2541KZ</option>
-													<option value="Beiben Mecedez">Beiben Mecedez</option>
 													<option value="Bulldozer">Bulldozer</option>
 													<option value="Chain Saw">Chain Saw</option>
 													<option value="Crane">Crane</option>
 													<option value="Cutting Machine">Cutting Machine</option>
 													<option value="Dump Truck">Dump Truck</option>
-													<option value="Equip">Equip</option>
 													<option value="Excavator">Excavator</option>
 													<option value="Farm Tractor">Farm Tractor</option>
 													<option value="Forklift">Forklift</option>
@@ -367,13 +322,9 @@
 													<option value="Motor Grader">Motor Grader</option>
 													<option value="Pickup">Pickup</option>
 													<option value="Radio">Radio</option>
-													<option value="SD16">SD16</option>
-													<option value="SD22">SD22</option>
 													<option value="Skid Tanker">Skid Tanker</option>
 													<option value="Skidder">Skidder</option>
 													<option value="Small Car">Small Car</option>
-													<option value="Suzuki">Suzuki</option>
-													<option value="Type">Type</option>
 													<option value="Wheel Loader">Wheel Loader</option>
 												</select>
 											</div>

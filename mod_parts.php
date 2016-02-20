@@ -192,15 +192,12 @@
 												<select name="partsUom" class="form-control input-lg" required>
 													<option value="">Select Uom</option>
 													<?php
-														$list = array("5 Pipe Con", "Bags", "Bails", "Bales", "Books", "Bottles",
-																		"Boxes", "Buckets", "Bundles", "Cans", "Cartons", "CASE 580SL",
-																		"Coils", "Cotter", "Cups", "Cylinder H", "Dozens", "Engine",
-																		"Exhaust", "Feet", "First", "Frontidle", "Gallons", "H",
-																		"Injector", "Intake", "Kgs", "Link", "Link Weig", "Litres",
-																		"Master", "Meters", "O", "Oil", "Packs", "Pairs", "Pcs",
-																		"Quarts", "Reams", "Ring", "Rolls", "Round File", "Second",
-																		"Sets", "Sheets", "Spring", "Suits", "Suzuki Sid", "Tins",
-																		"Transfer", "Units", "Valve ADJ", "Weight", "Yards");
+														$list = array("Bags", "Bails", "Bales", "Books", "Bottles",
+																		"Boxes", "Buckets", "Bundles", "Cans", "Cartons",
+																		"Coils", "Cups", "Dozens", "Feet", "Gallons",
+																		"Kgs", "Litres", "Meters", "Packs", "Pairs",
+																		"Pcs", "Quarts", "Reams", "Rolls", "Sets",
+																		"Sheets", "Suits", "Tins", "Units", "Yards");
 														$length = count($list);
 														for($i = 0; $i < $length; ++$i) {
 															if($partsUom == $list[$i]) {
@@ -221,11 +218,11 @@
 												<select name="partsCategory" class="form-control input-lg" required>
 													<option value="">Select Category</option>
 													<?php
-														$list = array("43 & 44 Mix", "Asset", "Backhoe", "Battery", "Bolt & Nut",
-																		"Camp Supply", "Electrical Supply", "Gears", "General Supply",
-																		"Lubricant & Oil", "Oil Seal", "Parts", "Parts Book", "Pcs",
-																		"Pinon With Washer", "Production Supply", "Ring", "Sets",
-																		"Stationary", "Tools", "Tyre", "Workshop Supply");
+														$list = array("Asset", "Battery", "Bolt & Nut", "Camp Supply",
+																		"Electrical Supply", "Gears", "General Supply",
+																		"Lubricant & Oil", "Oil Seal", "Parts", "Parts Book",
+																		"Production Supply", "Stationary", "Tools", "Tyre",
+																		"Workshop Supply");
 														$length = count($list);
 														for($i = 0; $i < $length; ++$i) {
 															if($partsCategory == $list[$i]) {
@@ -244,12 +241,11 @@
 												<select name="partsBrand" class="form-control input-lg" required>
 													<option value="">Select Brand</option>
 													<?php
-														$list = array("Beiben Mecedez", "Brand", "Camings", "CASE", "CAT",
-																		"Chine White", "DAYUN", "Dong Feng", "Good Year", "ISUZU",
-																		"Kama", "Komatsu", "Mercedez", "Mitsubishi", "Nissan",
-																		"Pairs", "Parts", "Pcs", "Perkins", "Rhino", "SAE", "SEM",
-																		"Shan Tui", "Suzuki", "Tools", "Toyota", "XG3200S",
-																		"Xu Gong");
+														$list = array("Beiben Mecedez", "Camings", "CASE", "CAT", "Chine White",
+																		"DAYUN", "Dong Feng", "Good Year", "ISUZU", "Kama",
+																		"Komatsu", "Mercedez", "Mitsubishi", "Nissan", "Perkins",
+																		"Rhino", "SAE", "SEM", "Shan Tui", "Suzuki", "Toyota",
+																		"XG3200S", "Xu Gong");
 														$length = count($list);
 														for($i = 0; $i < $length; ++$i) {
 															if($partsBrand == $list[$i]) {
@@ -268,15 +264,13 @@
 												<select name="partsModel" class="form-control input-lg" required>
 													<option value="">Select Model</option>
 													<?php
-														$list = array("528B", "Beiben 2541KZ", "Beiben Mecedez", "C6121",
-																		"CASE 580SL", "CAT", "CAT 140G", "CAT 528", "CAT 962G",
-																		"CAT 966C", "CAT D6G", "CAT D7G", "DY125-B", "EQ1258KB",
-																		"Gears", "Mitsubishi L200", "Model", "Montero",
-																		"Nissan Frontier", "Nissan March", "Nissan V8", "Parts",
-																		"PC200-6", "SC8DK230Q3", "SD16", "SD22", "SEM 660B",
-																		"Shan Tui", "TACOMA", "Toyota", "Toyota 4 Runner",
-																		"Toyota Fortuna", "Toyota Hilux", "Toyota Land Cruiser",
-																		"TS654");
+														$list = array("528B", "Beiben 2541KZ", "C6121", "CASE 580SL", "CAT 140G",
+																		"CAT 528", "CAT 962G", "CAT 966C", "CAT D6G", "CAT D7G",
+																		"DY125-B", "EQ1258KB", "Mitsubishi L200", "Montero",
+																		"Nissan Frontier", "Nissan March", "Nissan V8", "PC200-6",
+																		"SC8DK230Q3", "SD16", "SD22", "SEM 660B", "TACOMA",
+																		"Toyota 4 Runner", "Toyota Fortuna", "Toyota Hilux",
+																		"Toyota Land Cruiser", "TS654");
 														$length = count($list);
 														for($i = 0; $i < $length; ++$i) {
 															if($partsModel == $list[$i]) {
@@ -297,14 +291,13 @@
 												<select name="partsEquipType" class="form-control input-lg" required>
 													<option value="">Select Equipment Type</option>
 													<?php
-														$list = array("Air Compressor", "Backhoe", "Beiben 2541KZ",
-																		"Beiben Mecedez", "Bulldozer", "Chain Saw", "Crane",
-																		"Cutting Machine", "Dump Truck", "Equip", "Excavator",
+														$list = array("Air Compressor", "Backhoe", "Bulldozer", "Chain Saw",
+																		"Crane", "Cutting Machine", "Dump Truck", "Excavator",
 																		"Farm Tractor", "Forklift", "Fuel Tanker", "Gasoline Car",
 																		"Generator", "Jeep", "Lathe Machine", "Logging Truck",
 																		"Lorry", "Low Bed", "Motor Bike", "Motor Grader", "Pickup",
-																		"Radio", "SD16", "SD22", "Skid Tanker", "Skidder",
-																		"Small Car", "Suzuki", "Type", "Wheel Loader");
+																		"Radio", "Skid Tanker", "Skidder", "Small Car",
+																		"Wheel Loader");
 														$length = count($list);
 														for($i = 0; $i < $length; ++$i) {
 															if($partsEquipType == $list[$i]) {
