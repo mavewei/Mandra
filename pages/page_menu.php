@@ -498,10 +498,13 @@
 						<a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;"> Extras <!-- <i class="fa fa-angle-down"></i> --></a>
 						<ul class="dropdown-menu pull-left">
 							<li class="dropdown-submenu">
-								<a href="javascript:;"><i class="fa fa-users"></i> General </a>
+								<a href="javascript:;"><i class="fa fa-users"></i> Setup </a>
 								<ul class="dropdown-menu" style="display:none;">
 									<li class=" ">
-										<a href="general_settings.php"> Settings </a>
+										<a href="employee_settings.php"> Employee </a>
+									</li>
+									<li class=" ">
+										<a href="pmf_settings.php"> Parts Master File </a>
 									</li>
 								</ul>
 							</li>
