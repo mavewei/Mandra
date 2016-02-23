@@ -392,6 +392,166 @@
 		echo "</div></div></div></div></div>";
 		echo "<meta http-equiv='refresh' content='3;employees.php'>";
 		break;
+	case "32":
+		// parts uom add successful!
+		echo "<div class='container'>";
+		echo "<div class='row vcenter'>";
+		echo "<div class='col-xs-6 col-sm-6 col-md-5'>";
+		echo "<div class='media'>";
+		echo "<div class='media-left media-middle'>";
+		echo "<a href='javascript:;'>";
+		echo "<div class='status-img'>";
+		echo "<img class='media-object image-middle-status' src='images/success.png' alt>";
+		echo "</div></a></div>";
+		echo "<div class='media-body'>";
+		echo "<h2 class='media-heading'>New UOM Added!</h2>You'll be redirected to previous page in 3 seconds.";
+		echo "</div></div></div></div></div>";
+		echo "<meta http-equiv='refresh' content='3;pmf_settings.php'>";
+		break;
+	case "33":
+		// parts category add successful!
+		echo "<div class='container'>";
+		echo "<div class='row vcenter'>";
+		echo "<div class='col-xs-6 col-sm-6 col-md-5'>";
+		echo "<div class='media'>";
+		echo "<div class='media-left media-middle'>";
+		echo "<a href='javascript:;'>";
+		echo "<div class='status-img'>";
+		echo "<img class='media-object image-middle-status' src='images/success.png' alt>";
+		echo "</div></a></div>";
+		echo "<div class='media-body'>";
+		echo "<h2 class='media-heading'>New Category Added!</h2>You'll be redirected to previous page in 3 seconds.";
+		echo "</div></div></div></div></div>";
+		echo "<meta http-equiv='refresh' content='3;pmf_settings.php'>";
+		break;
+	case "34":
+		// parts brand add successful!
+		echo "<div class='container'>";
+		echo "<div class='row vcenter'>";
+		echo "<div class='col-xs-6 col-sm-6 col-md-5'>";
+		echo "<div class='media'>";
+		echo "<div class='media-left media-middle'>";
+		echo "<a href='javascript:;'>";
+		echo "<div class='status-img'>";
+		echo "<img class='media-object image-middle-status' src='images/success.png' alt>";
+		echo "</div></a></div>";
+		echo "<div class='media-body'>";
+		echo "<h2 class='media-heading'>New Brand Added!</h2>You'll be redirected to previous page in 3 seconds.";
+		echo "</div></div></div></div></div>";
+		echo "<meta http-equiv='refresh' content='3;pmf_settings.php'>";
+		break;
+	case "35":
+		// parts model add successful!
+		echo "<div class='container'>";
+		echo "<div class='row vcenter'>";
+		echo "<div class='col-xs-6 col-sm-6 col-md-5'>";
+		echo "<div class='media'>";
+		echo "<div class='media-left media-middle'>";
+		echo "<a href='javascript:;'>";
+		echo "<div class='status-img'>";
+		echo "<img class='media-object image-middle-status' src='images/success.png' alt>";
+		echo "</div></a></div>";
+		echo "<div class='media-body'>";
+		echo "<h2 class='media-heading'>New Model Added!</h2>You'll be redirected to previous page in 3 seconds.";
+		echo "</div></div></div></div></div>";
+		echo "<meta http-equiv='refresh' content='3;pmf_settings.php'>";
+		break;
+	case "36":
+		// parts model add successful!
+		echo "<div class='container'>";
+		echo "<div class='row vcenter'>";
+		echo "<div class='col-xs-6 col-sm-6 col-md-5'>";
+		echo "<div class='media'>";
+		echo "<div class='media-left media-middle'>";
+		echo "<a href='javascript:;'>";
+		echo "<div class='status-img'>";
+		echo "<img class='media-object image-middle-status' src='images/success.png' alt>";
+		echo "</div></a></div>";
+		echo "<div class='media-body'>";
+		echo "<h2 class='media-heading'>New Equip Type Added!</h2>You'll be redirected to previous page in 3 seconds.";
+		echo "</div></div></div></div></div>";
+		echo "<meta http-equiv='refresh' content='3;pmf_settings.php'>";
+		break;
+	case "37":
+		// parts model add successful!
+		echo "<div class='container'>";
+		echo "<div class='row vcenter'>";
+		echo "<div class='col-xs-6 col-sm-6 col-md-5'>";
+		echo "<div class='media'>";
+		echo "<div class='media-left media-middle'>";
+		echo "<a href='javascript:;'>";
+		echo "<div class='status-img'>";
+		echo "<img class='media-object image-middle-status' src='images/success.png' alt>";
+		echo "</div></a></div>";
+		echo "<div class='media-body'>";
+		echo "<h2 class='media-heading'>UOM Details Updated!</h2>You'll be redirected to previous page in 3 seconds.";
+		echo "</div></div></div></div></div>";
+		echo "<meta http-equiv='refresh' content='3;pmf_settings.php'>";
+		break;
+	case "38":
+		// parts category updated successful!
+		echo "<div class='container'>";
+		echo "<div class='row vcenter'>";
+		echo "<div class='col-xs-6 col-sm-6 col-md-5'>";
+		echo "<div class='media'>";
+		echo "<div class='media-left media-middle'>";
+		echo "<a href='javascript:;'>";
+		echo "<div class='status-img'>";
+		echo "<img class='media-object image-middle-status' src='images/success.png' alt>";
+		echo "</div></a></div>";
+		echo "<div class='media-body'>";
+		echo "<h2 class='media-heading'>Category Updated!</h2>You'll be redirected to previous page in 3 seconds.";
+		echo "</div></div></div></div></div>";
+		echo "<meta http-equiv='refresh' content='3;pmf_settings.php'>";
+		break;
+	case "39":
+		// parts brand updated successful!
+		echo "<div class='container'>";
+		echo "<div class='row vcenter'>";
+		echo "<div class='col-xs-6 col-sm-6 col-md-5'>";
+		echo "<div class='media'>";
+		echo "<div class='media-left media-middle'>";
+		echo "<a href='javascript:;'>";
+		echo "<div class='status-img'>";
+		echo "<img class='media-object image-middle-status' src='images/success.png' alt>";
+		echo "</div></a></div>";
+		echo "<div class='media-body'>";
+		echo "<h2 class='media-heading'>Brand Details Updated!</h2>You'll be redirected to previous page in 3 seconds.";
+		echo "</div></div></div></div></div>";
+		echo "<meta http-equiv='refresh' content='3;pmf_settings.php'>";
+		break;
+	case "40":
+		// parts brand updated successful!
+		echo "<div class='container'>";
+		echo "<div class='row vcenter'>";
+		echo "<div class='col-xs-6 col-sm-6 col-md-5'>";
+		echo "<div class='media'>";
+		echo "<div class='media-left media-middle'>";
+		echo "<a href='javascript:;'>";
+		echo "<div class='status-img'>";
+		echo "<img class='media-object image-middle-status' src='images/success.png' alt>";
+		echo "</div></a></div>";
+		echo "<div class='media-body'>";
+		echo "<h2 class='media-heading'>Model Details Updated!</h2>You'll be redirected to previous page in 3 seconds.";
+		echo "</div></div></div></div></div>";
+		echo "<meta http-equiv='refresh' content='3;pmf_settings.php'>";
+		break;
+	case "41":
+		// parts brand updated successful!
+		echo "<div class='container'>";
+		echo "<div class='row vcenter'>";
+		echo "<div class='col-xs-6 col-sm-6 col-md-5'>";
+		echo "<div class='media'>";
+		echo "<div class='media-left media-middle'>";
+		echo "<a href='javascript:;'>";
+		echo "<div class='status-img'>";
+		echo "<img class='media-object image-middle-status' src='images/success.png' alt>";
+		echo "</div></a></div>";
+		echo "<div class='media-body'>";
+		echo "<h2 class='media-heading'>Equipment Type Updated!</h2>You'll be redirected to previous page in 3 seconds.";
+		echo "</div></div></div></div></div>";
+		echo "<meta http-equiv='refresh' content='3;pmf_settings.php'>";
+		break;
 	default:
 		echo "<div class='block' style='height:100%'><div class='centered-login-status'>";
 		echo "<div class='media'><div class='media-left media-middle'>";
