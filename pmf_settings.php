@@ -118,7 +118,7 @@
 								<span class="caption-subjet font-green-sharp bold uppercase">UOM</span>
 							</div>
 							<div class="actions btn-set">
-								<a class="btn green-haze btn-circle" href="add_parts_uom.php"><i class="fa fa-plus"></i> Add </a>
+								<a class="btn green-haze btn-circle" href="add_uom.php"><i class="fa fa-plus"></i> Add </a>
 							</div>
 							<div class="tools"></div>
 						</div>
@@ -141,7 +141,7 @@
 														$datejoin = $match[1];
 													};
 													echo "<tr><td align='center'>";
-													echo "<a href='mod_parts_uom.php?partsUomId=$partsUomId' class='primary-link'>$partsUomId</a></td>";
+													echo "<a href='mod_uom.php?partsUomId=$partsUomId' class='primary-link'>$partsUomId</a></td>";
 													echo "<td align='left'>$partsUomName</td>";
 													echo "<td align='center'>$datejoin</td></tr>";
 												};
@@ -166,7 +166,7 @@
 								<span class="caption-subjet font-green-sharp bold uppercase">Category</span>
 							</div>
 							<div class="actions btn-set">
-								<a class="btn green-haze btn-circle" href="add_parts_category.php"><i class="fa fa-plus"></i> Add </a>
+								<a class="btn green-haze btn-circle" href="add_category.php"><i class="fa fa-plus"></i> Add </a>
 							</div>
 							<div class="tools"></div>
 						</div>
@@ -189,7 +189,7 @@
 														$datejoin = $match[1];
 													};
 													echo "<tr><td align='center'>";
-													echo "<a href='mod_parts_category.php?partsCategoryId=$partsCategoryId' class='primary-link'>$partsCategoryId</a></td>";
+													echo "<a href='mod_category.php?partsCategoryId=$partsCategoryId' class='primary-link'>$partsCategoryId</a></td>";
 													echo "<td align='left'>$partsCategoryName</td>";
 													echo "<td align='center'>$datejoin</td></tr>";
 												};
@@ -216,7 +216,7 @@
 								<span class="caption-subjet font-green-sharp bold uppercase">Brand</span>
 							</div>
 							<div class="actions btn-set">
-								<a class="btn green-haze btn-circle" href="add_parts_brand.php"><i class="fa fa-plus"></i> Add </a>
+								<a class="btn green-haze btn-circle" href="add_brand.php"><i class="fa fa-plus"></i> Add </a>
 							</div>
 							<div class="tools"></div>
 						</div>
@@ -239,7 +239,7 @@
 														$datejoin = $match[1];
 													};
 													echo "<tr><td align='center'>";
-													echo "<a href='mod_parts_brand.php?partsBrandId=$partsBrandId' class='primary-link'>$partsBrandId</a></td>";
+													echo "<a href='mod_brand.php?partsBrandId=$partsBrandId' class='primary-link'>$partsBrandId</a></td>";
 													echo "<td align='left'>$partsBrandName</td>";
 													echo "<td align='center'>$datejoin</td></tr>";
 												};
@@ -264,7 +264,7 @@
 								<span class="caption-subjet font-green-sharp bold uppercase">Model</span>
 							</div>
 							<div class="actions btn-set">
-								<a class="btn green-haze btn-circle" href="add_parts_model.php"><i class="fa fa-plus"></i> Add </a>
+								<a class="btn green-haze btn-circle" href="add_model.php"><i class="fa fa-plus"></i> Add </a>
 							</div>
 							<div class="tools"></div>
 						</div>
@@ -287,7 +287,7 @@
 														$datejoin = $match[1];
 													};
 													echo "<tr><td align='center'>";
-													echo "<a href='mod_parts_model.php?partsModelId=$partsModelId' class='primary-link'>$partsModelId</a></td>";
+													echo "<a href='mod_model.php?partsModelId=$partsModelId' class='primary-link'>$partsModelId</a></td>";
 													echo "<td align='left'>$partsModelName</td>";
 													echo "<td align='center'>$datejoin</td></tr>";
 												};
@@ -314,7 +314,7 @@
 								<span class="caption-subjet font-green-sharp bold uppercase">Equipment Type</span>
 							</div>
 							<div class="actions btn-set">
-								<a class="btn green-haze btn-circle" href="add_parts_equipType.php"><i class="fa fa-plus"></i> Add </a>
+								<a class="btn green-haze btn-circle" href="add_equipType.php"><i class="fa fa-plus"></i> Add </a>
 							</div>
 							<div class="tools"></div>
 						</div>
@@ -337,7 +337,7 @@
 														$datejoin = $match[1];
 													};
 													echo "<tr><td align='center'>";
-													echo "<a href='mod_parts_equipType.php?partsEquipTypeId=$partsEquipTypeId' class='primary-link'>$partsEquipTypeId</a></td>";
+													echo "<a href='mod_equipType.php?partsEquipTypeId=$partsEquipTypeId' class='primary-link'>$partsEquipTypeId</a></td>";
 													echo "<td align='left'>$partsEquipTypeName</td>";
 													echo "<td align='center'>$datejoin</td></tr>";
 												};
