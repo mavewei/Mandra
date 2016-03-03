@@ -2,108 +2,101 @@
 <link href="css/center.css" rel="stylesheet" type="text/css" />
 <link href="css/components.css" rel="stylesheet" type="text/css" />
 <link href="css/layout.css" rel="stylesheet" type="text/css" />
-<!-- <link href="css/setadmin.css" rel="stylesheet" type="text/css" /> -->
-<script type = "text/javascript">
-	history.pushState(null, null, 'mod_position.php');
-	window.addEventListener('popstate', function(event) {
-		history.pushState(null, null, 'mod_position.php');
-	});
-</script>
 <?php include('pages/page_meta.php'); ?>
 <?php
-require_once('db/db_config.php');
-/**
-	Check session id.
-**/
-$login = $_SESSION['LOGIN_ID'];
-$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
-$result = mysql_query($query);
-if(!$result) die ("Table access failed: " . mysql_error());
-$data = mysql_fetch_assoc($result);
-$sid = $data['sid'];
-if($sid == $_SESSION['SID']) {
-	if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
-		if($_SESSION['GID'] < 3000) {
-			$fname = $_SESSION['FNAME'];
-			$uid = $_SESSION['UID'];
-			$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
-			$positionId = $_GET['positionId'];
-			$lastPage = $_SESSION['LAST_PAGE'];
-			/**
-				Lifetime added 5min.
-			**/
-			if(isset($_SESSION['EXPIRETIME'])) {
-				if($_SESSION['EXPIRETIME'] < time()) {
-					unset($_SESSION['EXPIRETIME']);
-					header('Location: logout.php?TIMEOUT');
-					exit(0);
-				} else {
-					/**
-						Session time out time 5min.
-					**/
-					//$_SESSION['EXPIRETIME'] = time() + 300;
-					$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+	require_once('db/db_config.php');
+	/**
+		Check session id.
+	**/
+	$login = $_SESSION['LOGIN_ID'];
+	$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+	$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
+	$result = mysql_query($query);
+	if(!$result) die ("Table access failed: " . mysql_error());
+	$data = mysql_fetch_assoc($result);
+	$sid = $data['sid'];
+	if($sid == $_SESSION['SID']) {
+		if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
+			if($_SESSION['GID'] < 3000) {
+				$fname = $_SESSION['FNAME'];
+				$uid = $_SESSION['UID'];
+				$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
+				$positionId = $_GET['positionId'];
+				$lastPage = $_SESSION['LAST_PAGE'];
+				/**
+					Lifetime added 5min.
+				**/
+				if(isset($_SESSION['EXPIRETIME'])) {
+					if($_SESSION['EXPIRETIME'] < time()) {
+						unset($_SESSION['EXPIRETIME']);
+						header('Location: logout.php?TIMEOUT');
+						exit(0);
+					} else {
+						/**
+							Session time out time 5min.
+						**/
+						//$_SESSION['EXPIRETIME'] = time() + 300;
+						$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+					};
 				};
-			};
-			/**
-				Remove record.
-			**/
-			if($_GET['delPositionId']) {
-				$delPositionId = $_GET['delPositionId'];
-				deleteRecord($delPositionId);
-			}
-			/**
-				Select position lists.
-	   		**/
-	   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-	   		$query = "SELECT * FROM position WHERE positionId = '$positionId'";
-	   		$result = mysql_query($query);
-			if(!$result) die ("Table access failed: " . mysql_error());
-			$data = mysql_fetch_array($result);
-			$id = $data['id'];
-			$positionName = $data['positionName'];
-			if(isset($_POST['positionId']) && isset($_POST['positionName'])) {
-				$positionId = $_POST['positionId'];
-				$positionName = ucwords(mysql_escape_string($_POST['positionName']));
-				$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
-				$result = mysql_query($query);
-				$row = mysql_fetch_array($result);
-				$time = $row['dateTime'];
-				$query = "UPDATE position SET positionName = '$positionName' WHERE positionId = '$positionId'";
-				$result = mysql_query($query);
+				/**
+					Remove record.
+				**/
+				if($_GET['delPositionId']) {
+					$delPositionId = $_GET['delPositionId'];
+					deleteRecord($delPositionId);
+				}
+				/**
+					Select position lists.
+		   		**/
+		   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+		   		$query = "SELECT * FROM position WHERE positionId = '$positionId'";
+		   		$result = mysql_query($query);
 				if(!$result) die ("Table access failed: " . mysql_error());
-				if($result) {
-					/**
-						Position information updated and redirected to previous page.
-					**/
-					$_SESSION['STATUS'] = 23;
-					header("Location: status.php");
+				$data = mysql_fetch_array($result);
+				$id = $data['id'];
+				$positionName = $data['positionName'];
+				if(isset($_POST['positionId']) && isset($_POST['positionName'])) {
+					$positionId = $_POST['positionId'];
+					$positionName = ucwords(mysql_escape_string($_POST['positionName']));
+					$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
+					$result = mysql_query($query);
+					$row = mysql_fetch_array($result);
+					$time = $row['dateTime'];
+					$query = "UPDATE position SET positionName = '$positionName' WHERE positionId = '$positionId'";
+					$result = mysql_query($query);
+					if(!$result) die ("Table access failed: " . mysql_error());
+					if($result) {
+						/**
+							Position information updated and redirected to previous page.
+						**/
+						$_SESSION['STATUS'] = 23;
+						header("Location: status.php");
+					};
 				};
-			};
+			} else {
+				/**
+					Redirect to dashboard if not Superuser or Manager
+				**/
+				$_SESSION['STATUS'] = 10;
+				header('Location: status.php');
+			}
 		} else {
-			/**
-				Redirect to dashboard if not Superuser or Manager
-			**/
-			$_SESSION['STATUS'] = 10;
+			unset($_SESSION['STATUS']);
 			header('Location: status.php');
-		}
+		};
 	} else {
 		unset($_SESSION['STATUS']);
 		header('Location: status.php');
-	};
-} else {
-	unset($_SESSION['STATUS']);
-	header('Location: status.php');
-}
-function deleteRecord($positionId) {
-	$query = "UPDATE position SET status = 'Cancel' WHERE positionId = '$positionId'";
-	$result = mysql_query($query);
-	if(!$result) die ("Table access failed: " . mysql_error());
-	if($result) {
-		header('Location: general_settings.php');
 	}
-}
+	function deleteRecord($positionId) {
+		$query = "UPDATE position SET status = 'Cancel' WHERE positionId = '$positionId'";
+		$result = mysql_query($query);
+		if(!$result) die ("Table access failed: " . mysql_error());
+		if($result) {
+			header('Location: general_settings.php');
+		}
+	}
 ?>
 <?php include('pages/page_menu.php'); ?>
 <div class="page-container">

@@ -3,7 +3,7 @@
 	$fname = $_SESSION['FNAME'];
 	$login = $_SESSION['LOGIN_ID'];
 	$gid = $_SESSION['GID'];
-/*
+	/*
 	$dbSelected = mysql_select_db($dbNAME) or die("Unable to select database: " . mysql_error());
 	if($dbSelected) {
 		$queryMenu = "SELECT * FROM purchaseREQUEST WHERE requestPerson = '$fname' and aprStatus = 'false'";
@@ -11,7 +11,7 @@
 		if(!$resultMenu) die ("Database access failed: " . mysql_error());
 		$rowsMenu = mysql_num_rows($resultMenu);
 	};
-*/
+	*/
 ?>
 <div class="page-header">
 	<div class="page-header-top">
@@ -141,6 +141,9 @@
 						<ul class="dropdown-menu pull-left">
 							<li>
 								<a href="parts_mfile.php" class="nav-link">Parts Master File</a>
+							</li>
+							<li>
+								<a href="prc.material_request.php" class="nav-link">Material Request</a>
 							</li>
 
 							<!--

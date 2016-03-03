@@ -1,12 +1,7 @@
 <?php include('pages/page_header.php'); ?>
+<link href="css/employee-settings.css" rel="stylesheet" type="text/css" />
 <link href="css/components.css" rel="stylesheet" type="text/css" />
 <link href="css/layout.css" rel="stylesheet" type="text/css" />
-<script type = "text/javascript">
-	history.pushState(null, null, '');
-	window.addEventListener('popstate', function(event) {
-		history.pushState(null, null, '');
-	});
-</script>
 <?php include('pages/page_meta.php'); ?>
 <?php
 	require_once('db/db_config.php');
@@ -62,21 +57,16 @@
 				if(isset($_POST['taxCodeId']) && isset($_POST['taxCodeName'])) {
 					$taxCodeId = $_POST['taxCodeId'];
 					$taxCodeName = mysql_escape_string($_POST['taxCodeName']);
-					$query = "SELECT DATE_ADD
-									(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
+					$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
 					$result = mysql_query($query);
 					$row = mysql_fetch_array($result);
 					$time = $row['dateTime'];
-					$query = "INSERT INTO taxCode
-									(dateTime, taxCodeId, taxCodeName, status)
-								VALUES
-									('$time', '$taxCodeId', '$taxCodeName', 'Active')";
+					$query = "INSERT INTO taxCode(dateTime, taxCodeId, taxCodeName, status)
+								VALUES('$time', '$taxCodeId', '$taxCodeName', 'Active')";
 					$result = mysql_query($query);
 					if(!$result) die ("Table access failed: " . mysql_error());
 					if($result) {
-						/**
-							taxCode created and redirected to previous page.
-						**/
+						// taxCode created and redirected to previous page.
 						$_SESSION['STATUS'] = 16;
 						header("Location: status.php");
 					};

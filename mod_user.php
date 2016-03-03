@@ -244,12 +244,31 @@
 										</div>
 									</div>
 									<div class="row">
-										<div class="col-md-12">
+										<div class="col-md-8">
 											<div class="form-group">
 												<label>Email Address (Login ID)</label>
 												<div class="input-icon input-icon-lg"><i class="fa fa-envelope-o"></i>
 													<input type="email" class="form-control input-lg" placeholder="Email Address" name="login" id="emailAdd" value="<? echo $emailAdd; ?>" onkeyup="checkEmail();" required>
 												</div>
+											</div>
+										</div>
+										<div class="col-md-4">
+											<div class="form-group">
+												<label>Roles</label>
+												<select name="roles" class="form-control input-lg" required>
+													<option value="">Select Roles</option>
+													<?php
+													$listRoles = array("Users", "Systems", "Managers");
+														$length = count($listRoles);
+														for($i = 0; $i < $length; ++$i) {
+															if($roles == $listRoles[$i]) {
+																echo "<option value=$listRoles[$i] selected='selected'>$listRoles[$i]</option>";
+															} else {
+																echo "<option value=$listRoles[$i]>$listRoles[$i]</option>";
+															}
+														}
+													?>
+												</select>
 											</div>
 										</div>
 									</div>
