@@ -2,12 +2,6 @@
 <link href="css/flexbox.css" rel="stylesheet" type="text/css" />
 <link href="css/status.css" rel="stylesheet" type="text/css" />
 <link href="css/center.css" rel="stylesheet" type="text/css" />
-<script type = "text/javascript">
-	history.pushState(null, null, '');
-	window.addEventListener('popstate', function(event) {
-		history.pushState(null, null, '');
-	});
-</script>
 <?php include('pages/page_meta.php'); ?>
 <?php
 	require_once('db/db_config.php');
@@ -551,6 +545,38 @@
 		echo "<h2 class='media-heading'>Equipment Type Updated!</h2>You'll be redirected to previous page in 3 seconds.";
 		echo "</div></div></div></div></div>";
 		echo "<meta http-equiv='refresh' content='3;pmf_settings.php'>";
+		break;
+	case "42":
+		// Material request form created!
+		echo "<div class='container'>";
+		echo "<div class='row vcenter'>";
+		echo "<div class='col-xs-6 col-sm-6 col-md-5'>";
+		echo "<div class='media'>";
+		echo "<div class='media-left media-middle'>";
+		echo "<a href='javascript:;'>";
+		echo "<div class='status-img'>";
+		echo "<img class='media-object image-middle-status' src='images/success.png' alt>";
+		echo "</div></a></div>";
+		echo "<div class='media-body'>";
+		echo "<h2 class='media-heading'>Material Request Form Submited!</h2>You'll be redirected to previous page in 3 seconds.";
+		echo "</div></div></div></div></div>";
+		echo "<meta http-equiv='refresh' content='3;prc.material_request.php'>";
+		break;
+	case "43":
+		// Material request form updated!
+		echo "<div class='container'>";
+		echo "<div class='row vcenter'>";
+		echo "<div class='col-xs-6 col-sm-6 col-md-5'>";
+		echo "<div class='media'>";
+		echo "<div class='media-left media-middle'>";
+		echo "<a href='javascript:;'>";
+		echo "<div class='status-img'>";
+		echo "<img class='media-object image-middle-status' src='images/success.png' alt>";
+		echo "</div></a></div>";
+		echo "<div class='media-body'>";
+		echo "<h2 class='media-heading'>Material Request Form Updated!</h2>You'll be redirected to previous page in 3 seconds.";
+		echo "</div></div></div></div></div>";
+		echo "<meta http-equiv='refresh' content='3;prc.material_request.php'>";
 		break;
 	default:
 		echo "<div class='block' style='height:100%'><div class='centered-login-status'>";
