@@ -58,6 +58,7 @@
 						lastName VARCHAR(50) NOT NULL,
 						emailAdd VARCHAR(50) NOT NULL,
 						departments VARCHAR(50) NULL,
+						position VARCHAR(50) NULL,
 						roles VARCHAR(25) NOT NULL,
 						passwd VARCHAR(100) NOT NULL,
 						status VARCHAR(15) NULL,
@@ -296,15 +297,49 @@
 		// Parts Master File - Equipment Type
 		// IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
 		$query = "CREATE TABLE partsEquipType (
-						id INT NOT NULL AUTO_INCREMENT,
-						dateTime TIMESTAMP NULL,
-						partsEquipTypeId VARCHAR(15) NOT NULL,
-						partsEquipTypeName VARCHAR(50) NOT NULL,
-						status VARCHAR(15) NULL,
-						PRIMARY KEY (id))";
+					 id INT NOT NULL AUTO_INCREMENT,
+					 dateTime TIMESTAMP NULL,
+					 partsEquipTypeId VARCHAR(15) NOT NULL,
+					 partsEquipTypeName VARCHAR(50) NOT NULL,
+					 status VARCHAR(15) NULL,
+					 PRIMARY KEY (id))";
 		$result = mysql_query($query);
 		if(!$result) die ("Tables create failed: " . mysql_error());
-
+		// Material Request Form
+		$query = "CREATE TABLE prcMaterialRequestForm (
+					 id INT NOT NULL AUTO_INCREMENT,
+					 dateTime TIMESTAMP NULL,
+					 mrSN VARCHAR(20) NOT NULL,
+					 mrNumber VARCHAR(35) NULL,
+					 mrDepartment VARCHAR(35) NULL,
+					 mrPurpose VARCHAR(20) NULL,
+					 mrDateReq VARCHAR(20) NULL,
+					 mrTotal INT(10) NOT NULL,
+					 mrRemark VARCHAR(100) NULL,
+					 mrRequestBy VARCHAR(35) NOT NULL,
+					 mrReviewStatus VARCHAR(20) NULL,
+					 mrApproveStatus VARCHAR(20) NULL,
+					 status VARCHAR(15) NULL,
+					 PRIMARY KEY(id))";
+		$result = mysql_query($query);
+		if(!$result) die ("Tables create failed: " . mysql_error());
+		// Material Request Form details
+		$query = "CREATE TABLE prcMaterialRequestFormDetails (
+					 id INT NOT NULL AUTO_INCREMENT,
+					 dateTime TIMESTAMP NULL,
+					 mrfDetailsSN VARCHAR(20) NOT NULL,
+					 mrfDetailsNumber VARCHAR(10) NOT NULL,
+					 mrfDetailsPartsNumber VARCHAR(100) NOT NULL,
+					 mrfDetailsDescription VARCHAR(100) NULL,
+					 mrfDetailsQty VARCHAR(15) NOT NULL,
+					 mrfDetailsUom VARCHAR(10) NULL,
+					 mrfDetailsStockQty VARCHAR(15) NULL,
+					 mrfDetailsEquipType VARCHAR(50) NULL,
+					 mrfDetailsModel VARCHAR(50) NULL,
+					 mrfDetailsPlateNo VARCHAR(20) NULL,
+					 PRIMARY KEY(id))";
+		$result = mysql_query($query);
+		if(!$result) die ("Tables create failed: " . mysql_error());
 
 
 
