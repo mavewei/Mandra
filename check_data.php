@@ -257,5 +257,29 @@
 				return true;
 			}
 		}
+		// details for part no.
+		if(!empty($_POST['partNo']) && !empty($_POST['totalRequest'])) {
+			$partsNumber = $_POST['partNo'];
+			$totalRequest = mysql_escape_string($_POST['totalRequest']);
+			//$query = 'SELECT partsDescription, partsUom, partsEquipType, partsModel FROM partsMasterFile
+						//WHERE partsNumber = "' . $partsNumber . '"';
+			$query = "SELECT partsDescription, partsUom, partsEquipType, partsModel FROM partsMasterFile
+						WHERE partsNumber = '$partsNumber'";
+			$result = mysql_query($query);
+			if(!$result) die ("Table access failed: " . mysql_error());
+			$row = mysql_num_rows($result);
+			if($row > 0) {
+				$rows = array();
+				while($data = mysql_fetch_array($result)) {
+					$rows[] = array("partsDescription" => $data['partsDescription'],
+										"partsUom" => ucwords(strtolower($data['partsUom'])),
+										"partsEquipType" => $data['partsEquipType'],
+										"partsModel" => $data['partsModel']);
+				};
+				echo json_encode($rows);
+			} else {
+				return false;
+			}
+		}
 	}
 ?>
