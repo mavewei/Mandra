@@ -1,0 +1,25 @@
+@charset "UTF-8";
+/* CSS Document */
+
+.cancel-or-padding {
+	padding-right: 3px;
+	padding-left: 3px;
+}
+.name-padding {
+    padding-left: 7px;
+}
+.no-infor {
+	color: silver;
+	text-align: center;
+}
+.table.table-light > tbody > tr > td .parts-pic {
+	display:inline-block;
+	vertical-align:middle;
+	height:30px;
+	/* width: 30px; */
+	-webkit-border-radius:100%;
+	-moz-border-radius:100%;
+	-ms-border-radius:100%;
+	-o-border-radius:100%;
+	border-radius:100%;
+}
