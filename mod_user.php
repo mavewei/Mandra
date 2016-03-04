@@ -2,18 +2,10 @@
 <link href="css/users.css" rel="stylesheet" type="text/css" />
 <link href="css/components.css" rel="stylesheet" type="text/css" />
 <link href="css/layout.css" rel="stylesheet" type="text/css" />
-<script type = "text/javascript">
-	history.pushState(null, null, '');
-	window.addEventListener('popstate', function(event) {
-		history.pushState(null, null, '');
-	});
-</script>
 <?php include('pages/page_meta.php'); ?>
 <?php
 	require_once('db/db_config.php');
-	/**
-		Check session id.
-	**/
+	// Check session id.
 	$login = $_SESSION['LOGIN_ID'];
 	$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 	$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
@@ -23,47 +15,42 @@
 	$sid = $data['sid'];
 	if($sid == $_SESSION['SID']) {
 		if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
-			if($_SESSION['GID'] < 3000) {
+			if($_SESSION['GID'] < 2000) {
 				$fname = $_SESSION['FNAME'];
 				$userId = $_GET['userId'];
 				$lastPage = $_SESSION['LAST_PAGE'];
 				$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
-				/**
-					Lifetime added 5min.
-				**/
+				// Lifetime added 5min.
 				if(isset($_SESSION['EXPIRETIME'])) {
 					if($_SESSION['EXPIRETIME'] < time()) {
 						unset($_SESSION['EXPIRETIME']);
 						header('Location: logout.php?TIMEOUT');
 						exit(0);
 					} else {
-						/**
-							Session time out time 5min.
-						**/
+						// Session time out time 5min.
 						//$_SESSION['EXPIRETIME'] = time() + 300;
 						$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
 					};
 				};
-				/**
-					Remove record.
-				**/
+				// Remove record.
 				if($_GET['delUserId']) {
 					$delUserId = $_GET['delUserId'];
 					deleteRecord($delUserId);
 				}
-				/**
-					Select departments lists.
-		   		**/
-		   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+				// Select departments lists.
+				mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 				$queryDept = "SELECT * from departments WHERE status = 'Active' ORDER BY deptName ASC";
 				$resultDept = mysql_query($queryDept);
 				$rowDept = mysql_num_rows($resultDept);
 				if(!$resultDept) die ("Table access failed: " . mysql_error());
-				/**
-					Select user information.
-				**/
-		   		$query = "SELECT * FROM userAccounts WHERE id = '$userId'";
-		   		$result = mysql_query($query);
+				// Select position.
+				$queryPosition = "SELECT * FROM position WHERE status = 'Active' ORDER BY positionName ASC";
+				$resultPosition = mysql_query($queryPosition);
+				$rowPosition = mysql_num_rows($resultPosition);
+				if(!$resultPosition) die ("Table access failed: " . mysql_error());
+				// Select user information.
+				$query = "SELECT * FROM userAccounts WHERE id = '$userId'";
+				$result = mysql_query($query);
 				if(!$result) die ("Table access failed: " . mysql_error());
 				$data = mysql_fetch_assoc($result);
 				$userId = $data['id'];
@@ -72,11 +59,10 @@
 				$lastName = $data['lastName'];
 				$emailAdd = $data['emailAdd'];
 				$departments = $data['departments'];
+				$position = $data['position'];
 				$roles = $data['roles'];
 				$passwd = $data['passwd'];
-				/**
-					Form submit.
-				**/
+				// Form submit.
 				if(isset($_POST['fname']) && isset($_POST['lname'])) {
 					$userId = $_POST['userId'];
 					$userGid = $_POST['currentGid'];
@@ -84,20 +70,15 @@
 					$lastName = ucwords(mysql_escape_string($_POST['lname']));
 					$emailAdd = strtolower(mysql_escape_string($_POST['login']));
 					$departments = $_POST['departments'];
+					$position = mysql_escape_string($_POST['position']);
 					$currentRoles = $_POST['currentRoles'];
 					$role = $_POST['roles'];
-					/**
-						Get the gid from tables
-					**/
+					// Get the gid from tables
 					if($role == $currentRoles) {
-						/**
-							Same role and gid no change.
-						**/
+						// Same role and gid no change.
 						$newGid = $userGid;
 					} else {
-						/**
-							Diff roles and get new gid.
-						**/
+						// Diff roles and get new gid.
 						if($role == "Managers") {
 							$query = "SELECT * from userAccounts WHERE roles = '$role' ORDER BY gid DESC LIMIT 1";
 							$result = mysql_query($query);
@@ -136,42 +117,33 @@
 							}
 						}
 					}
-					/**
-						Check password change.
-					**/
+					// Check password change.
 					$currentPasswd = $_POST['currentPasswd'];
 					if($_POST['passwd'] == "") {
 						$newPasswd = $currentPasswd;
 					} else {
 						$newPasswd = md5(mysql_escape_string($_POST['passwd']));
 					}
-					/**
-						Update user information.
-					**/
+					// Update user information.
 					$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
 					$result = mysql_query($query);
 					$row = mysql_fetch_array($result);
 					$time = $row['dateTime'];
-					$query = "UPDATE userAccounts
-								SET
+					$query = "UPDATE userAccounts SET
 									gid = '$newGid', firstName = '$firstName', lastName = '$lastName', emailAdd = '$emailAdd',
-									departments = '$departments', roles = '$role', passwd = '$newPasswd'
+									departments = '$departments', position = '$position', roles = '$role', passwd = '$newPasswd'
 								WHERE id = '$userId'";
 					print($query);
 					$result = mysql_query($query);
 					if(!$result) die ("Table access failed: " . mysql_error());
 					if($result) {
-						/**
-							User created and redirected to dashboard.
-						**/
+						// User created and redirected to dashboard.
 						$_SESSION['STATUS'] = 24;
 						header("Location: status.php");
 					};
 				};
 			} else {
-				/**
-					Redirect to dashboard if not Superuser or Manager
-				**/
+				// Redirect to dashboard if not Superuser or Manager
 				$_SESSION['STATUS'] = 10;
 				header('Location: status.php');
 			}
@@ -278,42 +250,48 @@
 												<label>Departments <!-- <small class="dept-not-found">Create <a href="add_department.php">here!</a></small> --></label>
 												<select name="departments" class="form-control input-lg" required>
 													<?php
-													if($rowDept < 1) {
-														/**
-														 No departments were created.
-														 **/
-														echo "<option value=''>No Department Found</option>";
-													} else {
-														/**
-														 Found departments lists.
-														 **/
-														echo "<option value=''>Select Department</option>";
-														for($i = 0; $i < $rowDept; ++$i) {
-															$deptCode = mysql_result($resultDept, $i, 'deptCode');
-															if($departments == $deptCode) {
-																echo "<option value='$deptCode' selected='selected'>$deptCode</option>";
-															} else {
-																echo "<option value='$deptCode'>$deptCode</option>";
+														if($rowDept < 1) {
+															/**
+															 No departments were created.
+															 **/
+															echo "<option value=''>No Department Found</option>";
+														} else {
+															/**
+															 Found departments lists.
+															 **/
+															echo "<option value=''>Select Department</option>";
+															for($i = 0; $i < $rowDept; ++$i) {
+																$deptCode = mysql_result($resultDept, $i, 'deptCode');
+																if($departments == $deptCode) {
+																	echo "<option value='$deptCode' selected='selected'>$deptCode</option>";
+																} else {
+																	echo "<option value='$deptCode'>$deptCode</option>";
+																}
 															}
 														}
-													}
 													?>
 												</select>
 											</div>
 										</div>
 										<div class="col-md-6">
 											<div class="form-group">
-												<label>Roles</label>
-												<select name="roles" class="form-control input-lg" required>
-													<option value="">Select Roles</option>
+												<label>Position</label>
+												<select name="position" class="form-control input-lg" required>
+													<option value="">Select Position</option>
 													<?php
-													$listRoles = array("Users", "Systems", "Managers");
-														$length = count($listRoles);
-														for($i = 0; $i < $length; ++$i) {
-															if($roles == $listRoles[$i]) {
-																echo "<option value=$listRoles[$i] selected='selected'>$listRoles[$i]</option>";
-															} else {
-																echo "<option value=$listRoles[$i]>$listRoles[$i]</option>";
+														if($rowPosition < 1) {
+															// No position were created.
+															echo "<option value=''>No Position Found</option>";
+														} else {
+															// Found position lists.
+															echo "<option value=''>Select Position</option>";
+															for($i = 0; $i < $rowPosition; ++$i) {
+																$positionName = mysql_result($resultPosition, $i, 'positionName');
+																if($position == $positionName) {
+																	echo "<option value='$positionName' selected='selected'>$positionName</option>";
+																} else {
+																	echo "<option value='$positionName'>$positionName</option>";
+																}
 															}
 														}
 													?>

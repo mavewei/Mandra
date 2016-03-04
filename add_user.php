@@ -239,14 +239,10 @@
 												<select name="position" class="form-control input-lg" required>
 													<?php
 														if($rowPosition < 1) {
-															/**
-																No departments were created.
-															**/
+															// No position were created.
 															echo "<option value=''>No Position Found</option>";
 														} else {
-															/**
-																Found departments lists.
-															**/
+															// Found position lists.
 															echo "<option value=''>Select Position</option>";
 															for($i = 0; $i < $rowPosition; ++$i) {
 																$positionName = mysql_result($resultPosition, $i, 'positionName');
