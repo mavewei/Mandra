@@ -2,18 +2,10 @@
 <link href="css/center.css" rel="stylesheet" type="text/css" />
 <link href="css/components.css" rel="stylesheet" type="text/css" />
 <link href="css/layout.css" rel="stylesheet" type="text/css" />
-<script type = "text/javascript">
-	history.pushState(null, null, 'dashboard.php');
-	window.addEventListener('popstate', function(event) {
-		history.pushState(null, null, 'dashboard.php');
-	});
-</script>
 <?php include('pages/page_meta.php'); ?>
 <?php
 	require_once('db/db_config.php');
-	/**
-		Check session id.
-	**/
+	// Check session id.
 	$login = $_SESSION['LOGIN_ID'];
 	$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 	$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
@@ -21,31 +13,29 @@
 	if(!$result) die ("Table access failed: " . mysql_error());
 	$data = mysql_fetch_assoc($result);
 	$sid = $data['sid'];
-	/**
-		Verify sid record with current sid.
-	**/
+	// Verify sid record with current sid.
 	if($sid == $_SESSION['SID']) {
 		if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
 			$fname = $_SESSION['FNAME'];
 			$role = $_SESSION['ROLE'];
 			$email = $_SESSION['LOGIN_ID'];
+			$position = $_SESSION['POSITION'];
 			$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
-			/**
-			 Lifetime added 5min.
-			 **/
+			// Lifetime added 5min.
 			if(isset($_SESSION['EXPIRETIME'])) {
 				if($_SESSION['EXPIRETIME'] < time()) {
 					unset($_SESSION['EXPIRETIME']);
 					header('Location: logout.php?TIMEOUT');
 					exit(0);
 				} else {
-					/**
-					 Session time out time 5min.
-					 **/
+					// Session time out time 5min.
 					//$_SESSION['EXPIRETIME'] = time() + 300;
 					$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
 				};
 			};
+			if($position == "") {
+				header("Location: update_position.php");
+			}
 		} else {
 			unset($_SESSION['STATUS']);
 			header('Location: status.php');
