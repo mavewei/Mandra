@@ -136,7 +136,19 @@
 												$mrTotal = mysql_result($result, $j, 'mrTotal');
 												$mrRequestBy = mysql_result($result, $j, 'mrRequestBy');
 												$mrReviewStatus = mysql_result($result, $j, 'mrReviewStatus');
+												if($mrReviewStatus == "No Status") {} else {
+													$string = mysql_result($result, $j, 'mrReviewedDateTime');
+													if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
+														$mrReviewStatus = $match[1];
+													};
+												}
 												$mrApproveStatus = mysql_result($result, $j, 'mrApproveStatus');
+												if($mrApproveStatus == "No Status") {} else {
+													$string = mysql_result($result, $j, 'mrApprovedDateTime');
+													if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
+														$mrApproveStatus = $match[1];
+													};
+												}
 												$string = mysql_result($result, $j, 'dateTime');
 												if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
 													$dateCreated = $match[1];
@@ -156,7 +168,7 @@
 											echo "</tbody>";
 										} else {
 											// No master file.
-											echo "<h3 class='no-infor'>No material request form found!</h3>";
+											echo "<h3 class='no-infor'>No Material Request Form found!</h3>";
 										}
 									?>
 								</table>
@@ -205,7 +217,20 @@
 			</div>
 		</div>
 	</div>
-</div><? include('pages/page_jquery.php'); ?>
+</div>
+<? include('pages/page_jquery.php'); ?>
+<script>
+	// Alertify confirm logout.
+	$(function() {
+		$('.logoutAlert').click(function() {
+			alertify.confirm("[ALERT]  Are you sure you want to LOGOUT?", function(result) {
+				if(result) {
+					window.location = "logout.php";
+				}
+			})
+		})
+	})
+</script>
 <? include('pages/page_footer.php'); ?>
 </body>
 </html>

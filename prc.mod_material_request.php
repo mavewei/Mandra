@@ -18,6 +18,7 @@
 			if($_SESSION['GID'] < 3000) {
 				$fname = $_SESSION['FNAME'];
 				$uid = $_SESSION['UID'];
+				$position = $_SESSION['POSITION'];
 				$mrSN = mysql_escape_string($_GET['mrSN']);
 				$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
 				// Lifetime added 5min.
@@ -32,8 +33,22 @@
 						$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
 					};
 				};
+				// Remove record.
+				if($_GET['delMrSN']) {
+					$delId = $_GET['delMrSN'];
+					deleteRecord($delId, 'prcMaterialRequestForm', 'mrSN');
+				}
+				// Reviewed confirm!
+				if($_GET['reviewedMrSN']) {
+					$reviewedMrSN = $_GET['reviewedMrSN'];
+					updateReviewed($reviewedMrSN, 'prcMaterialRequestForm', 'mrSN', $fname);
+				}
+				// Approved confirm!
+				if($_GET['approveMrSN']) {
+					$approveMrSN = $_GET['approveMrSN'];
+					updateApproved($approveMrSN, 'prcMaterialRequestForm', 'mrSN', $fname);
+				}
 				// Select material request form details.
-		   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 				$query = "SELECT * FROM prcMaterialRequestForm WHERE mrSn = '$mrSN'";
 				$result = mysql_query($query);
 				$row = mysql_num_rows($result);
@@ -53,7 +68,17 @@
 					$mrRemark = $data['mrRemark'];
 					$mrRequestBy = $data['mrRequestBy'];
 					$mrReviewStatus = $data['mrReviewStatus'];
+					if($mrReviewStatus == "No Status") {} else {
+						$mrReviewedPerson = $data['mrReviewedPerson'];
+						$mrReviewedDateTime = $data['mrReviewedDateTime'];
+						$mrReviewStatus = $mrReviewedDateTime . "   (" . $mrReviewedPerson . ")";
+					}
 					$mrApproveStatus = $data['mrApproveStatus'];
+					if($mrApproveStatus == "No Status") {} else {
+						$mrApprovedPerson = $data['mrApprovedPerson'];
+						$mrApprovedDateTime = $data['mrApprovedDateTime'];
+						$mrApproveStatus = $mrApprovedDateTime . "   (" . $mrApprovedPerson . ")";
+					}
 					// Material request form details
 					$queryDetails = "SELECT * FROM prcMaterialRequestFormDetails WHERE mrfDetailsSN = '$mrSN'";
 					$resultDetails = mysql_query($queryDetails);
@@ -71,8 +96,8 @@
 					if($mrRemark != "N/A") {
 						$mrRemark = ucwords(strtolower($mrRemark));
 					}
-					$mrReviewStatus = mysql_escape_string($_POST['mrReviewStatus']);
-					$mrApproveStatus = mysql_escape_string($_POST['mrApproveStatus']);
+					//$mrReviewStatus = mysql_escape_string($_POST['mrReviewStatus']);
+					//$mrApproveStatus = mysql_escape_string($_POST['mrApproveStatus']);
 					// Array for each parts details
 					$mrfDetailsQtyArray = array();
 					$mrfDetailsPlateNoArray = array();
@@ -129,6 +154,40 @@
 		unset($_SESSION['STATUS']);
 		header('Location: status.php');
 	}
+	function deleteRecord($idx, $tables, $tableId) {
+		$query = "UPDATE $tables SET status = 'Cancel' WHERE $tableId = '$idx'";
+		$result = mysql_query($query);
+		if(!$result) die ("Table access failed: " . mysql_error());
+		if($result) {
+			header('Location: prc.material_request.php');
+		}
+	}
+	// Reviewed updated.
+	function updateReviewed($idx, $tables, $tableId, $fname) {
+		$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
+		$result = mysql_query($query);
+		$row = mysql_fetch_array($result);
+		$time = $row['dateTime'];
+		$query = "UPDATE $tables SET mrReviewStatus = 'Reviewed', mrReviewedPerson = '$fname', mrReviewedDateTime = '$time' WHERE $tableId = '$idx'";
+		$result = mysql_query($query);
+		if(!$result) die ("Table access failed: " . mysql_error());
+		if($result) {
+			header('Location: prc.material_request.php');
+		}
+	}
+	// Approved updated.
+	function updateApproved($idx, $tables, $tableId, $fname) {
+		$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
+		$result = mysql_query($query);
+		$row = mysql_fetch_array($result);
+		$time = $row['dateTime'];
+		$query = "UPDATE $tables SET mrApproveStatus = 'Approved', mrApprovedPerson = '$fname', mrApprovedDateTime = '$time' WHERE $tableId = '$idx'";
+		$result = mysql_query($query);
+		if(!$result) die ("Table access failed: " . mysql_error());
+		if($result) {
+			header('Location: prc.material_request.php');
+		}
+	}
 ?>
 <? include('pages/page_menu.php'); ?>
 <div class="page-container">
@@ -180,7 +239,7 @@
 										<div class="col-md-2">
 											<div class="form-group">
 												<label>Series Number</label>
-												<input type="text" class="form-control input-lg" style="text-align: center" name="mrSN" value="<?php echo $mrSN; ?>" readonly>
+												<input id="mrSN" type="text" class="form-control input-lg" style="text-align: center" name="mrSN" value="<?php echo $mrSN; ?>" readonly>
 											</div>
 										</div>
 									</div>
@@ -249,12 +308,12 @@
 												<thead>
 													<tr class="uppercase">
 														<th class="center" style="width: 1%">#</th>
-														<th class="left" style="width: 19%">Part No</th>
+														<th class="left" style="width: 18%">Part No</th>
 														<th class="left" style="width: 18%">Description</th>
 														<th class="center" style="width: 9%">Qty</th>
 														<th class="center" style="width: 9%">UOM</th>
 														<th class="center" style="width: 8%">Stk. Qty</th>
-														<th class="center" style="width: 12%">Type</th>
+														<th class="center" style="width: 13%">Type</th>
 														<th class="center" style="width: 14%">Model</th>
 														<th class="center" style="width: 10%">Plate No</th>
 													</tr>
@@ -272,15 +331,23 @@
 															$mrfDetailsModel = mysql_result($resultDetails, $j, 'mrfDetailsModel');
 															$mrfDetailsPlateNo = mysql_result($resultDetails, $j, 'mrfDetailsPlateNo');
 															echo "<tr>";
-															echo "<td align=\"center\">$sn</td>";
-															echo "<td align=\"left\">$mrfDetailsPartsNumber</td>";
-															echo "<td align=\"left\">$mrfDetailsDescription</td>";
-															echo "<td align=\"center\"><input type='text' class='form-control input-sm' name='prcQty#$j' value='$mrfDetailsQty' style='text-align: center' required></td>";
-															echo "<td align=\"center\">$mrfDetailsUom</td>";
-															echo "<td align=\"center\">$mrfDetailsStockQty</td>";
-															echo "<td align=\"center\">$mrfDetailsEquipType</td>";
-															echo "<td align=\"center\">$mrfDetailsModel</td>";
-															echo "<td align=\"center\"><input type='text' class='form-control input-sm' name='prcPlateNo#$j' value='$mrfDetailsPlateNo' style='text-align: center'></td>";
+															echo "<td align='center'>$sn</td>";
+															echo "<td align='left'>$mrfDetailsPartsNumber</td>";
+															echo "<td align='left'>$mrfDetailsDescription</td>";
+															if($mrReviewStatus == "No Status") {
+																echo "<td align='center'><input type='text' class='form-control input-sm' name='prcQty#$j' value='$mrfDetailsQty' style='text-align: center' required></td>";
+															} else {
+																echo "<td align='center'>$mrfDetailsQty</td>";
+															}
+															echo "<td align='center'>$mrfDetailsUom</td>";
+															echo "<td align='center'>$mrfDetailsStockQty</td>";
+															echo "<td align='center'>$mrfDetailsEquipType</td>";
+															echo "<td align='center'>$mrfDetailsModel</td>";
+															if($mrReviewStatus == "No Status") {
+																echo "<td align='center'><input type='text' class='form-control input-sm' name='prcPlateNo#$j' value='$mrfDetailsPlateNo' style='text-align: center'></td>";
+															} else {
+																echo "<td align='center'>$mrfDetailsPlateNo</td>";
+															}
 															echo "</tr>";
 														};
 													?>
@@ -312,23 +379,62 @@
 										</div>
 										<div class="col-md-4">
 											<div class="form-group" style="text-align: center">
-												<label>Reviewed by Department Head</label>
-												<input id="mrRequestBy" type="text" class="form-control input-lg" name="mrReviewStatus" style="text-align: center" value="<?php echo $mrReviewStatus; ?>">
+												<?php
+													if($mrReviewStatus == "No Status") {
+														if(in_array($position, (array("Root", "Su", "Chief Mechanic")))) {
+												?>
+															<label style="display: block; text-align: center; margin: auto; padding-bottom: 12px;">Reviewed by Department Head</label>
+															<input id="mrReviewed" type="button" value="Review" class="btn btn-success">
+														<?php } else { ?>
+															<label>Reviewed by Department Head</label>
+															<input type="text" class="form-control input-lg" name="mrReviewStatus" style="text-align: center" value="<?php echo $mrReviewStatus; ?>">
+														<?php } ?>
+													<?php } else { ?>
+														<label>Reviewed by Department Head</label>
+														<input type="text" class="form-control input-lg" name="mrReviewStatus" style="text-align: center" value="<?php echo $mrReviewStatus; ?>">
+												<?php } ?>
 											</div>
 										</div>
 										<div class="col-md-4">
 											<div class="form-group" style="text-align: center">
-												<label>Approved by Operation Manager</label>
-												<input id="mrRequestBy" type="text" class="form-control input-lg" name="mrApproveStatus" style="text-align: center" value="<?php echo $mrApproveStatus; ?>">
+												<?php if($mrReviewStatus == "No Status") { ?>
+												<!--
+													<label>Approved by Operation Manager</label>
+													<input type="text" class="form-control input-lg" name="mrApproveStatus" style="text-align: center" value="<?php echo $mrApproveStatus; ?>">
+												-->
+												<?php
+													} else {
+														if($mrApproveStatus == "No Status") {
+												?>
+															<?php if(in_array($position, (array("Root", "Su", "Operation Manager")))) {?>
+																<label style="display: block; text-align: center; margin: auto; padding-bottom: 12px;">Approved by Operation Manager</label>
+																<input id="mrfApproved" type="button" value="Approve" class="btn btn-success">
+																<input id="mrfReject" type="button" value="REJECT" class="btn btn-default">
+															<?php } else { ?>
+																<label>Approved by Operation Manager</label>
+																<input type="text" class="form-control input-lg" name="mrApproveStatus" style="text-align: center" value="<?php echo $mrApproveStatus; ?>">
+															<?php } ?>
+														<?php } else { ?>
+															<label>Approved by Operation Manager</label>
+															<input type="text" class="form-control input-lg" name="mrApproveStatus" style="text-align: center" value="<?php echo $mrApproveStatus; ?>">
+														<?php } ?>
+												<?php } ?>
 											</div>
 										</div>
 									</div>
 								</div>
 								<div class="form-actions" style="text-align: center">
-									<input type="submit" value="Update" class="btn blue">
-									<a href="prc.material_request.php"><button type="button" class="btn default">Close</button></a>
-									<label class="cancel-or-padding">or</label>
-									<input type="button" id="partsDel" value="DELETE" class="btn red">
+									<?php if($mrReviewStatus == "No Status") { ?>
+										<input type="submit" value="Update" class="btn blue">
+										<a href="prc.material_request.php"><button type="button" class="btn default">Close</button></a>
+										<label class="cancel-or-padding">or</label>
+										<input type="button" id="mrfDel" value="DELETE" class="btn red">
+									<?php } elseif($mrApproveStatus <> "No Status") { ?>
+										<a href="prc.material_request.php"><button type="button" class="btn default">Close</button></a>
+										<a href="prc.material_request.php"><img class='print-preview' src='images/print_preview.png'>
+									<?php } else { ?>
+										<a href="prc.material_request.php"><button type="button" class="btn default">Close</button></a>
+									<?php } ?>
 								</div>
 							</form>
 						</div>
@@ -340,6 +446,61 @@
 	</div>
 </div>
 <? include('pages/page_jquery.php'); ?>
+<script>
+	// Alertify confirm logout.
+	$(function() {
+		$('.logoutAlert').click(function() {
+			alertify.confirm("[ALERT]  Are you sure you want to LOGOUT?", function(result) {
+				if(result) {
+					window.location = "logout.php";
+				}
+			})
+		})
+	})
+	$(function() {
+		var mrSN = document.getElementById("mrSN").value;
+		$('#mrfDel').click(function(){
+			alertify.confirm("[CAUTION]  Are you sure you want to DELETE this record?", function(result) {
+				if(result) {
+					window.location="prc.mod_material_request.php?delMrSN=" + mrSN;
+				}
+			});
+		})
+	})
+	// Review confirm.
+	$(function() {
+		var mrSN = document.getElementById("mrSN").value;
+		$('#mrReviewed').click(function() {
+			alertify.confirm("[REVIEW]  Are you sure you have REVIEW this request form?", function(result) {
+				if(result) {
+					window.location = "prc.mod_material_request.php?reviewedMrSN=" + mrSN;
+				}
+			})
+		})
+	})
+	// Operation Manager approved.
+	$(function() {
+		var mrSN = document.getElementById("mrSN").value;
+		$('#mrfApproved').click(function() {
+			alertify.confirm("[APPROVE]  Are you sure you want to APPROVE this request Form?", function(result) {
+				if(result) {
+					window.location = "prc.mod_material_request.php?approveMrSN=" + mrSN;
+				}
+			})
+		})
+	})
+	// Operation Manager reject.
+	$(function() {
+		var mrSN = document.getElementById("mrSN").value;
+		$('#mrfReject').click(function() {
+			alertify.confirm("[REJECT]  Are you sure you want to REJECT this request Form?", function(result) {
+				if(result) {
+					window.location = "prc.mod_material_request.php?reviewedMrSN=" + mrSN;
+				}
+			})
+		})
+	})
+</script>
 <? include('pages/page_footer.php'); ?>
 </body>
 </html>
