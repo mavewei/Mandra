@@ -31,7 +31,7 @@
 						$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
 					};
 				};
-				// Select parts uom lists.
+				// Get MRF details.
 		   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 				$query = "SELECT * FROM prcMaterialRequestForm ORDER BY id DESC";
 				$result = mysql_query($query);
@@ -43,6 +43,13 @@
 					$row++;
 					$prcMaterialFormId = 'MR' . sprintf('%04d', $row);
 				}
+				// Get MR number details.
+		   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+				$queryCount = "SELECT * FROM prcMaterialRequestForm WHERE mrDepartment = '$mrDepartment'";
+				$resultCount = mysql_query($queryCount);
+				$rowCount = mysql_num_rows($resultCount);
+				if(!$result) die ("Table access failed: " . mysql_error());
+				$mrNumber = getMrNumber($rowCount, $mrDepartment);
 				// Select part no
 				$queryParts = "SELECT * FROM partsMasterFile WHERE status = 'Active' ORDER BY partsNumber ASC";
 				$resultParts = mysql_query($queryParts);
@@ -151,6 +158,56 @@
 		unset($_SESSION['STATUS']);
 		header('Location: status.php');
 	}
+	function getMrNumber($row, $mrDepartment) {
+		if($row == 0) {
+			if($mrDepartment == "Monrovia") {
+				$mrNumber = "MO" . "-" . date("Y") . "-" . date("m") . "-" . "01";
+			} elseif($mrDepartment == "Workshop") {
+				$mrNumber = "WS" . "-" . date("Y") . "-" . date("m") . "-" . "01";
+			} elseif($mrDepartment == "Warehouse") {
+				$mrNumber = "WH" . "-" . date("Y") . "-" . date("m") . "-" . "01";
+			} elseif($mrDepartment == "Log Pond Buchanan") {
+				$mrNumber = "LB" . "-" . date("Y") . "-" . date("m") . "-" . "01";
+			} elseif($mrDepartment == "Log Pond Greenville") {
+				$mrNumber = "LV" . "-" . date("Y") . "-" . date("m") . "-" . "01";
+			} elseif($mrDepartment == "Camp B") {
+				$mrNumber = "CB" . "-" . date("Y") . "-" . date("m") . "-" . "01";
+			} elseif($mrDepartment == "CC") {
+				$mrNumber = "CC" . "-" . date("Y") . "-" . date("m") . "-" . "01";
+			} elseif($mrDepartment == "Camp I") {
+				$mrNumber = "CI" . "-" . date("Y") . "-" . date("m") . "-" . "01";
+			} elseif($mrDepartment == "Camp LHW") {
+				$mrNumber = "CH" . "-" . date("Y") . "-" . date("m") . "-" . "01";
+			} else {
+				$mrNumber = "Invalid Location!";
+			}
+			return $mrNumber;
+		} else {
+			$row = $row + 1;
+			if($mrDepartment == "Monrovia") {
+				$mrNumber = "MO" . "-" . date("Y") . "-" . date("m") . "-" . sprintf('%02d', $row);
+			} elseif($mrDepartment == "Workshop") {
+				$mrNumber = "WS" . "-" . date("Y") . "-" . date("m") . "-" . sprintf('%02d', $row);
+			} elseif($mrDepartment == "Warehouse") {
+				$mrNumber = "WH" . "-" . date("Y") . "-" . date("m") . "-" . sprintf('%02d', $row);
+			} elseif($mrDepartment == "Log Pond Buchanan") {
+				$mrNumber = "LB" . "-" . date("Y") . "-" . date("m") . "-" . sprintf('%02d', $row);
+			} elseif($mrDepartment == "Log Pond Greenville") {
+				$mrNumber = "LV" . "-" . date("Y") . "-" . date("m") . "-" . sprintf('%02d', $row);
+			} elseif($mrDepartment == "Camp B") {
+				$mrNumber = "CB" . "-" . date("Y") . "-" . date("m") . "-" . sprintf('%02d', $row);
+			} elseif($mrDepartment == "CC") {
+				$mrNumber = "CC" . "-" . date("Y") . "-" . date("m") . "-" . sprintf('%02d', $row);
+			} elseif($mrDepartment == "Camp I") {
+				$mrNumber = "CI" . "-" . date("Y") . "-" . date("m") . "-" . sprintf('%02d', $row);
+			} elseif($mrDepartment == "Camp LHW") {
+				$mrNumber = "CH" . "-" . date("Y") . "-" . date("m") . "-" . sprintf('%02d', $row);
+			} else {
+				$mrNumber = "Invalid Location!";
+			}
+			return $mrNumber;
+		}
+	}
 ?>
 <? include('pages/page_menu.php'); ?>
 <div class="page-container">
@@ -217,7 +274,7 @@
 										<div class="col-md-2">
 											<div class="form-group">
 												<label>MR No</label>
-												<input type="text" class="form-control input-lg" name="mrNumber" autofocus>
+												<input type="text" class="form-control input-lg" name="mrNumber" value="<?php echo $mrNumber; ?>">
 											</div>
 										</div>
 										<div class="col-md-2">
@@ -258,11 +315,11 @@
 													<tr class="uppercase">
 														<th class="center" style="width: 1%">#</th>
 														<th class="left" style="width: 18%">Part No</th>
-														<th class="left" style="width: 21%">Description</th>
+														<th class="left" style="width: 18%">Description</th>
 														<th class="center" style="width: 9%">Qty</th>
 														<th class="center" style="width: 9%">UOM</th>
-														<th class="center" style="width: 8%">Stk. Qty</th>
-														<th class="center" style="width: 12%">Type</th>
+														<th class="center" style="width: 10%">Stk. Qty</th>
+														<th class="center" style="width: 13%">Type</th>
 														<th class="center" style="width: 13%">Model</th>
 														<th class="center" style="width: 9%">Plate No</th>
 													</tr>
@@ -319,19 +376,19 @@
 										<div class="col-md-4">
 											<div class="form-group" style="text-align: center">
 												<label>Requested By</label>
-												<input id="mrRequestBy" type="text" class="form-control input-lg" name="mrRequestBy" style="text-align: center" placeholder="Requested By" value="<? echo $fname; ?>">
+												<input type="text" class="form-control input-lg" name="mrRequestBy" style="text-align: center" placeholder="Requested By" value="<? echo $fname; ?>">
 											</div>
 										</div>
 										<div class="col-md-4">
 											<div class="form-group" style="text-align: center">
 												<label>Reviewed by Department Head</label>
-												<input id="mrRequestBy" type="text" class="form-control input-lg" name="mrReviewStatus" style="text-align: center">
+												<input type="text" class="form-control input-lg" name="mrReviewStatus" style="text-align: center">
 											</div>
 										</div>
 										<div class="col-md-4">
 											<div class="form-group" style="text-align: center">
 												<label>Approved by Operation Manager</label>
-												<input id="mrRequestBy" type="text" class="form-control input-lg" name="mrApproveStatus" style="text-align: center">
+												<input type="text" class="form-control input-lg" name="mrApproveStatus" style="text-align: center">
 											</div>
 										</div>
 									</div>
@@ -424,6 +481,16 @@
 			}
 		}
 	}
+	// Alertify confirm logout.
+	$(function() {
+		$('.logoutAlert').click(function() {
+			alertify.confirm("[ALERT]  Are you sure you want to LOGOUT?", function(result) {
+				if(result) {
+					window.location = "logout.php";
+				}
+			})
+		})
+	})
 </script>
 <? include('pages/page_footer.php'); ?>
 </body>
