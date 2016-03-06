@@ -318,7 +318,11 @@
 					 mrRemark VARCHAR(100) NULL,
 					 mrRequestBy VARCHAR(35) NOT NULL,
 					 mrReviewStatus VARCHAR(20) NULL,
+					 mrReviewedPerson VARCHAR(50) NULL,
+					 mrReviewedDateTime TIMESTAMP NULL,
 					 mrApproveStatus VARCHAR(20) NULL,
+					 mrApprovedPerson VARCHAR(50) NULL,
+					 mrApprovedDateTime TIMESTAMP NULL,
 					 status VARCHAR(15) NULL,
 					 PRIMARY KEY(id))";
 		$result = mysql_query($query);
