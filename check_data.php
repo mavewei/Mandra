@@ -258,9 +258,9 @@
 			}
 		}
 		// details for part no.
-		if(!empty($_POST['partNo']) && !empty($_POST['totalRequest'])) {
-			$partsNumber = $_POST['partNo'];
-			$totalRequest = mysql_escape_string($_POST['totalRequest']);
+		if(!empty($_POST['mrfPartNumber'])) {
+			$partsNumber = $_POST['mrfPartNumber'];
+			//$totalRequest = mysql_escape_string($_POST['totalRequest']);
 			//$query = 'SELECT partsDescription, partsUom, partsEquipType, partsModel FROM partsMasterFile
 						//WHERE partsNumber = "' . $partsNumber . '"';
 			$query = "SELECT partsDescription, partsUom, partsEquipType, partsModel FROM partsMasterFile
