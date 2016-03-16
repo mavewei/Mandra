@@ -117,9 +117,9 @@
 								<table class="table table-hover table-light">
 									<?php
 										if($rows > 0) {
-											echo "<thead><tr class='uppercase'><th style='width: 12%'>S/N</th>";
+											echo "<thead><tr class='uppercase'><th style='width: 10%'>S/N</th>";
 											echo "<th class='center' style='width: 11%'>Date</th>";
-											echo "<th class='left' style='width: 10%'>MR No</th>";
+											echo "<th class='left' style='width: 12%'>MR No</th>";
 											echo "<th class='center' style='width: 11%'>Department</th>";
 											//echo "<th class='center' style='width: 15%'>Purpose</th>";
 											echo "<th class='center' style='width: 11%'>Date Required</th>";
