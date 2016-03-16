@@ -340,11 +340,29 @@
 					 mrfDetailsStockQty VARCHAR(15) NULL,
 					 mrfDetailsEquipType VARCHAR(50) NULL,
 					 mrfDetailsModel VARCHAR(50) NULL,
-					 mrfDetailsPlateNo VARCHAR(20) NULL,
+					 mrfDetailsEquipNo VARCHAR(20) NULL,
 					 PRIMARY KEY(id))";
 		$result = mysql_query($query);
 		if(!$result) die ("Tables create failed: " . mysql_error());
-
+		// Equipment list.
+		$query = "CREATE TABLE equipLists (
+					 id INT NOT NULL AUTO_INCREMENT,
+					 dateTime TIMESTAMP NULL,
+					 equipNumber VARCHAR(20) NOT NULL,
+					 equipCode VARCHAR(20) NULL,
+					 equipOwner VARCHAR(20) NULL,
+					 equipDescription VARCHAR(100) NULL,
+					 equipType VARCHAR(50) NULL,
+					 equipModel VARCHAR(50) NULL,
+					 equipEngineNo VARCHAR(50) NULL,
+					 equipChasisNo VARCHAR(50) NULL,
+					 equipPrevVehicleNo VARCHAR(25) NULL,
+					 equipAssignedVehicleNo VARCHAR(25) NULL,
+					 equipRegisteredDate DATE NULL,
+					 equipUser VARCHAR(25) NULL,
+					 PRIMARY KEY(id))";
+		$result = mysql_query($query);
+		if(!$result) die ("Tables create failed: " . mysql_error());
 
 
 
