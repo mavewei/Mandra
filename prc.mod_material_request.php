@@ -100,12 +100,12 @@
 					//$mrApproveStatus = mysql_escape_string($_POST['mrApproveStatus']);
 					// Array for each parts details
 					$mrfDetailsQtyArray = array();
-					$mrfDetailsPlateNoArray = array();
+					$mrfDetailsEquipNoArray = array();
 					for($i = 0; $i < $mrTotal; $i++) {
-						$mrfDetailsQty = "prcQty#" . $i;
-						$mrfDetailsPlateNo = "prcPlateNo#" . $i;
+						$mrfDetailsQty = "prcQty" . $i;
+						$mrfDetailsEquipNo = "prcEquipNo" . $i;
 						$mrfDetailsQtyArray[] = mysql_escape_string($_POST[$mrfDetailsQty]);
-						$mrfDetailsPlateNoArray[] = strtoupper(mysql_escape_string($_POST[$mrfDetailsPlateNo]));
+						$mrfDetailsEquipNoArray[] = strtoupper(mysql_escape_string($_POST[$mrfDetailsEquipNo]));
 					};
 					$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
 					$result = mysql_query($query);
@@ -121,16 +121,16 @@
 					if($result) {
 						// Material request form created and redirected to previous page.
 						for($j = 0; $j < $mrTotal; $j++) {
-							$mrfDetailsPartsNumber = explode("#", $mrfDetailsPartsNumberArray[$j]);
-							$mrfDetailsQty = explode("#", $mrfDetailsQtyArray[$j]);
-							$mrfDetailsPlateNo = explode("#", $mrfDetailsPlateNoArray[$j]);
+							$mrfDetailsPartsNumber = $mrfDetailsPartsNumberArray[$j];
+							$mrfDetailsQty = $mrfDetailsQtyArray[$j];
+							$mrfDetailsEquipNo = $mrfDetailsEquipNoArray[$j];
 							//$mrfDetailsPartsNumber = $mrfDetailsPartsNumberArray[$j];
 							//$mrfDetailsQty = $mrfDetailsQtyArray[$j];
 							//$mrfDetailsPlateNo = $mrfDetailsPlateNoArray[$j];
-							// $mrfDetailsPartsNumber = explode("&", $mrfDetailsPartsNumber);
+							// $mrfDetailsPartsNumber = explode("&", $mrfDetailsPartsNumber[$j]);
 							$query = "UPDATE prcMaterialRequestFormDetails SET
-											dateTime = '$time', mrfDetailsQty = '$mrfDetailsQty[0]',
-											mrfDetailsPlateNo = '$mrfDetailsPlateNo[0]'
+											dateTime = '$time', mrfDetailsQty = '$mrfDetailsQty',
+											mrfDetailsEquipNo = '$mrfDetailsEquipNo'
 										 WHERE mrfDetailsSN = '$mrSN' AND mrfDetailsNumber = '$j'";
 							$result = mysql_query($query);
 							if(!$result) die ("Database access failed: " . mysql_error());
@@ -189,7 +189,7 @@
 		}
 	}
 ?>
-<? include('pages/page_menu.php'); ?>
+<?php include('pages/page_menu.php'); ?>
 <div class="page-container">
 	<div class="page-head">
 		<div class="container">
@@ -315,7 +315,7 @@
 														<th class="center" style="width: 8%">Stk. Qty</th>
 														<th class="center" style="width: 13%">Type</th>
 														<th class="center" style="width: 14%">Model</th>
-														<th class="center" style="width: 10%">Plate No</th>
+														<th class="center" style="width: 10%">Equip. No</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -329,13 +329,13 @@
 															$mrfDetailsStockQty = mysql_result($resultDetails, $j, 'mrfDetailsStockQty');
 															$mrfDetailsEquipType = mysql_result($resultDetails, $j, 'mrfDetailsEquipType');
 															$mrfDetailsModel = mysql_result($resultDetails, $j, 'mrfDetailsModel');
-															$mrfDetailsPlateNo = mysql_result($resultDetails, $j, 'mrfDetailsPlateNo');
+															$mrfDetailsEquipNo = mysql_result($resultDetails, $j, 'mrfDetailsEquipNo');
 															echo "<tr>";
 															echo "<td align='center'>$sn</td>";
 															echo "<td align='left'>$mrfDetailsPartsNumber</td>";
 															echo "<td align='left'>$mrfDetailsDescription</td>";
 															if($mrReviewStatus == "No Status") {
-																echo "<td align='center'><input type='text' class='form-control input-sm' name='prcQty#$j' value='$mrfDetailsQty' style='text-align: center' required></td>";
+																echo "<td align='center'><input type='text' class='form-control input-sm' name='prcQty$j' value='$mrfDetailsQty' style='text-align: center' required></td>";
 															} else {
 																echo "<td align='center'>$mrfDetailsQty</td>";
 															}
@@ -344,9 +344,9 @@
 															echo "<td align='center'>$mrfDetailsEquipType</td>";
 															echo "<td align='center'>$mrfDetailsModel</td>";
 															if($mrReviewStatus == "No Status") {
-																echo "<td align='center'><input type='text' class='form-control input-sm' name='prcPlateNo#$j' value='$mrfDetailsPlateNo' style='text-align: center'></td>";
+																echo "<td align='center'><input type='text' class='form-control input-sm' name='prcEquipNo$j' value='$mrfDetailsEquipNo' style='text-align: center'></td>";
 															} else {
-																echo "<td align='center'>$mrfDetailsPlateNo</td>";
+																echo "<td align='center'>$mrfDetailsEquipNo</td>";
 															}
 															echo "</tr>";
 														};

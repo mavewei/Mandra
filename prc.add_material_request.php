@@ -1,8 +1,9 @@
-<? include('pages/page_header.php'); ?>
+<?php include('pages/page_header.php'); ?>
+<link href="css/material-request.css" rel="stylesheet" type="text/css" />
 <link href="css/components.css" rel="stylesheet" type="text/css" />
 <link href="css/layout.css" rel="stylesheet" type="text/css" />
-<? include('pages/page_meta.php'); ?>
-<?
+<?php include('pages/page_meta.php'); ?>
+<?php
 	require_once('db/db_config.php');
 	// Check session id.
 	$login = $_SESSION['LOGIN_ID'];
@@ -51,10 +52,21 @@
 				if(!$result) die ("Table access failed: " . mysql_error());
 				$mrNumber = getMrNumber($rowCount, $mrDepartment);
 				// Select part no
-				$queryParts = "SELECT * FROM partsMasterFile WHERE status = 'Active' ORDER BY partsNumber ASC";
+				$queryParts = "SELECT partsNumber, partsDescription FROM partsMasterFile WHERE status = 'Active' ORDER BY partsNumber ASC";
 				$resultParts = mysql_query($queryParts);
 				$rowsParts = mysql_num_rows($resultParts);
 				if(!$resultParts) die ("Table access failed: " . mysql_error());
+				// Check partsDetails file exists.
+				$filename = 'partsDetails.csv';
+				if(!file_exists($filename)) {
+					// Write parts number to file.
+					$fh = fopen('partsDetails.csv', 'w');
+					// keeps getting the next row until there are no more to get
+					while($row = mysql_fetch_array($resultParts)) {
+				    		fputcsv($fh, array($row['partsNumber'], $row['partsDescription']), ",");
+					}
+					fclose($fh);
+				}
 				// Form submitted.
 				if(isset($_POST['mrNumber']) && isset($_POST['mrPurpose'])) {
 					$mrDateTime = mysql_escape_string($_POST['mrDateTime']);
@@ -79,17 +91,17 @@
 					$mrfDetailsStockQtyArray = array();
 					$mrfDetailsEquipTypeArray = array();
 					$mrfDetailsModelArray = array();
-					$mrfDetailsPlateNoArray = array();
+					$mrfDetailsEquipNoArray = array();
 					// $mrfDetailsStockQtyArray = array();
 					for($i = 0; $i < $mrTotal; $i++) {
-						$mrfDetailsPartsNumber = "partNo#" . $i;
-						$mrfDetailsDescription = "partsDescription#" . $i;
-						$mrfDetailsQty = "prcQty#" . $i;
-						$mrfDetailsUom = "partsUom#" . $i;
-						$mrfDetailsStockQty = "prcStockQty#" . $i;
-						$mrfDetailsEquipType = "partsEquipType#" . $i;
-						$mrfDetailsModel = "partsModel#" . $i;
-						$mrfDetailsPlateNo = "prcPlateNo#" . $i;
+						$mrfDetailsPartsNumber = "partNo" . $i;
+						$mrfDetailsDescription = "partsDescription" . $i;
+						$mrfDetailsQty = "prcQty" . $i;
+						$mrfDetailsUom = "partsUom" . $i;
+						$mrfDetailsStockQty = "prcStockQty" . $i;
+						$mrfDetailsEquipType = "partsEquipType" . $i;
+						$mrfDetailsModel = "partsModel" . $i;
+						$mrfDetailsEquipNo = "prcEquipNo" . $i;
 						$mrfDetailsPartsNumberArray[] = mysql_escape_string($_POST[$mrfDetailsPartsNumber]);
 						$mrfDetailsDescriptionArray[] = ucwords(strtolower(mysql_escape_string($_POST[$mrfDetailsDescription])));
 						$mrfDetailsQtyArray[] = mysql_escape_string($_POST[$mrfDetailsQty]);
@@ -97,23 +109,31 @@
 						$mrfDetailsStockQtyArray[] = mysql_escape_string($_POST[$mrfDetailsStockQty]);
 						$mrfDetailsEquipTypeArray[] = ucwords(strtolower(mysql_escape_string($_POST[$mrfDetailsEquipType])));
 						$mrfDetailsModelArray[] = mysql_escape_string($_POST[$mrfDetailsModel]);
-						$mrfDetailsPlateNoArray[] = strtoupper(mysql_escape_string($_POST[$mrfDetailsPlateNo]));
+						$mrfDetailsEquipNoArray[] = strtoupper(mysql_escape_string($_POST[$mrfDetailsEquipNo]));
 					};
 					$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
 					$result = mysql_query($query);
 					$row = mysql_fetch_array($result);
 					$time = $row['dateTime'];
 					$query = "INSERT INTO prcMaterialRequestForm(dateTime, mrSN, mrNumber, mrDepartment, mrPurpose,
-																	  mrDateReq, mrTotal, mrRemark, mrRequestBy, mrReviewStatus,
-																	  mrApproveStatus, status)
+									mrDateReq, mrTotal, mrRemark, mrRequestBy, mrReviewStatus, mrApproveStatus, status)
 								VALUES('$time', '$mrSN', '$mrNumber', '$mrDepartment', '$mrPurpose', '$mrDateReq',
-										  '$mrTotal', '$mrRemark', '$mrRequestBy', '$mrReviewStatus', '$mrApproveStatus',
+									'$mrTotal', '$mrRemark', '$mrRequestBy', '$mrReviewStatus', '$mrApproveStatus',
 										  '$status')";
 					$result = mysql_query($query);
 					if(!$result) die ("Table access failed: " . mysql_error());
 					if($result) {
 						// Material request form created and redirected to previous page.
 						for($j = 0; $j < $mrTotal; $j++) {
+							$mrfDetailsPartsNumber = substr($mrfDetailsPartsNumberArray[$j], 0, -1);
+							$mrfDetailsDescription = $mrfDetailsDescriptionArray[$j];
+							$mrfDetailsQty = $mrfDetailsQtyArray[$j];
+							$mrfDetailsUom = $mrfDetailsUomArray[$j];
+							$mrfDetailsStockQty = $mrfDetailsStockQtyArray[$j];
+							$mrfDetailsEquipType = $mrfDetailsEquipTypeArray[$j];
+							$mrfDetailsModel = $mrfDetailsModelArray[$j];
+							$mrfDetailsEquipNo = $mrfDetailsEquipNoArray[$j];
+							/*
 							$mrfDetailsPartsNumber = explode("#", $mrfDetailsPartsNumberArray[$j]);
 							$mrfDetailsDescription = explode("#", $mrfDetailsDescriptionArray[$j]);
 							$mrfDetailsQty = explode("#", $mrfDetailsQtyArray[$j]);
@@ -121,21 +141,34 @@
 							$mrfDetailsStockQty = explode("#", $mrfDetailsStockQtyArray[$j]);
 							$mrfDetailsEquipType = explode("#", $mrfDetailsEquipTypeArray[$j]);
 							$mrfDetailsModel = explode("#", $mrfDetailsModelArray[$j]);
-							$mrfDetailsPlateNo = explode("#", $mrfDetailsPlateNoArray[$j]);
+							$mrfDetailsEquipNo = explode("#", $mrfDetailsEquipNoArray[$j]);
+							*/
+
 							// Set n/a to null input
-							if($mrfDetailsDescription[0] == "") $mrfDetailsDescription[0] = "N/A";
-							if($mrfDetailsUom[0] == "") $mrfDetailsUom[0] = "N/A";
-							if($mrfDetailsStockQty[0] == "") $mrfDetailsStockQty[0] = "N/A";
-							if($mrfDetailsEquipType[0] == "") $mrfDetailsEquipType[0] = "N/A";
-							if($mrfDetailsModel[0] == "") $mrfDetailsModel[0] = "N/A";
-							if($mrfDetailsPlateNo[0] == "") $mrfDetailsPlateNo[0] = "N/A";
+							if($mrfDetailsDescription == "") $mrfDetailsDescription = "N/A";
+							if($mrfDetailsUom == "") $mrfDetailsUom = "N/A";
+							if($mrfDetailsStockQty == "") $mrfDetailsStockQty = "N/A";
+							if($mrfDetailsEquipType[0] == "") $mrfDetailsEquipType = "N/A";
+							if($mrfDetailsModel == "") $mrfDetailsModel = "N/A";
+							if($mrfDetailsEquipNo == "") $mrfDetailsEquipNo = "N/A";
+							// if($mrfDetailsEquipNo[0] == "") $mrfDetailsEquipNo[0] = "N/A";
 							$query = "INSERT INTO prcMaterialRequestFormDetails
 											(dateTime, mrfDetailsSN, mrfDetailsNumber, mrfDetailsPartsNumber,
 											 mrfDetailsDescription, mrfDetailsQty, mrfDetailsUom, mrfDetailsStockQty,
-											 mrfDetailsEquipType, mrfDetailsModel, mrfDetailsPlateNo)
+											 mrfDetailsEquipType, mrfDetailsModel, mrfDetailsEquipNo)
+										VALUES('$time', '$mrSN', '$j', '$mrfDetailsPartsNumber', '$mrfDetailsDescription',
+												  '$mrfDetailsQty', '$mrfDetailsUom', '$mrfDetailsStockQty',
+												  '$mrfDetailsEquipType', '$mrfDetailsModel', '$mrfDetailsEquipNo')";
+							// Query with explode # in above.
+							/*
+							$query = "INSERT INTO prcMaterialRequestFormDetails
+											(dateTime, mrfDetailsSN, mrfDetailsNumber, mrfDetailsPartsNumber,
+											 mrfDetailsDescription, mrfDetailsQty, mrfDetailsUom, mrfDetailsStockQty,
+											 mrfDetailsEquipType, mrfDetailsModel, mrfDetailsEquipNo)
 										VALUES('$time', '$mrSN', '$j', '$mrfDetailsPartsNumber[0]', '$mrfDetailsDescription[0]',
 												  '$mrfDetailsQty[0]', '$mrfDetailsUom[0]', '$mrfDetailsStockQty[0]',
-												  '$mrfDetailsEquipType[0]', '$mrfDetailsModel[0]', '$mrfDetailsPlateNo[0]')";
+												  '$mrfDetailsEquipType[0]', '$mrfDetailsModel[0]', '$mrfDetailsEquipNo[0]')";
+							*/
 							$result = mysql_query($query);
 							if(!$result) die ("Database access failed: " . mysql_error());
 							if($result) {
@@ -160,23 +193,23 @@
 	}
 	function getMrNumber($row, $mrDepartment) {
 		if($row == 0) {
-			if($mrDepartment == "Monrovia") {
+			if($mrDepartment == "M. Office") {
 				$mrNumber = "MO" . "-" . date("Y") . "-" . date("m") . "-" . "01";
 			} elseif($mrDepartment == "Workshop") {
 				$mrNumber = "WS" . "-" . date("Y") . "-" . date("m") . "-" . "01";
 			} elseif($mrDepartment == "Warehouse") {
 				$mrNumber = "WH" . "-" . date("Y") . "-" . date("m") . "-" . "01";
-			} elseif($mrDepartment == "Log Pond Buchanan") {
+			} elseif($mrDepartment == "Log Pond") {
 				$mrNumber = "LB" . "-" . date("Y") . "-" . date("m") . "-" . "01";
-			} elseif($mrDepartment == "Log Pond Greenville") {
+			} elseif($mrDepartment == "Log Pond GV") {
 				$mrNumber = "LV" . "-" . date("Y") . "-" . date("m") . "-" . "01";
 			} elseif($mrDepartment == "Camp B") {
 				$mrNumber = "CB" . "-" . date("Y") . "-" . date("m") . "-" . "01";
-			} elseif($mrDepartment == "CC") {
+			} elseif($mrDepartment == "Camp C") {
 				$mrNumber = "CC" . "-" . date("Y") . "-" . date("m") . "-" . "01";
 			} elseif($mrDepartment == "Camp I") {
 				$mrNumber = "CI" . "-" . date("Y") . "-" . date("m") . "-" . "01";
-			} elseif($mrDepartment == "Camp LHW") {
+			} elseif($mrDepartment == "Camp L") {
 				$mrNumber = "CH" . "-" . date("Y") . "-" . date("m") . "-" . "01";
 			} else {
 				$mrNumber = "Invalid Location!";
@@ -184,23 +217,23 @@
 			return $mrNumber;
 		} else {
 			$row = $row + 1;
-			if($mrDepartment == "Monrovia") {
+			if($mrDepartment == "M. Office") {
 				$mrNumber = "MO" . "-" . date("Y") . "-" . date("m") . "-" . sprintf('%02d', $row);
 			} elseif($mrDepartment == "Workshop") {
 				$mrNumber = "WS" . "-" . date("Y") . "-" . date("m") . "-" . sprintf('%02d', $row);
 			} elseif($mrDepartment == "Warehouse") {
 				$mrNumber = "WH" . "-" . date("Y") . "-" . date("m") . "-" . sprintf('%02d', $row);
-			} elseif($mrDepartment == "Log Pond Buchanan") {
+			} elseif($mrDepartment == "Log Pond") {
 				$mrNumber = "LB" . "-" . date("Y") . "-" . date("m") . "-" . sprintf('%02d', $row);
-			} elseif($mrDepartment == "Log Pond Greenville") {
+			} elseif($mrDepartment == "Log Pond GV") {
 				$mrNumber = "LV" . "-" . date("Y") . "-" . date("m") . "-" . sprintf('%02d', $row);
 			} elseif($mrDepartment == "Camp B") {
 				$mrNumber = "CB" . "-" . date("Y") . "-" . date("m") . "-" . sprintf('%02d', $row);
-			} elseif($mrDepartment == "CC") {
+			} elseif($mrDepartment == "Camp C") {
 				$mrNumber = "CC" . "-" . date("Y") . "-" . date("m") . "-" . sprintf('%02d', $row);
 			} elseif($mrDepartment == "Camp I") {
 				$mrNumber = "CI" . "-" . date("Y") . "-" . date("m") . "-" . sprintf('%02d', $row);
-			} elseif($mrDepartment == "Camp LHW") {
+			} elseif($mrDepartment == "Camp L") {
 				$mrNumber = "CH" . "-" . date("Y") . "-" . date("m") . "-" . sprintf('%02d', $row);
 			} else {
 				$mrNumber = "Invalid Location!";
@@ -314,7 +347,18 @@
 												<thead>
 													<tr class="uppercase">
 														<th class="center" style="width: 1%">#</th>
-														<th class="left" style="width: 18%">Part No</th>
+														<th class="left" style="width: 16%">Part No</th>
+														<th class="left" style="width: 16%">Description</th>
+														<th class="center" style="width: 9%">Qty</th>
+														<th class="center" style="width: 9%">UOM</th>
+														<th class="center" style="width: 10%">Stk. Qty</th>
+														<th class="center" style="width: 13%">Type</th>
+														<th class="center" style="width: 13%">Model</th>
+														<th class="center" style="width: 9%">Equip. No</th>
+														<th class="center" style="width: 3%"></th>
+														<!--
+														<th class="center" style="width: 1%">#</th>
+														<th class="left" style="width: 17%">Part No</th>
 														<th class="left" style="width: 18%">Description</th>
 														<th class="center" style="width: 9%">Qty</th>
 														<th class="center" style="width: 9%">UOM</th>
@@ -322,40 +366,61 @@
 														<th class="center" style="width: 13%">Type</th>
 														<th class="center" style="width: 13%">Model</th>
 														<th class="center" style="width: 9%">Plate No</th>
+														<th class="center" style="width: 1%"></th>
+														-->
 													</tr>
 												</thead>
 												<tbody>
-													<tr>
+													<tr id="row0">
 														<td align="center">1</td>
 														<td align="center" id="select_1">
-															<select name="partNo#0" class="form-control input-sm" onchange="partDetails(this.value);" required>
-																<?
+															<select id="partNo0" name="partNo0" class="form-control input-sm" onchange="partDetails(this.value);" required>
+																<option value='--0'>Select Part No</option>
+																<?php
+																	$handle = fopen("partsDetails.csv", "r");
+																	if ($handle !== FALSE) {
+																	    //$row = 0;
+																	    while(($data = fgetcsv($handle, 100, ",")) !== FALSE ) {
+																	        //printf('<option value="%s">%s</option>', $data[0], $data[1]);
+																	        $newPartsNumber = $data[0] . "0";
+																	        echo "<option value='$newPartsNumber'>$data[0]\t ($data[1])</option>";
+																	    }
+																	    fclose($handle);
+																	}
+																?>
+																<?php
+																	/*
 																	if($rowsParts < 1) {
 																		// No part no were created.
 																		echo "<option value=''>No Parts Found</option>";
 																	} else {
 																		// Parts lists.
-																		echo "<option value='--#0'>Select Part No</option>";
+																		echo "<option value='--0'>Select Part No</option>";
 																		for($i = 0; $i < $rowsParts; ++$i) {
 																			$partsNumber = mysql_result($resultParts, $i, 'partsNumber');
-																			echo "<option value='$partsNumber#0'>$partsNumber</option>";
+																			$partsDescription = mysql_result($resultParts, $i, 'partsDescription');
+																			$newPartsNumber = $partsNumber . "0";
+																			echo "<option value='$newPartsNumber'>$partsNumber\t ($partsDescription)</option>";
 																		}
 																	}
+																	*/
 																?>
 															</select>
 														</td>
-														<td align="center"><input id="partsDescription#0" name="partsDescription#0" type="text" class="form-control input-sm"></td>
-														<td align="center"><input type="text" class="form-control input-sm" name="prcQty#0" style="text-align: center" required></td>
-														<td align="center"><input id="partsUom#0" name="partsUom#0" type="text" class="form-control input-sm" style="text-align: center"></td>
-														<td align="center"><input type="text" name="prcStockQty#0" class="form-control input-sm"></td>
-														<td align="center"><input id="partsEquipType#0" name="partsEquipType#0" type="text" class="form-control input-sm" style="text-align: center"></td>
-														<td align="center"><input id="partsModel#0" name="partsModel#0" type="text" class="form-control input-sm" style="text-align: center"></td>
-														<td align="center"><input type="text" name="prcPlateNo#0" class="form-control input-sm" style="text-align: center"></td>
+														<td align="center"><input id="partsDescription0" name="partsDescription0" type="text" class="form-control input-sm"></td>
+														<td align="center"><input id="prcQty0" name="prcQty0" type="text" class="form-control input-sm" style="text-align: center" required></td>
+														<td align="center"><input id="partsUom0" name="partsUom0" type="text" class="form-control input-sm" style="text-align: center"></td>
+														<td align="center"><input id="prcStockQty0" name="prcStockQty0" type="text" class="form-control input-sm"></td>
+														<td align="center"><input id="partsEquipType0" name="partsEquipType0" type="text" class="form-control input-sm" style="text-align: center"></td>
+														<td align="center"><input id="partsModel0" name="partsModel0" type="text" class="form-control input-sm" style="text-align: center"></td>
+														<!-- <td align="center"><input id="prcPlateNo0" type="text" name="prcPlateNo0" class="form-control input-sm" style="text-align: center"></td> -->
+														<td align="center"><input id="prcEquipNo0" name="prcEquipNo0" type="text" class="form-control input-sm" style="text-align: center"></td>
+														<td id="removeField0" style="text-align: center"><img id="removeFieldFunc0" class='field-remove' src='images/minus2.jpg' onclick="removeRow();"></td>
 													</tr>
 													<tr id="addNewField"></tr>
 												</tbody>
 											</table>
-											<button type="button" class="btn btn-sm default" onclick="addNewField();">Add</button>
+											<button id="btnNewField" type="button" class="btn btn-sm default" onclick="addNewField();">Add</button>
 										</div>
 									</div>
 									<div class="row margin-top-30">
@@ -408,9 +473,82 @@
 </div>
 <? include('pages/page_jquery.php'); ?>
 <script>
-	totalRequest = 0;
-	addField = false;
+	var totalRow = 0;
+	var totalRequest = 0;
+	var addField = false;
+	var index = 0;
+	var indexOld = 0;
 	partFlag = [false, false, false, false, false, false, false, false, false, false];
+	function partDetails(idx) {
+		// Remove last char.
+		var partNumber = idx.substring(0, idx.length - 1);
+		//alert(partNumber);
+		index = idx.slice(-1);
+		var nullPartNo = "--" + index;
+		var newDescription = "#partsDescription" + index;
+		var newUom = "#partsUom" + index;
+		var newEquipType = "#partsEquipType" + index;
+		var newModel = "#partsModel" + index;
+		var newEquipNo = "#prcEquipNo" + index;
+		// Remove all value on text field.
+		$(newDescription).val("");
+		$(newUom).val("");
+		$(newEquipType).val("");
+		$(newModel).val("");
+		$(newEquipNo).val("");
+		// Select null.
+		if(idx == nullPartNo) {
+			if(totalRequest == 0) {
+				totalRequest = 0;
+			} else {
+				totalRequest--;
+				partFlag[index] = false;
+			}
+			var removeFieldFuncIdx = "removeFieldFunc" + index;
+			var removeFieldFunc = document.getElementById(removeFieldFuncIdx);
+			removeFieldFunc.onclick = null;
+			addField = false;
+			$('#mrTotal').val(totalRequest);
+			return
+		} else {
+			if(!partFlag[index]) {
+				totalRequest++;
+				partFlag[index] = true;
+			}
+			if(partNumber != "--") {
+				$.ajax({
+					type: 'post',
+					url: 'check_data.php',
+					data: {
+						mrfPartNumber: partNumber,
+					},
+					success: function (response) {
+						if(response) {
+							var data = $.parseJSON(response);
+							$(newDescription).val(data[0].partsDescription);
+							$(newUom).val(data[0].partsUom);
+							$(newEquipType).val(data[0].partsEquipType);
+							$(newModel).val(data[0].partsModel);
+							// Enable removeFieldFunc.
+							var removeFieldFuncIdx = "removeFieldFunc" + index;
+							var removeFieldFunc = document.getElementById(removeFieldFuncIdx);
+							removeFieldFunc.onclick = removeRow;
+							// Check open select dropdown.
+							if(totalRequest > totalRow) {
+								addField = true;
+							} else {
+								addField = false;
+							}
+						} else {
+							alert("Parts Number Not Found!");
+						}
+		            }
+				});
+				$('#mrTotal').val(totalRequest);
+			}
+		}
+	}
+	/*
 	function partDetails(idx) {
 		var str = idx.split("#");
 		var partNo = str[0];
@@ -420,6 +558,7 @@
 		var newEquipType = "partsEquipType" + "#" + str[1];
 		var newModel = "partsModel" + "#" + str[1];
 		var newPartNo = "partNo" + "#" + str[1];
+		//var newRemoveField = "removeField#" + str[1];
 		if(idx == nullPartNo) {
 			if(totalRequest == 0) {
 				totalRequest = 0;
@@ -427,7 +566,8 @@
 				totalRequest--;
 				partFlag[str[1]] = false;
 			}
-			document.getElementById("mrTotal").value = totalRequest;
+			$('#mrTotal').val(totalRequest);
+			//document.getElementById("mrTotal").value = totalRequest;
 			return
 		} else {
 			if(!partFlag[str[1]]) {
@@ -446,10 +586,14 @@
 						if(response) {
 							//alert(response);
 							var data = $.parseJSON(response);
+							var totalRequestIdx = totalRequest - 1;
+							var idx = "removeField" + totalRequestIdx;
+							//var removeFieldFunc = document.getElementById(idx);
 							document.getElementById(newDescription).value = data[0].partsDescription;
 							document.getElementById(newUom).value = data[0].partsUom;
 							document.getElementById(newEquipType).value = data[0].partsEquipType;
 							document.getElementById(newModel).value = data[0].partsModel;
+							//removeFieldFunc.onclick = removeField;
 							addField = true;
 						} else {
 							alert("Parts Number Not Found!");
@@ -458,14 +602,18 @@
 				});
 			}
 			$("#select_1").replaceWith("<td align='left'><input name='" + newPartNo + "' type='text' value='" + partNo + "' class='form-control input-sm' readonly></td>");
-			//$('#select_1').replaceWith('<td align="left"><input name="' + newPartNo + '" type="text" value="' + partNo + '" class="form-control input-sm" readonly></td>');
 			$('#mrTotal').val(totalRequest);
 		}
 	}
+	*/
 	// Add new field
 	function addNewField() {
-		var totalRequest = document.getElementById("mrTotal").value;
 		if(addField) {
+			var removeFieldName = "removeField" + totalRow;
+			var removeFieldFuncName = "removeFieldFunc" + totalRow;
+			var removeFieldIdx = "#removeField" + totalRow;
+			$(removeFieldIdx).replaceWith("<td id='" + removeFieldName + "' style='text-align: center; display: none'><img id='" + removeFieldFuncName + "' class='field-remove' src='images/minus2.jpg' onclick='removeRow();'></td>");
+			$('#btnNewField').attr("disabled", true);
 			if(totalRequest) {
 				$.ajax({
 					type: 'post',
@@ -474,13 +622,91 @@
 						totalRequest: totalRequest,
 					},
 					success: function (response) {
+						totalRow++;
 						$('#addNewField').replaceWith(response);
+						var removeFieldFuncIdx = "removeFieldFunc" + totalRow;
+						var removeFieldFunc = document.getElementById(removeFieldFuncIdx);
+						removeFieldFunc.onclick = null;
 						addField = false;
+						$('#btnNewField').attr("disabled", false);
 		            }
 				});
 			}
 		}
 	}
+	// Remove field
+	function removeRow() {
+		if(totalRow == 0) {
+			$('#partNo0').prop('selectedIndex',0);
+			$('#partsDescription0').val("");
+			$('#prcQty0').val("");
+			$('#partsUom0').val("");
+			$('#prcStockQty0').val("");
+			$('#partsEquipType0').val("");
+			$('#partsModel0').val("");
+			$('#prcEquipNo0').val("");
+			totalRequest--;
+			partFlag[index] = false;
+			addField = false;
+			var removeFieldFunc = document.getElementById("removeFieldFunc0");
+			removeFieldFunc.onclick = null;
+		}
+		if(totalRow > 0) {
+			var removeRowIdx = "#row" + totalRow;
+			$(removeRowIdx).replaceWith("");
+			totalRequest--;
+			totalRow--;
+			partFlag[index] = false;
+			addField = true;
+		}
+		$('#mrTotal').val(totalRequest);
+		/*
+		var totalRequest = document.getElementById("mrTotal").value;
+		if(totalRequest == 1) {
+			$.ajax({
+				type: 'post',
+				url: 'prc.remove_field.php',
+				data: {
+					totalRequest: totalRequest,
+				},
+				success: function (response) {
+					totalRequest = 0;
+					var removeFieldFunc = document.getElementById('removeField0');
+					removeFieldFunc.onclick = null;
+					$('#mrTotal').val(totalRequest);
+					$('#row0').replaceWith(response);
+					addField = false;
+	            }
+			});
+		}
+		if(totalRequest > 1) {
+			var totalRequestIdx = totalRequest - 1;
+			var idx = "#row" + totalRequestIdx;
+			$.ajax({
+				type: 'post',
+				url: 'prc.remove_field.php',
+				data: {
+					totalRequest: totalRequest,
+				},
+				success: function (response) {
+					totalRequest = totalRequest - 1;
+					var idx = "removeField" + totalRequest;
+					var rowIdx = "#row" + totalRequest;
+					$(rowIdx).replaceWith(response);
+					var removeFieldFunc = document.getElementById(idx);
+					removeFieldFunc.onclick = null;
+					$('#mrTotal').val(totalRequest);
+					addField = false;
+	            }
+			});
+		}
+		*/
+	}
+	// Disable all onclick function
+	$(function() {
+		var removeFieldFunc = document.getElementById("removeFieldFunc0");
+		removeFieldFunc.onclick = null;
+	})
 	// Alertify confirm logout.
 	$(function() {
 		$('.logoutAlert').click(function() {
