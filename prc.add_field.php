@@ -11,10 +11,8 @@
 			$msg .= "<option value='--$totalRequest'>Select Part No</option>";
 			$handle = fopen("partsDetails.csv", "r");
 			if ($handle !== FALSE) {
-			    //$row = 0;
 			    while(($data = fgetcsv($handle, 100, ",")) !== FALSE ) {
 			        //printf('<option value="%s">%s</option>', $data[0], $data[1]);
-			        //$newPartsNumber = $data[0] . "0";
 			        $msg .= "<option value='$data[0]$totalRequest'>$data[0]\t ($data[1])</option>";
 			    }
 			    fclose($handle);
@@ -26,7 +24,26 @@
 			$msg .= "<td align='center'><input id='prcStockQty$totalRequest' name='prcStockQty$totalRequest' type='text' class='form-control input-sm'></td>";
 			$msg .= "<td align='center'><input id='partsEquipType$totalRequest' name='partsEquipType$totalRequest' type='text' class='form-control input-sm' style='text-align: center'></td>";
 			$msg .= "<td align='center'><input id='partsModel$totalRequest' name='partsModel$totalRequest' type='text' class='form-control input-sm' style='text-align: center'></td>";
-			$msg .= "<td align='center'><input id='prcEquipNo$totalRequest' name='prcEquipNo$totalRequest' type='text' class='form-control input-sm' style='text-align: center'></td>";
+			$msg .= "<td align='center'><select id='prcEquipNo$totalRequest' name='prcEquipNo$totalRequest' class='form-control input-sm' required>";
+			$msg .= "<option value=''>Select Equip No</option>";
+
+			/*
+			$list = array();
+			$list = explode("\n", file_get_contents('equipLists.txt'));
+			$length = count($list);
+			for($i = 0; $i < $length-1; ++$i) {
+				$msg .= "<option value='$list[$i]$totalRequest'>$list[$i]</option>";
+			}
+			*/
+			$handle = fopen("equipLists.csv", "r");
+			if ($handle !== FALSE) {
+			    while(($data = fgetcsv($handle, 100, ",")) !== FALSE ) {
+			        $msg .= "<option value='$data[0]$totalRequest'>$data[0]\t($data[1])</option>";
+			    }
+			    fclose($handle);
+			}
+
+			$msg .= "</select></td>";
 			$msg .= "<td id='removeField$totalRequest' style='text-align: center'><img id='removeFieldFunc$totalRequest' class='field-remove' src='images/minus2.jpg' onclick='removeRow();'></td>";
 			$msg .= "</tr>";
 			$msg .= "<tr id='addNewField'></tr>";
