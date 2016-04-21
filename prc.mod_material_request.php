@@ -46,7 +46,10 @@
 				// Approved confirm!
 				if($_GET['approveMrSN']) {
 					$approveMrSN = $_GET['approveMrSN'];
-					updateApproved($approveMrSN, 'prcMaterialRequestForm', 'mrSN', $fname);
+					if(updateApproved($approveMrSN, 'prcMaterialRequestForm', 'mrSN', $fname)) {
+						generatePR($approveMrSN, 'mrfDetailsSN');
+					}
+
 				}
 				// Select material request form details.
 				$query = "SELECT * FROM prcMaterialRequestForm WHERE mrSn = '$mrSN'";
@@ -185,7 +188,86 @@
 		$result = mysql_query($query);
 		if(!$result) die ("Table access failed: " . mysql_error());
 		if($result) {
-			header('Location: prc.material_request.php');
+			return 1;
+			//header('Location: prc.material_request.php');
+		}
+	}
+	// Generate PR from MRF
+	function generatePR($idx, $tableId) {
+		$queryMRF = "SELECT * FROM prcMaterialRequestForm WHERE mrSN = '$idx' AND status = 'Active'";
+		$resultMRF = mysql_query($queryMRF);
+		$rowsMRF = mysql_num_rows($resultMRF);
+		// Get MRF informations.
+		$dataMRF = mysql_fetch_assoc($resultMRF);
+		$mrNumber = $dataMRF['mrNumber'];
+		$prDepartment = $dataMRF['mrDepartment'];
+		$prPurpose = $dataMRF['mrPurpose'];
+		$prDateReq = $dataMRF['mrDateReq'];
+		$prRequestBy = $dataMRF['mrRequestBy'];
+		// Get MRF Details informations.
+		$queryDetails = "SELECT * FROM prcMaterialRequestFormDetails WHERE $tableId = '$idx' AND mrfDetailsStockQty = 'N/A'";
+		$resultDetails = mysql_query($queryDetails);
+		$rowsDetails = mysql_num_rows($resultDetails);
+		if(!$resultDetails) {
+			die ("Table access failed: " . mysql_error());
+		} else {
+			if($rowsDetails > 0) {
+				// Select Purchase Request Series Number.
+				$prSNQuery = "SELECT * FROM purchaseRequest";
+				$prSNResult = mysql_query($prSNQuery);
+				$prSNRows = mysql_num_rows($prSNResult);
+				if($prSNRows == 0) {
+					$prSN = 'PR0001';
+				} else {
+					$prSNRows++;
+					$prSN = 'PR' . sprintf('%04d', $prSNRows);
+				}
+				// Get current date time.
+				$queryDT = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
+				$resultDT = mysql_query($queryDT);
+				$rowDT = mysql_fetch_array($resultDT);
+				$time = $rowDT['dateTime'];
+				// Insert record into purchaseRequest.
+				$queryPR = "INSERT INTO purchaseRequest
+									(dateTime, prSN, prNumber, mrNumber, prDepartment, prPurpose, prDateReq, prTotal,
+									 prReasonPurchase, prRequestBy, prWarehouseStatus, prHeadWorkshopStatus, prApproveStatus,
+									 prFinalize, status)
+								VALUES
+									('$time', '$prSN', 'N/A', '$mrNumber', '$prDepartment', '$prPurpose', '$prDateReq',
+									 '$rowsDetails', 'N/A', '$prRequestBy', 'No Status', 'No Status', 'No Status', FALSE,
+									 'Active')";
+				$resultPR = mysql_query($queryPR);
+				if(!$resultPR) die ("Table access failed: " . mysql_error());
+				if($resultPR) {
+					// Insert record into purchaseRequestDetails
+					for($i = 0; $i < $rowsDetails; ++$i) {
+						$dateTime = mysql_result($resultDetails, $i, 'dateTime');
+						$mrfDetailsSN = mysql_result($resultDetails, $i, 'mrfDetailsSN');
+						$prDetailsNumber = mysql_result($resultDetails, $i, 'mrfDetailsNumber');
+						$prDetailsPartsNumber = mysql_result($resultDetails, $i, 'mrfDetailsPartsNumber');
+						$prDetailsDescription = mysql_result($resultDetails, $i, 'mrfDetailsDescription');
+						$prDetailsQty = mysql_result($resultDetails, $i, 'mrfDetailsQty');
+						$prDetailsUom = mysql_result($resultDetails, $i, 'mrfDetailsUom');
+						$prDetailsEquipType = mysql_result($resultDetails, $i, 'mrfDetailsEquipType');
+						$prDetailsModel = mysql_result($resultDetails, $i, 'mrfDetailsModel');
+						$prDetailsEquipNo = mysql_result($resultDetails, $i, 'mrfDetailsEquipNo');
+						$queryPRDetails = "INSERT INTO purchaseRequestDetails
+													(dateTime, prDetailsSN, prDetailsNumber, prDetailsPartsNumber,
+													 prDetailsDescription, prDetailsQty, prDetailsUom, prDetailsEquipType,
+													 prDetailsModel, prDetailsEquipNo)
+												VALUES
+													('$time', '$prSN', '$prDetailsNumber', '$prDetailsPartsNumber',
+													 '$prDetailsDescription', '$prDetailsQty', '$prDetailsUom',
+													 '$prDetailsEquipType', '$prDetailsModel', '$prDetailsEquipNo')";
+						$resultPRDetails = mysql_query($queryPRDetails);
+						if(!$resultPRDetails) {
+							die ("Table access failed: " . mysql_error());
+						} else {
+							header('Location: prc.material_request.php');
+						}
+					}
+				}
+			}
 		}
 	}
 ?>
@@ -194,7 +276,7 @@
 	<div class="page-head">
 		<div class="container">
 			<div class="page-title">
-				<h1>Material Request Form <small>add new material request</small></h1>
+				<h1>Material Request Form <small>modify material request form</small></h1>
 			</div>
 			<div class="page-toolbar">
 				<div class="btn-group btn-theme-panel"><a href="javascript:;" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="glyphicon glyphicon-cog"></i></a></div>
@@ -219,7 +301,7 @@
 			</ul>
 			<div class="row margin-top-10">
 				<!-- <div class="col-md-1"></div> -->
-				<div class="col-md-12">
+				<div class="col-xs-12 col-md-12">
 					<div class="portlet light">
 						<div class="portlet-title">
 							<div class="caption"><span class="caption-subject font-green-sharp bold uppercase">Material Request Form</span></div>
@@ -229,14 +311,14 @@
 							<form role="form" action="" method="post">
 								<div class="form-body text-left">
 									<div class="row">
-										<div class="col-md-2">
+										<div class="col-xs-2 col-md-2">
 											<div class="form-group" style="display: none">
 												<label>MR Date</label>
 												<input type="text" class="form-control input-lg" name="mrDateTime" style="text-align: center" value="<? echo $dateTime; ?>" readonly>
 											</div>
 										</div>
-										<div class="col-md-8"></div>
-										<div class="col-md-2">
+										<div class="col-xs-8 col-md-8"></div>
+										<div class="col-xs-2 col-md-2">
 											<div class="form-group">
 												<label>Series Number</label>
 												<input id="mrSN" type="text" class="form-control input-lg" style="text-align: center" name="mrSN" value="<?php echo $mrSN; ?>" readonly>
@@ -244,26 +326,26 @@
 										</div>
 									</div>
 									<div class="row">
-										<div class="col-md-2"></div>
-										<div class="col-md-2">
+										<div class="col-xs-2 col-md-2"></div>
+										<div class="col-xs-2 col-md-2">
 											<div class="form-group">
 												<label>MR Date</label>
 												<input type="text" class="form-control input-lg" name="mrDateTime" style="text-align: center" value="<? echo $mrDateTime; ?>" readonly>
 											</div>
 										</div>
-										<div class="col-md-2">
+										<div class="col-xs-2 col-md-2">
 											<div class="form-group">
 												<label>MR No</label>
 												<input type="text" class="form-control input-lg" name="mrNumber" value="<? echo $mrNumber; ?>">
 											</div>
 										</div>
-										<div class="col-md-2">
+										<div class="col-xs-2 col-md-2">
 											<div class="form-group">
 												<label>Department</label>
 												<input type="text" class="form-control input-lg" style="text-align: center" name="mrDepartment" value="<? echo $mrDepartment; ?>" readonly>
 											</div>
 										</div>
-										<div class="col-md-2">
+										<div class="col-xs-2 col-md-2">
 											<div class="form-group">
 												<label>Purpose</label>
 												<select name="mrPurpose" class="form-control input-lg" required>
@@ -282,7 +364,7 @@
 												</select>
 											</div>
 										</div>
-										<div class="col-md-2">
+										<div class="col-xs-2 col-md-2">
 											<div class="form-group">
 												<label>Date Required</label>
 												<select name="mrDateReq" class="form-control input-lg" required>
@@ -302,20 +384,20 @@
 											</div>
 										</div>
 									</div>
-									<div class="row margin-top-30">
+									<div class="row margin-top-65">
 										<div class="col-md-12">
 											<table class="table table-hover table-light">
 												<thead>
 													<tr class="uppercase">
 														<th class="center" style="width: 1%">#</th>
-														<th class="left" style="width: 18%">Part No</th>
-														<th class="left" style="width: 18%">Description</th>
+														<th class="left" style="width: 16%">Part No</th>
+														<th class="left" style="width: 16%">Description</th>
 														<th class="center" style="width: 9%">Qty</th>
 														<th class="center" style="width: 9%">UOM</th>
-														<th class="center" style="width: 8%">Stk. Qty</th>
-														<th class="center" style="width: 13%">Type</th>
+														<th class="center" style="width: 10%">Stk. Qty</th>
+														<th class="center" style="width: 14%">Type</th>
 														<th class="center" style="width: 14%">Model</th>
-														<th class="center" style="width: 10%">Equip. No</th>
+														<th class="center" style="width: 11%">Equip. No</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -344,7 +426,33 @@
 															echo "<td align='center'>$mrfDetailsEquipType</td>";
 															echo "<td align='center'>$mrfDetailsModel</td>";
 															if($mrReviewStatus == "No Status") {
-																echo "<td align='center'><input type='text' class='form-control input-sm' name='prcEquipNo$j' value='$mrfDetailsEquipNo' style='text-align: center'></td>";
+																echo "<td align='center'><select id='prcEquipNo$j' name='prcEquipNo$j' class='form-control input-sm' required>";
+																echo "<option value=''>Select Equip No</option>";
+																// Get equipment number from text file.
+																/*
+																$list = array();
+																$list = explode("\n", file_get_contents('equipLists.txt'));
+																$length = count($list);
+																for($i = 0; $i < $length-1; ++$i) {
+																	if($mrfDetailsEquipNo == $list[$i]) {
+																		echo "<option value='$list[$i]' selected='selected'>$list[$i]</option>";
+																	} else {
+																		echo "<option value='$list[$i]'>$list[$i]</option>";
+																	}
+																}
+																*/
+																$handle = fopen("equipLists.csv", "r");
+																if ($handle !== FALSE) {
+																	while(($data = fgetcsv($handle, 100, ",")) !== FALSE ) {
+																		if($mrfDetailsEquipNo == $data[0]) {
+																			echo "<option value='$data[0]' selected='selected'>$data[0]\t($data[1])</option>";
+																		} else {
+																			echo "<option value='$data[0]'>$data[0]\t($data[1])</option>";
+																		}
+																	}
+																	fclose($handle);
+																}
+																echo "</select></td>";
 															} else {
 																echo "<td align='center'>$mrfDetailsEquipNo</td>";
 															}
@@ -357,27 +465,27 @@
 										</div>
 									</div>
 									<div class="row">
-										<div class="col-md-2">
+										<div class="col-xs-2 col-md-2">
 											<div class="form-group">
 												<label>Total Request</label>
 												<input id="mrTotal" type="text" class="form-control input-sm" name="mrTotal" style="text-align: center" placeholder="Total Request" value="<?php echo $mrTotal; ?>">
 											</div>
 										</div>
-										<div class="col-md-10">
+										<div class="col-xs-10 col-md-10">
 											<div class="form-group">
 												<label>Remarks</label>
 												<input id="mrRemark" type="text" class="form-control input-sm" name="mrRemark" placeholder="Remarks" value="<?php echo $mrRemark; ?>">
 											</div>
 										</div>
 									</div>
-									<div class="row margin-top-30">
-										<div class="col-md-4">
+									<div class="row margin-top-65">
+										<div class="col-xs-4 col-md-4">
 											<div class="form-group" style="text-align: center">
 												<label>Requested By</label>
 												<input id="mrRequestBy" type="text" class="form-control input-lg" name="mrRequestBy" style="text-align: center" placeholder="Requested By" value="<?php echo $mrRequestBy; ?>">
 											</div>
 										</div>
-										<div class="col-md-4">
+										<div class="col-xs-4 col-md-4">
 											<div class="form-group" style="text-align: center">
 												<?php
 													if($mrReviewStatus == "No Status") {
@@ -395,7 +503,7 @@
 												<?php } ?>
 											</div>
 										</div>
-										<div class="col-md-4">
+										<div class="col-xs-4 col-md-4">
 											<div class="form-group" style="text-align: center">
 												<?php if($mrReviewStatus == "No Status") { ?>
 												<!--
