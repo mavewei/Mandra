@@ -1,5 +1,5 @@
 <?php include('pages/page_header.php'); ?>
-<link href="css/general-settings.css" rel="stylesheet" type="text/css" />
+<link href="css/employee-settings.css" rel="stylesheet" type="text/css" />
 <link href="css/components.css" rel="stylesheet" type="text/css" />
 <link href="css/layout.css" rel="stylesheet" type="text/css" />
 <!-- <link href="css/center.css" rel="stylesheet" type="text/css" /> -->
@@ -29,7 +29,7 @@
 			if($_SESSION['GID'] < 4000) {
 				$fname = $_SESSION['FNAME'];
 				$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
-				$_SESSION['LAST_PAGE'] = "general_settings.php";
+				$_SESSION['LAST_PAGE'] = "employee_settings.php";
 				// $role = $_SESSION['ROLE'];
 				/**
 					Lifetime added 5min.
@@ -115,7 +115,7 @@
 	<div class="page-head">
 		<div class="container">
 			<div class="page-title">
-				<h1>General Settings <small> setup initial information and data.</small></h1>
+				<h1>Employee Settings <small> setup initial information and data.</small></h1>
 			</div>
 			<div class="page-toolbar">
 				<div class="btn-group btn-theme-panel"><a href="javascript:;" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="glyphicon glyphicon-cog"></i></a></div>
@@ -132,10 +132,10 @@
 					<a href="javascript:;">Extras</a><i class="fa fa-circle"></i>
 				</li>
 				<li>
-					<a href="javascript:;">General</a><i class="fa fa-circle"></i>
+					<a href="javascript:;">Setup</a><i class="fa fa-circle"></i>
 				</li>
 				<li class="active">
-					Settings
+					Employee
 				</li>
 			</ul>
 			<div class="row margin-top-10">
