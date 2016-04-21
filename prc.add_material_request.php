@@ -33,7 +33,6 @@
 					};
 				};
 				// Get MRF details.
-		   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 				$query = "SELECT * FROM prcMaterialRequestForm ORDER BY id DESC";
 				$result = mysql_query($query);
 				$row = mysql_num_rows($result);
@@ -45,14 +44,14 @@
 					$prcMaterialFormId = 'MR' . sprintf('%04d', $row);
 				}
 				// Get MR number details.
-		   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 				$queryCount = "SELECT * FROM prcMaterialRequestForm WHERE mrDepartment = '$mrDepartment'";
 				$resultCount = mysql_query($queryCount);
 				$rowCount = mysql_num_rows($resultCount);
 				if(!$result) die ("Table access failed: " . mysql_error());
 				$mrNumber = getMrNumber($rowCount, $mrDepartment);
 				// Select part no
-				$queryParts = "SELECT partsNumber, partsDescription FROM partsMasterFile WHERE status = 'Active' ORDER BY partsNumber ASC";
+				$queryParts = "SELECT partsNumber, partsDescription FROM partsMasterFile
+								   WHERE status = 'Active' ORDER BY partsNumber ASC";
 				$resultParts = mysql_query($queryParts);
 				$rowsParts = mysql_num_rows($resultParts);
 				if(!$resultParts) die ("Table access failed: " . mysql_error());
@@ -67,6 +66,34 @@
 					}
 					fclose($fh);
 				}
+				// Select equipNumber From equipLists
+				$queryEquip = "SELECT equipNumber, equipDescription FROM equipLists ORDER BY equipNumber ASC";
+				$resultEquip = mysql_query($queryEquip);
+				$rowsEquip = mysql_num_rows($resultEquip);
+				if(!$resultEquip) die ("Table access failed: " . mysql_error());
+				// Check equipLists file exists.
+				/*
+				$filename = 'equipLists.txt';
+				if(!file_exists($filename)) {
+					$fh = fopen('equipLists.txt', 'w');
+					while($data = mysql_fetch_array($resultEquip)) {
+						fwrite($fh, $data[0]);
+					    fwrite($fh, "\n");
+					}
+					fclose($fh);
+				}
+				*/
+				$filename = 'equipLists.csv';
+				if(!file_exists($filename)) {
+					// Write equipment number to file.
+					$fh = fopen('equipLists.csv', 'w');
+					// keeps getting the next row until there are no more to get
+					while($row = mysql_fetch_array($resultEquip)) {
+				    		fputcsv($fh, array($row['equipNumber'], $row['equipDescription']), ",");
+					}
+					fclose($fh);
+				}
+
 				// Form submitted.
 				if(isset($_POST['mrNumber']) && isset($_POST['mrPurpose'])) {
 					$mrDateTime = mysql_escape_string($_POST['mrDateTime']);
@@ -77,7 +104,7 @@
 					$mrDateReq = mysql_escape_string($_POST['mrDateReq']);
 					$mrTotal = mysql_escape_string($_POST['mrTotal']);
 					$mrRemark = ucfirst(strtolower(mysql_escape_string($_POST['mrRemark'])));
-					$mrRequestBy = $fname;
+					$mrRequestBy = $login;
 					$mrReviewStatus = "No Status";
 					$mrApproveStatus = "No Status";
 					$status = "Active";
@@ -109,7 +136,7 @@
 						$mrfDetailsStockQtyArray[] = mysql_escape_string($_POST[$mrfDetailsStockQty]);
 						$mrfDetailsEquipTypeArray[] = ucwords(strtolower(mysql_escape_string($_POST[$mrfDetailsEquipType])));
 						$mrfDetailsModelArray[] = mysql_escape_string($_POST[$mrfDetailsModel]);
-						$mrfDetailsEquipNoArray[] = strtoupper(mysql_escape_string($_POST[$mrfDetailsEquipNo]));
+						$mrfDetailsEquipNoArray[] = mysql_escape_string($_POST[$mrfDetailsEquipNo]);
 					};
 					$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
 					$result = mysql_query($query);
@@ -119,7 +146,7 @@
 									mrDateReq, mrTotal, mrRemark, mrRequestBy, mrReviewStatus, mrApproveStatus, status)
 								VALUES('$time', '$mrSN', '$mrNumber', '$mrDepartment', '$mrPurpose', '$mrDateReq',
 									'$mrTotal', '$mrRemark', '$mrRequestBy', '$mrReviewStatus', '$mrApproveStatus',
-										  '$status')";
+									'$status')";
 					$result = mysql_query($query);
 					if(!$result) die ("Table access failed: " . mysql_error());
 					if($result) {
@@ -132,7 +159,7 @@
 							$mrfDetailsStockQty = $mrfDetailsStockQtyArray[$j];
 							$mrfDetailsEquipType = $mrfDetailsEquipTypeArray[$j];
 							$mrfDetailsModel = $mrfDetailsModelArray[$j];
-							$mrfDetailsEquipNo = $mrfDetailsEquipNoArray[$j];
+							$mrfDetailsEquipNo = substr($mrfDetailsEquipNoArray[$j], 0, -1);
 							/*
 							$mrfDetailsPartsNumber = explode("#", $mrfDetailsPartsNumberArray[$j]);
 							$mrfDetailsDescription = explode("#", $mrfDetailsDescriptionArray[$j]);
@@ -143,14 +170,13 @@
 							$mrfDetailsModel = explode("#", $mrfDetailsModelArray[$j]);
 							$mrfDetailsEquipNo = explode("#", $mrfDetailsEquipNoArray[$j]);
 							*/
-
 							// Set n/a to null input
 							if($mrfDetailsDescription == "") $mrfDetailsDescription = "N/A";
 							if($mrfDetailsUom == "") $mrfDetailsUom = "N/A";
 							if($mrfDetailsStockQty == "") $mrfDetailsStockQty = "N/A";
 							if($mrfDetailsEquipType[0] == "") $mrfDetailsEquipType = "N/A";
 							if($mrfDetailsModel == "") $mrfDetailsModel = "N/A";
-							if($mrfDetailsEquipNo == "") $mrfDetailsEquipNo = "N/A";
+							//if($mrfDetailsEquipNo == "") $mrfDetailsEquipNo = "N/A";
 							// if($mrfDetailsEquipNo[0] == "") $mrfDetailsEquipNo[0] = "N/A";
 							$query = "INSERT INTO prcMaterialRequestFormDetails
 											(dateTime, mrfDetailsSN, mrfDetailsNumber, mrfDetailsPartsNumber,
@@ -349,12 +375,12 @@
 														<th class="center" style="width: 1%">#</th>
 														<th class="left" style="width: 16%">Part No</th>
 														<th class="left" style="width: 16%">Description</th>
-														<th class="center" style="width: 9%">Qty</th>
-														<th class="center" style="width: 9%">UOM</th>
+														<th class="center" style="width: 8%">Qty</th>
+														<th class="center" style="width: 8%">UOM</th>
 														<th class="center" style="width: 10%">Stk. Qty</th>
 														<th class="center" style="width: 13%">Type</th>
 														<th class="center" style="width: 13%">Model</th>
-														<th class="center" style="width: 9%">Equip. No</th>
+														<th class="center" style="width: 11%">Equip. No</th>
 														<th class="center" style="width: 3%"></th>
 														<!--
 														<th class="center" style="width: 1%">#</th>
@@ -414,7 +440,34 @@
 														<td align="center"><input id="partsEquipType0" name="partsEquipType0" type="text" class="form-control input-sm" style="text-align: center"></td>
 														<td align="center"><input id="partsModel0" name="partsModel0" type="text" class="form-control input-sm" style="text-align: center"></td>
 														<!-- <td align="center"><input id="prcPlateNo0" type="text" name="prcPlateNo0" class="form-control input-sm" style="text-align: center"></td> -->
-														<td align="center"><input id="prcEquipNo0" name="prcEquipNo0" type="text" class="form-control input-sm" style="text-align: center"></td>
+														<td align="center">
+															<select id="prcEquipNo0" name="prcEquipNo0" class="form-control input-sm" required>
+																<option value="">Select Equip No</option>
+																<?php
+																	/*
+																	$list = array();
+																	$list = explode("\n", file_get_contents('equipLists.txt'));
+																	$length = count($list);
+																	for($i = 0; $i < $length-1; ++$i) {
+																		$newEquipNumber = $list[$i] . "0";
+																		echo "<option value='$newEquipNumber'>$list[$i]</option>";
+																	}
+																	*/
+																?>
+																<?php
+																	$handle = fopen("equipLists.csv", "r");
+																	if ($handle !== FALSE) {
+																	    //$row = 0;
+																	    while(($data = fgetcsv($handle, 100, ",")) !== FALSE ) {
+																	        $newEquipNumber = $data[0] . "0";
+																	        echo "<option value='$newEquipNumber'>$data[0]\t($data[1])</option>";
+																	    }
+																	    fclose($handle);
+																	}
+
+																?>
+															</select>
+														</td>
 														<td id="removeField0" style="text-align: center"><img id="removeFieldFunc0" class='field-remove' src='images/minus2.jpg' onclick="removeRow();"></td>
 													</tr>
 													<tr id="addNewField"></tr>
@@ -471,7 +524,7 @@
 		</div>
 	</div>
 </div>
-<? include('pages/page_jquery.php'); ?>
+<?php include('pages/page_jquery.php'); ?>
 <script>
 	var totalRow = 0;
 	var totalRequest = 0;
