@@ -5,9 +5,7 @@
 <?php include('pages/page_meta.php'); ?>
 <?php
 	require_once('db/db_config.php');
-	/**
-		Check session id.
-	**/
+	// Check session id.
 	$login = $_SESSION['LOGIN_ID'];
 	$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 	$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
@@ -23,26 +21,20 @@
 				$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
 				$lastPage = $_SESSION['LAST_PAGE'];
 				//$_SESSION['LAST_PAGE'] = 'add_department.php';
-				/**
-					Lifetime added 5min.
-				**/
+				// Lifetime added 5min.
 				if(isset($_SESSION['EXPIRETIME'])) {
 					if($_SESSION['EXPIRETIME'] < time()) {
 						unset($_SESSION['EXPIRETIME']);
 						header('Location: logout.php?TIMEOUT');
 						exit(0);
 					} else {
-						/**
-							Session time out time 5min.
-						**/
+						// Session time out time 5min.
 						//$_SESSION['EXPIRETIME'] = time() + 300;
 						$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
 					};
 				};
-				/**
-					Select taxCode lists.
-		   		**/
-		   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+				// Select taxCode lists.
+				mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 				$query = "SELECT * FROM taxCode ORDER BY id DESC";
 				$result = mysql_query($query);
 				$row = mysql_num_rows($result);
@@ -72,9 +64,7 @@
 					};
 				};
 			} else {
-				/**
-					Redirect to dashboard if not Superuser or Manager
-				**/
+				// Redirect to dashboard if not Superuser or Manager
 				$_SESSION['STATUS'] = 10;
 				header('Location: status.php');
 			}
@@ -167,9 +157,7 @@
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
-	/**
-	   Alertify confirm logout.
-	**/
+	// Alertify confirm logout.
 	$(function() {
 		$('.logoutAlert').click(function() {
 			alertify.confirm("[ALERT]  Are you sure you want to LOGOUT?", function(result) {
@@ -179,20 +167,6 @@
 			})
 		})
 	})
-	/**
-	   Bootbox alert customize.
-	**/
-	/*
-	$(function() {
-		$('.logoutAlert').click(function(){
-			bootbox.confirm("Are you sure you want to LOGOUT?", function(result) {
-				if(result) {
-					window.location = "logout.php";
-				}
-			});
-		})
-	})
-	*/
 	function checkTaxCode() {
 		var taxCodeName = document.getElementById("taxCodeName").value;
 		if(taxCodeName) {

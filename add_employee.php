@@ -1,20 +1,10 @@
 <?php include('pages/page_header.php'); ?>
-<!-- <link href="css/center.css" rel="stylesheet" type="text/css" /> -->
 <link href="css/components.css" rel="stylesheet" type="text/css" />
 <link href="css/layout.css" rel="stylesheet" type="text/css" />
-<!-- <link href="css/setadmin.css" rel="stylesheet" type="text/css" /> -->
-<script type = "text/javascript">
-	history.pushState(null, null, '');
-	window.addEventListener('popstate', function(event) {
-		history.pushState(null, null, '');
-	});
-</script>
 <?php include('pages/page_meta.php'); ?>
 <?php
 	require_once('db/db_config.php');
-	/**
-		Check session id.
-	**/
+	// Check session id.
 	$login = $_SESSION['LOGIN_ID'];
 	$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 	$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
@@ -33,77 +23,59 @@
 				$month = date("m");
 				$day = date("d");
 				$maxDoB = $year . '-' . $month . '-' . $day;
-				/**
-					Lifetime added 5min.
-				**/
+				// Lifetime added 5min.
 				if(isset($_SESSION['EXPIRETIME'])) {
 					if($_SESSION['EXPIRETIME'] < time()) {
 						unset($_SESSION['EXPIRETIME']);
 						header('Location: logout.php?TIMEOUT');
 						exit(0);
 					} else {
-						/**
-							Session time out time 5min.
-						**/
+						// Session time out time 5min.
 						//$_SESSION['EXPIRETIME'] = time() + 300;
 						$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
 					};
 				};
-		   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-		   		/**
-					Select nationality lists.
-		   		**/
-		   		$queryNationality = "SELECT * FROM nationality ORDER BY nationalityName ASC";
+				// mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+				// Select nationality lists.
+				$queryNationality = "SELECT * FROM nationality ORDER BY nationalityName ASC";
 				$resultNationality = mysql_query($queryNationality);
 				$rowNationality = mysql_num_rows($resultNationality);
 				if(!$resultNationality) die ("Table access failed: " . mysql_error());
-		   		/**
-					Select taxcode lists.
-		   		**/
-		   		$queryTaxCode = "SELECT * FROM taxCode WHERE status = 'Active' ORDER BY taxCodeId ASC";
+				// Select taxcode lists.
+				$queryTaxCode = "SELECT * FROM taxCode WHERE status = 'Active' ORDER BY taxCodeId ASC";
 				$resultTaxCode = mysql_query($queryTaxCode);
 				$rowTaxCode = mysql_num_rows($resultTaxCode);
 				if(!$resultTaxCode) die ("Table access failed: " . mysql_error());
-		   		/**
-					Select position lists.
-		   		**/
+				// Select position lists.
 		   		$queryPosition = "SELECT * FROM position WHERE status = 'Active' ORDER BY positionName ASC";
 				$resultPosition = mysql_query($queryPosition);
 				$rowPosition = mysql_num_rows($resultPosition);
 				if(!$resultPosition) die ("Table access failed: " . mysql_error());
-		   		/**
-					Select unit lists.
-		   		**/
+				// Select unit lists.
 		   		$queryUnit = "SELECT * FROM unit WHERE status = 'Active' ORDER BY unitName ASC";
 				$resultUnit = mysql_query($queryUnit);
 				$rowUnit = mysql_num_rows($resultUnit);
 				if(!$resultUnit) die ("Table access failed: " . mysql_error());
-		   		/**
-					Select company lists.
-		   		**/
-		   		$queryCom = "SELECT * FROM	company WHERE status = 'Active' ORDER BY comId ASC";
+				// Select company lists.
+				$queryCom = "SELECT * FROM	company WHERE status = 'Active' ORDER BY comId ASC";
 				$resultCom = mysql_query($queryCom);
 				$rowCom = mysql_num_rows($resultCom);
 				if(!$resultCom) die ("Table access failed: " . mysql_error());
-				/**
-					Select department lists.
-		   		**/
-		   		$queryDept = "SELECT * FROM departments WHERE status = 'Active' ORDER BY deptName ASC";
+				// Select department lists.
+				$queryDept = "SELECT * FROM departments WHERE status = 'Active' ORDER BY deptName ASC";
 				$resultDept = mysql_query($queryDept);
 				$rowDept = mysql_num_rows($resultDept);
 				if(!$resultDept) die ("Table access failed: " . mysql_error());
-				/**
-					Select status lists.
-				**/
+
+				// Select status lists.
 				/*
 				$queryStatus = "SELECT * FROM status WHERE status = 'Active' ORDER BY statusName ASC";
 				$resultStatus = mysql_query($queryStatus);
 				$rowStatus = mysql_num_rows($resultStatus);
 				if(!$resultStatus) die ("Table access failed: " . mysql_error());
 				*/
-				/**
-					Select employee lists.
-		   		**/
+
+				// Select employee lists.
 				$query = "SELECT * FROM employees ORDER BY id DESC";
 				$result = mysql_query($query);
 				$row = mysql_num_rows($result);
@@ -145,17 +117,13 @@
 					$result = mysql_query($query);
 					if(!$result) die ("Table access failed: " . mysql_error());
 					if($result) {
-						/**
-							Employee created and redirected to previous page.
-						**/
+						// Employee created and redirected to previous page.
 						$_SESSION['STATUS'] = 15;
 						header("Location: status.php");
 					};
 				};
 			} else {
-				/**
-					Redirect to dashboard if not Superuser or Manager
-				**/
+				// Redirect to dashboard if not Superuser or Manager
 				$_SESSION['STATUS'] = 10;
 				header('Location: status.php');
 			}
@@ -246,14 +214,10 @@
 													<select name="empNationality" id="empNationality" class="form-control input-lg" onchange="showCounty(this.value);" required>
 														<?php
 														if($rowNationality < 1) {
-															/**
-																No nationality were created.
-															**/
+															// No nationality were created.
 															echo "<option value=''>No Nationality Found</option>";
 														} else {
-															/**
-																Found nationality lists.
-															**/
+															// Found nationality lists.
 															echo "<option value=''>Select Nationality</option>";
 															for($i = 0; $i < $rowNationality; ++$i) {
 																$nationalityName = mysql_result($resultNationality, $i, 'nationalityName');
@@ -309,14 +273,10 @@
 													<?php
 														/*
 														if($rowStatus < 1) {
-															/**
-																No status were created.
-															//
+															// No status were created.
 															echo "<option value=''>No Status Found</option>";
 														} else {
-															/**
-																Found status lists.
-															//
+															// Found status lists.
 															echo "<option value=''>Select Status</option>";
 															for($i = 0; $i < $rowStatus; ++$i) {
 																$statusId = mysql_result($resultStatus, $i, 'statusId');
@@ -348,14 +308,10 @@
 												<select name="empCompanyCode" class="form-control input-lg" required>
 													<?php
 														if($rowCom < 1) {
-															/**
-																No company were created.
-															**/
+															// No company were created.
 															echo "<option value=''>No Company Name Found</option>";
 														} else {
-															/**
-																Found company lists.
-															**/
+															// Found company lists.
 															echo "<option value=''>Select Company Name</option>";
 															for($i = 0; $i < $rowCom; ++$i) {
 																$comName = mysql_result($resultCom, $i, 'comName');
@@ -374,14 +330,10 @@
 												<select name="empDepartment" class="form-control input-lg" required>
 													<?php
 														if($rowDept < 1) {
-															/**
-															 No departments were created.
-															 **/
+															// No departments were created.
 															echo "<option value=''>No Department Found</option>";
 														} else {
-															/**
-															 Found departments lists.
-															 **/
+															// Found departments lists.
 															echo "<option value=''>Select Department</option>";
 															for($i = 0; $i < $rowDept; ++$i) {
 																$deptCode = mysql_result($resultDept, $i, 'deptCode');
@@ -398,14 +350,10 @@
 												<select name="empUnit" class="form-control input-lg" required>
 													<?php
 														if($rowUnit < 1) {
-															/**
-															 No unit were created.
-															 **/
+															// No unit were created.
 															echo "<option value=''>No Unit Found</option>";
 														} else {
-															/**
-															 Found unit lists.
-															 **/
+															// Found unit lists.
 															echo "<option value=''>Select Unit</option>";
 															for($i = 0; $i < $rowUnit; ++$i) {
 																$unitName = mysql_result($resultUnit, $i, 'unitName');
@@ -422,14 +370,10 @@
 												<select name="empPosition" class="form-control input-lg" required>
 													<?php
 														if($rowPosition < 1) {
-															/**
-															 No position were created.
-															 **/
+															// No position were created.
 															echo "<option value=''>No Position Found</option>";
 														} else {
-															/**
-															 Found position lists.
-															 **/
+															// Found position lists.
 															echo "<option value=''>Select Position</option>";
 															for($i = 0; $i < $rowPosition; ++$i) {
 																$positionName = mysql_result($resultPosition, $i, 'positionName');
@@ -457,14 +401,10 @@
 												<select name="empTaxCode" class="form-control input-lg" required>
 													<?php
 														if($rowTaxCode < 1) {
-															/**
-															 No taxcode were created.
-															 **/
+															// No taxcode were created.
 															echo "<option value=''>No Tax Code Found</option>";
 														} else {
-															/**
-															 Found taxcode lists.
-															 **/
+															// Found taxcode lists.
 															echo "<option value=''>Select Tax Code</option>";
 															for($i = 0; $i < $rowTaxCode; ++$i) {
 																$taxCodeName = mysql_result($resultTaxCode, $i, 'taxCodeName');
@@ -498,9 +438,7 @@
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
-	/**
-	   Alertify confirm logout.
-	**/
+	// Alertify confirm logout.
 	$(function() {
 		$('.logoutAlert').click(function() {
 			alertify.confirm("[ALERT]  Are you sure you want to LOGOUT?", function(result) {
@@ -510,9 +448,7 @@
 			})
 		})
 	})
-	/**
-	   Bootbox alert customize.
-	**/
+	// Bootbox alert customize.
 	/*
 	$(function() {
 		$('.logoutAlert').click(function(){

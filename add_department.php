@@ -2,111 +2,89 @@
 <link href="css/center.css" rel="stylesheet" type="text/css" />
 <link href="css/components.css" rel="stylesheet" type="text/css" />
 <link href="css/layout.css" rel="stylesheet" type="text/css" />
-<!-- <link href="css/setadmin.css" rel="stylesheet" type="text/css" /> -->
-<script type = "text/javascript">
-	history.pushState(null, null, 'add_department.php');
-	window.addEventListener('popstate', function(event) {
-		history.pushState(null, null, 'add_department.php');
-	});
-</script>
 <?php include('pages/page_meta.php'); ?>
 <?php
-require_once('db/db_config.php');
-/**
-	Check session id.
-**/
-$login = $_SESSION['LOGIN_ID'];
-$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
-$result = mysql_query($query);
-if(!$result) die ("Table access failed: " . mysql_error());
-$data = mysql_fetch_assoc($result);
-$sid = $data['sid'];
-if($sid == $_SESSION['SID']) {
-	if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
-		if($_SESSION['GID'] < 3000) {
-			$fname = $_SESSION['FNAME'];
-			$uid = $_SESSION['UID'];
-			$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
-			$lastPage = $_SESSION['LAST_PAGE'];
-			//$_SESSION['LAST_PAGE'] = 'add_department.php';
-			/**
-				Lifetime added 5min.
-			**/
-			if(isset($_SESSION['EXPIRETIME'])) {
-				if($_SESSION['EXPIRETIME'] < time()) {
-					unset($_SESSION['EXPIRETIME']);
-					header('Location: logout.php?TIMEOUT');
-					exit(0);
-				} else {
-					/**
-						Session time out time 5min.
-					**/
-					//$_SESSION['EXPIRETIME'] = time() + 300;
-					$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+	require_once('db/db_config.php');
+	// Check session id.
+	$login = $_SESSION['LOGIN_ID'];
+	$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+	$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
+	$result = mysql_query($query);
+	if(!$result) die ("Table access failed: " . mysql_error());
+	$data = mysql_fetch_assoc($result);
+	$sid = $data['sid'];
+	if($sid == $_SESSION['SID']) {
+		if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
+			if($_SESSION['GID'] < 3000) {
+				$fname = $_SESSION['FNAME'];
+				$uid = $_SESSION['UID'];
+				$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
+				$lastPage = $_SESSION['LAST_PAGE'];
+				//$_SESSION['LAST_PAGE'] = 'add_department.php';
+				// Lifetime added 5min.
+				if(isset($_SESSION['EXPIRETIME'])) {
+					if($_SESSION['EXPIRETIME'] < time()) {
+						unset($_SESSION['EXPIRETIME']);
+						header('Location: logout.php?TIMEOUT');
+						exit(0);
+					} else {
+						// Session time out time 5min.
+						//$_SESSION['EXPIRETIME'] = time() + 300;
+						$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+					};
 				};
-			};
-			/**
-				Select departments lists.
-	   		**/
-	   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-			$query = "SELECT * from departments ORDER BY id DESC";
-			$result = mysql_query($query);
-			$row = mysql_num_rows($result);
-			if(!$result) die ("Table access failed: " . mysql_error());
-			if($row == 0) {
-				$deptId = 'D01';
-			} else {
-				if($row < 9) {
-					$row++;
-					$deptId = 'D0' . $row;
-				} else {
-					$row++;
-					$deptId = 'D' . $row;
-				}
-			}
-
-			if(isset($_POST['deptCode']) && isset($_POST['deptName'])) {
-				$deptId = $_POST['deptId'];
-				$deptCode = ucfirst(mysql_escape_string($_POST['deptCode']));
-				$deptName = ucwords(mysql_escape_string($_POST['deptName']));
-				/**
-					Get the gid from tables
-				**/
-				// $dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-				$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
+				// Select departments lists.
+		   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+				$query = "SELECT * from departments ORDER BY id DESC";
 				$result = mysql_query($query);
-				$row = mysql_fetch_array($result);
-				$time = $row['dateTime'];
-				$query = "INSERT INTO departments (dateTime, deptId, deptCode, deptName, status, createdBy) VALUES('$time', '$deptId', '$deptCode', '$deptName', 'Active', '$uid')";
-				$result = mysql_query($query);
+				$row = mysql_num_rows($result);
 				if(!$result) die ("Table access failed: " . mysql_error());
-				if($result) {
-					/**
-						Department created and redirected to registration.php.
-					**/
-					$_SESSION['STATUS'] = 13;
-					header("Location: status.php");
+				if($row == 0) {
+					$deptId = 'D01';
+				} else {
+					if($row < 9) {
+						$row++;
+						$deptId = 'D0' . $row;
+					} else {
+						$row++;
+						$deptId = 'D' . $row;
+					}
+				}
+
+				if(isset($_POST['deptCode']) && isset($_POST['deptName'])) {
+					$deptId = $_POST['deptId'];
+					$deptCode = ucfirst(mysql_escape_string($_POST['deptCode']));
+					$deptName = ucwords(mysql_escape_string($_POST['deptName']));
+					// Get the gid from tables
+					// $dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+					$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
+					$result = mysql_query($query);
+					$row = mysql_fetch_array($result);
+					$time = $row['dateTime'];
+					$query = "INSERT INTO departments (dateTime, deptId, deptCode, deptName, status, createdBy) VALUES('$time', '$deptId', '$deptCode', '$deptName', 'Active', '$uid')";
+					$result = mysql_query($query);
+					if(!$result) die ("Table access failed: " . mysql_error());
+					if($result) {
+						// Department created and redirected to registration.php.
+						$_SESSION['STATUS'] = 13;
+						header("Location: status.php");
+					};
 				};
-			};
+			} else {
+				// Redirect to dashboard if not Superuser or Manager
+				$_SESSION['STATUS'] = 10;
+				header('Location: status.php');
+			}
 		} else {
-			/**
-				Redirect to dashboard if not Superuser or Manager
-			**/
-			$_SESSION['STATUS'] = 10;
+			unset($_SESSION['STATUS']);
 			header('Location: status.php');
-		}
+		};
 	} else {
 		unset($_SESSION['STATUS']);
 		header('Location: status.php');
-	};
-} else {
-	unset($_SESSION['STATUS']);
-	header('Location: status.php');
-}
+	}
 ?>
 <?php include('pages/page_menu.php'); ?>
-
 <div class="page-container">
 	<div class="page-head">
 		<div class="container">
@@ -183,7 +161,6 @@ if($sid == $_SESSION['SID']) {
 										</div>
 										<div class="form-actions">
 											<input type="submit" value="Submit" class="btn blue">
-											<!-- <button type="submit" class="btn blue">Submit</button> -->
 											<a href="<?php echo $lastPage; ?>"><button type="button" class="btn default">Cancel</button></a>
 										</div>
 									</form>
@@ -198,74 +175,48 @@ if($sid == $_SESSION['SID']) {
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
-/**
-   Alertify confirm logout.
-**/
-$(function() {
-	$('.logoutAlert').click(function() {
-		alertify.confirm("[ALERT]  Are you sure you want to LOGOUT?", function(result) {
-			if(result) {
-				window.location = "logout.php";
-			}
+	// Alertify confirm logout.
+	$(function() {
+		$('.logoutAlert').click(function() {
+			alertify.confirm("[ALERT]  Are you sure you want to LOGOUT?", function(result) {
+				if(result) {
+					window.location = "logout.php";
+				}
+			})
 		})
 	})
-})
-/**
-   Bootbox alert customize.
-**/
-/*
-$(function() {
-	$('.logoutAlert').click(function(){
-		bootbox.confirm("Are you sure you want to LOGOUT?", function(result) {
-			if(result) {
-				window.location = "logout.php";
-			}
-		});
-	})
-})
-*/
-/*
-$(function(){
-    $('#logout').click(function(){
-        if(confirm('Are you sure you want to LOGOUT?')) {
-            return true;
-        }
-        return false;
-    });
-});
-*/
-function checkDeptCode() {
-	var deptCode = document.getElementById("deptCode").value;
-	if(deptCode) {
-		$.ajax({
-			type: 'post',
-			url: 'check_data.php',
-			data: {
-				deptCode: deptCode,
-			},
-			success: function (response) {
-				if(response == "true") {
-					$('#deptCode_status').html("");
-					return true;
-				} else {
-					$('#deptCode_status').html(response);
-					return false;
-               }
-            }
-		});
-	} else {
-		$('#deptCode_status').html("");
-		return false;
+	function checkDeptCode() {
+		var deptCode = document.getElementById("deptCode").value;
+		if(deptCode) {
+			$.ajax({
+				type: 'post',
+				url: 'check_data.php',
+				data: {
+					deptCode: deptCode,
+				},
+				success: function (response) {
+					if(response == "true") {
+						$('#deptCode_status').html("");
+						return true;
+					} else {
+						$('#deptCode_status').html(response);
+						return false;
+	               }
+	            }
+			});
+		} else {
+			$('#deptCode_status').html("");
+			return false;
+		}
 	}
-}
-function validate() {
-	var deptCode_status=document.getElementById("deptCode_status").innerHTML;
-	if(deptCode_status =="") {
-		return true;
-	} else {
-          return false;
+	function validate() {
+		var deptCode_status=document.getElementById("deptCode_status").innerHTML;
+		if(deptCode_status =="") {
+			return true;
+		} else {
+	          return false;
+		}
 	}
-}
 </script>
 <?php include('pages/page_footer.php'); ?>
 </body>

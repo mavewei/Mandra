@@ -277,7 +277,6 @@
 											<div class="form-group">
 												<label>Position</label>
 												<select name="position" class="form-control input-lg" required>
-													<option value="">Select Position</option>
 													<?php
 														if($rowPosition < 1) {
 															// No position were created.

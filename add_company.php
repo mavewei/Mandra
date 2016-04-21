@@ -5,9 +5,7 @@
 <?php include('pages/page_meta.php'); ?>
 <?php
 	require_once('db/db_config.php');
-	/**
-		Check session id.
-	**/
+	// Check session id.
 	$login = $_SESSION['LOGIN_ID'];
 	$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 	$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
@@ -22,25 +20,19 @@
 				$uid = $_SESSION['UID'];
 				$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
 				$lastPage = $_SESSION['LAST_PAGE'];
-				/**
-					Lifetime added 5min.
-				**/
+				// Lifetime added 5min.
 				if(isset($_SESSION['EXPIRETIME'])) {
 					if($_SESSION['EXPIRETIME'] < time()) {
 						unset($_SESSION['EXPIRETIME']);
 						header('Location: logout.php?TIMEOUT');
 						exit(0);
 					} else {
-						/**
-							Session time out time 5min.
-						**/
+						// Session time out time 5min.
 						//$_SESSION['EXPIRETIME'] = time() + 300;
 						$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
 					};
 				};
-				/**
-					Select company lists.
-		   		**/
+				// Select company lists.
 		   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 				$query = "SELECT * from company ORDER BY id DESC";
 				$result = mysql_query($query);
@@ -57,38 +49,29 @@
 						$comId = 'C' . $row;
 					}
 				}
-
 				if(isset($_POST['comCode']) && isset($_POST['comName'])) {
 					$comId = $_POST['comId'];
 					$comCode = strtoupper(mysql_escape_string($_POST['comCode']));
 					$comName = ucwords(mysql_escape_string($_POST['comName']));
 					$comLocation = $_POST['comLocation'];
-					/**
-						Get the gid from tables
-					**/
+					// Get the gid from tables
 					// $dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 					$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) as 'dateTime'";
 					$result = mysql_query($query);
 					$row = mysql_fetch_array($result);
 					$time = $row['dateTime'];
-					$query = "INSERT INTO company
-									(dateTime, comId, comCode, comName, comLocation, status, createdBy)
-								VALUES
-									('$time', '$comId', '$comCode', '$comName', '$comLocation', 'Active', '$uid')";
+					$query = "INSERT INTO company(dateTime, comId, comCode, comName, comLocation, status, createdBy)
+								VALUES('$time', '$comId', '$comCode', '$comName', '$comLocation', 'Active', '$uid')";
 					$result = mysql_query($query);
 					if(!$result) die ("Table access failed: " . mysql_error());
 					if($result) {
-						/**
-							Company information created and redirected to previous page.
-						**/
+						// Company information created and redirected to previous page.
 						$_SESSION['STATUS'] = 14;
 						header("Location: status.php");
 					};
 				};
 			} else {
-				/**
-					Redirect to dashboard if not Superuser or Manager
-				**/
+				// Redirect to dashboard if not Superuser or Manager
 				$_SESSION['STATUS'] = 10;
 				header('Location: status.php');
 			}
@@ -205,64 +188,48 @@
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
-/**
-   Alertify confirm logout.
-**/
-$(function() {
-	$('.logoutAlert').click(function() {
-		alertify.confirm("[ALERT]  Are you sure you want to LOGOUT?", function(result) {
-			if(result) {
-				window.location = "logout.php";
-			}
+	// Alertify confirm logout.
+	$(function() {
+		$('.logoutAlert').click(function() {
+			alertify.confirm("[ALERT]  Are you sure you want to LOGOUT?", function(result) {
+				if(result) {
+					window.location = "logout.php";
+				}
+			})
 		})
 	})
-})
-/**
-   Bootbox alert customize.
-**/
-/*
-$(function() {
-	$('.logoutAlert').click(function(){
-		bootbox.confirm("Are you sure you want to LOGOUT?", function(result) {
-			if(result) {
-				window.location = "logout.php";
-			}
-		});
-	})
-})
-*/
-function checkComCode() {
-	var comCode = document.getElementById("comCode").value;
-	if(comCode) {
-		$.ajax({
-			type: 'post',
-			url: 'check_data.php',
-			data: {
-				comCode: comCode,
-			},
-			success: function (response) {
-				if(response == "true") {
-					$('#comCode_status').html("");
-					return true;
-				} else {
-					$('#comCode_status').html(response);
-					return false;
-               }
-            }
-		});
-	} else {
-		$('#comCode_status').html("");
-		return false;
+	function checkComCode() {
+		var comCode = document.getElementById("comCode").value;
+		if(comCode) {
+			$.ajax({
+				type: 'post',
+				url: 'check_data.php',
+				data: {
+					comCode: comCode,
+				},
+				success: function (response) {
+					if(response == "true") {
+						$('#comCode_status').html("");
+						return true;
+					} else {
+						$('#comCode_status').html(response);
+						return false;
+	               }
+	            }
+			});
+		} else {
+			$('#comCode_status').html("");
+			return false;
+		}
 	}
-}
-function validate() {
-	var comCode_status=document.getElementById("comCode_status").innerHTML;
-	if(comCode_status =="") {
-		return true;
-	} else {
-          return false;
+	function validate() {
+		var comCode_status=document.getElementById("comCode_status").innerHTML;
+		if(comCode_status =="") {
+			return true;
+		} else {
+	          return false;
+		}
 	}
-}
 </script>
 <?php include('pages/page_footer.php'); ?>
 </body>

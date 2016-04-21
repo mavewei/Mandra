@@ -5,12 +5,6 @@
 <!-- <link href="css/center.css" rel="stylesheet" type="text/css"> -->
 <!-- <link href="css/signin.css" rel="stylesheet" type="text/css"> -->
 <!-- <link href="css/setadmin.css" rel="stylesheet" type="text/css" /> -->
-<script type = "text/javascript">
-	history.pushState(null, null, '');
-	window.addEventListener('popstate', function(event) {
-		history.pushState(null, null, '');
-	});
-</script>
 <?php include('pages/page_meta.php'); ?>
 <?php
 	require_once('db/db_config.php');

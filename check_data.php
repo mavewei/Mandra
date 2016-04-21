@@ -3,27 +3,21 @@
 
 	$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 	if($dbSelected) {
-		/**
-			Validate data for email address.
-		**/
+		// Validate data for email address.
 		if(!empty($_POST['emailAdd'])) {
 			$emailAdd = $_POST['emailAdd'];
-			$query = "SELECT * FROM userAccounts WHERE emailAdd = '$emailAdd'";
+			$query = "SELECT * FROM userAccounts WHERE emailAdd = '$emailAdd' AND status = 'Active'";
 			$result = mysql_query($query);
 			if(!$result) die ("Table access failed: " . mysql_error());
 			$row = mysql_num_rows($result);
 			if($row > 0) {
-				/**
-					Email address found.
-				**/
+				// Email address found.
 				echo '[Error] Login ID already exist!';
 			} else {
 				return true;
 			}
 		}
-		/**
-			Validate data for company information.
-		**/
+		// Validate data for company information.
 		if(!empty($_POST['comCode'])) {
 			$comCode = $_POST['comCode'];
 			$query = "SELECT * FROM company WHERE comCode = '$comCode'";
@@ -31,17 +25,13 @@
 			if(!$result) die ("Table access failed: " . mysql_error());
 			$row = mysql_num_rows($result);
 			if($row > 0) {
-				/**
-					Company code found.
-				**/
+				// Company code found.
 				echo "[Error] Company code already exist!";
 			} else {
 				return true;
 			}
 		}
-		/**
-			Validate data for department information.
-		**/
+		// Validate data for department information.
 		if(!empty($_POST['deptCode'])) {
 			$deptCode = $_POST['deptCode'];
 			$query = "SELECT * FROM departments WHERE deptCode = '$deptCode'";
@@ -49,17 +39,13 @@
 			if(!$result) die ("Table access failed: " . mysql_error());
 			$row = mysql_num_rows($result);
 			if($row > 0) {
-				/**
-					Department information found.
-				**/
+				// Department information found.
 				echo "[Error] Department code already exist!";
 			} else {
 				return true;
 			}
 		}
-		/**
-			Validate data for employee name.
-		**/
+		// Validate data for employee name.
 		if(!empty($_POST['empName'])) {
 			$empName = $_POST['empName'];
 			$query = "SELECT * FROM employees WHERE empName = '$empName'";
@@ -67,17 +53,13 @@
 			if(!$result) die ("Table access failed: " . mysql_error());
 			$row = mysql_num_rows($result);
 			if($row > 0) {
-				/**
-					Employee name found.
-				**/
+				// Employee name found.
 				echo "[Error] Employee details already exist!";
 			} else {
 				return true;
 			}
 		}
-		/**
-			Validate data for county.
-		**/
+		// Validate data for county.
 		if(!empty($_POST['empNationality'])) {
 			$empNationality = $_POST['empNationality'];
 			$query = "SELECT countyId, countyCode FROM county WHERE countyId = '$empNationality'";
@@ -85,9 +67,7 @@
 			if(!$result) die ("Table access failed: " . mysql_error());
 			$row = mysql_num_rows($result);
 			if($row > 0) {
-				/**
-					County found.
-				**/
+				// County found.
 				$rows = array();
 				while($data = mysql_fetch_array($result)) {
 				 	$rows[] = array("countyCode" => $data['countyCode']);
@@ -97,9 +77,7 @@
 				return false;
 			}
 		}
-		/**
-			Validate data for tax code.
-		**/
+		// Validate data for tax code.
 		if(!empty($_POST['taxCodeName'])) {
 			$taxCodeName = $_POST['taxCodeName'];
 			$query = "SELECT * FROM taxCode WHERE taxCodeName = '$taxCodeName'";
@@ -107,17 +85,13 @@
 			if(!$result) die ("Table access failed: " . mysql_error());
 			$row = mysql_num_rows($result);
 			if($row > 0) {
-				/**
-					Tax Code found.
-				**/
+				// Tax Code found.
 				echo "[Error] Tax code already exist!";
 			} else {
 				return true;
 			}
 		}
-		/**
-			Validate data for unit information.
-		**/
+		// Validate data for unit information.
 		if(!empty($_POST['unitName'])) {
 			$unitName = $_POST['unitName'];
 			$query = "SELECT * FROM unit WHERE unitName = '$unitName'";
@@ -125,17 +99,13 @@
 			if(!$result) die ("Table access failed: " . mysql_error());
 			$row = mysql_num_rows($result);
 			if($row > 0) {
-				/**
-					Unit information found.
-				**/
+				// Unit information found.
 				echo "[Error] Unit infor already exist!";
 			} else {
 				return true;
 			}
 		}
-		/**
-			Validate data for position information.
-		**/
+		// Validate data for position information.
 		if(!empty($_POST['positionName'])) {
 			$positionName = $_POST['positionName'];
 			$query = "SELECT * FROM position WHERE positionName = '$positionName' AND status = 'Active'";
@@ -143,17 +113,13 @@
 			if(!$result) die ("Table access failed: " . mysql_error());
 			$row = mysql_num_rows($result);
 			if($row > 0) {
-				/**
-					Position information found.
-				**/
+				// Position information found.
 				echo "[Error] Position infor already exist!";
 			} else {
 				return true;
 			}
 		}
-		/**
-			Validate data for parts details.
-		**/
+		// Validate data for parts details.
 		if(!empty($_POST['partsNumber'])) {
 			$partsNumber = $_POST['partsNumber'];
 			$query = "SELECT * FROM partsMasterFile WHERE partsNumber = '$partsNumber' AND status = 'Active'";
@@ -161,17 +127,13 @@
 			if(!$result) die ("Table access failed: " . mysql_error());
 			$row = mysql_num_rows($result);
 			if($row > 0) {
-				/**
-					Parts information found.
-				**/
+				// Parts information found.
 				echo "[Error] Parts number already exist!";
 			} else {
 				return true;
 			}
 		}
-		/**
-			Validate data for employee status.
-		**/
+		// Validate data for employee status.
 		if(!empty($_POST['statusName'])) {
 			$statusName = $_POST['statusName'];
 			$query = "SELECT * FROM status WHERE statusName = '$statusName' AND status = 'Active'";
@@ -179,9 +141,7 @@
 			if(!$result) die ("Table access failed: " . mysql_error());
 			$row = mysql_num_rows($result);
 			if($row > 0) {
-				/**
-					Status details found.
-				**/
+				// Status details found.
 				echo "[Error] Status already exist!";
 			} else {
 				return true;
@@ -246,7 +206,8 @@
 		// Validate data for parts equip type.
 		if(!empty($_POST['partsEquipTypeName'])) {
 			$partsEquipTypeName = mysql_escape_string($_POST['partsEquipTypeName']);
-			$query = "SELECT * FROM partsEquipType WHERE partsEquipTypeName = '$partsEquipTypeName' AND status = 'Active'";
+			$query = "SELECT * FROM partsEquipType
+						 WHERE partsEquipTypeName = '$partsEquipTypeName' AND status = 'Active'";
 			$result = mysql_query($query);
 			if(!$result) die ("Table access failed: " . mysql_error());
 			$row = mysql_num_rows($result);
@@ -279,6 +240,27 @@
 				echo json_encode($rows);
 			} else {
 				return false;
+			}
+		}
+		// Change password.
+		if(!empty($_POST['currentPasswd']) && !empty($_POST['newPasswd'])) {
+			$emailAdd = $_POST['emailAddP'];
+			$currentPasswd = md5(mysql_escape_string($_POST['currentPasswd']));
+			$newPasswd = md5(mysql_escape_string($_POST['newPasswd']));
+			$query = "SELECT passwd FROM userAccounts WHERE emailAdd = '$emailAdd' AND status = 'Active'";
+			$result = mysql_query($query);
+			if(!$result) die ("Table access failed: " . mysql_error());
+			$data = mysql_fetch_assoc($result);
+			$passwd = $data['passwd'];
+			// Check current password with database.
+			if($currentPasswd == $passwd) {
+				$query = "UPDATE userAccounts SET passwd = '$newPasswd'
+							 WHERE emailAdd = '$emailAdd' AND status = 'Active'";
+				$result = mysql_query($query);
+				if(!$result) die ("Table access failed: " . mysql_error());
+				echo "true";
+			} else {
+				echo "false";
 			}
 		}
 	}

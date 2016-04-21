@@ -2,102 +2,81 @@
 <link href="css/add-mod-status.css" rel="stylesheet" type="text/css" />
 <link href="css/components.css" rel="stylesheet" type="text/css" />
 <link href="css/layout.css" rel="stylesheet" type="text/css" />
-<script type = "text/javascript">
-	history.pushState(null, null, 'add_status.php');
-	window.addEventListener('popstate', function(event) {
-		history.pushState(null, null, 'add_status.php');
-	});
-</script>
 <?php include('pages/page_meta.php'); ?>
 <?php
-require_once('db/db_config.php');
-/**
-	Check session id.
-**/
-$login = $_SESSION['LOGIN_ID'];
-$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
-$result = mysql_query($query);
-if(!$result) die ("Table access failed: " . mysql_error());
-$data = mysql_fetch_assoc($result);
-$sid = $data['sid'];
-if($sid == $_SESSION['SID']) {
-	if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
-		if($_SESSION['GID'] < 3000) {
-			$fname = $_SESSION['FNAME'];
-			$uid = $_SESSION['UID'];
-			$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
-			$lastPage = $_SESSION['LAST_PAGE'];
-			//$_SESSION['LAST_PAGE'] = 'add_department.php';
-			/**
-				Lifetime added 5min.
-			**/
-			if(isset($_SESSION['EXPIRETIME'])) {
-				if($_SESSION['EXPIRETIME'] < time()) {
-					unset($_SESSION['EXPIRETIME']);
-					header('Location: logout.php?TIMEOUT');
-					exit(0);
-				} else {
-					/**
-						Session time out time 5min.
-					**/
-					//$_SESSION['EXPIRETIME'] = time() + 300;
-					$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+	require_once('db/db_config.php');
+	// Check session id.
+	$login = $_SESSION['LOGIN_ID'];
+	$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+	$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
+	$result = mysql_query($query);
+	if(!$result) die ("Table access failed: " . mysql_error());
+	$data = mysql_fetch_assoc($result);
+	$sid = $data['sid'];
+	if($sid == $_SESSION['SID']) {
+		if(isset($_SESSION['LOGGEDIN']) && isset($_SESSION['SID'])) {
+			if($_SESSION['GID'] < 3000) {
+				$fname = $_SESSION['FNAME'];
+				$uid = $_SESSION['UID'];
+				$sessionTimeout = $_SESSION['SESSIONTIMEOUT'];
+				$lastPage = $_SESSION['LAST_PAGE'];
+				//$_SESSION['LAST_PAGE'] = 'add_department.php';
+				// Lifetime added 5min.
+				if(isset($_SESSION['EXPIRETIME'])) {
+					if($_SESSION['EXPIRETIME'] < time()) {
+						unset($_SESSION['EXPIRETIME']);
+						header('Location: logout.php?TIMEOUT');
+						exit(0);
+					} else {
+						// Session time out time 5min.
+						//$_SESSION['EXPIRETIME'] = time() + 300;
+						$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
+					};
 				};
-			};
-			/**
-				Select status lists.
-	   		**/
-	   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-			$query = "SELECT * FROM status ORDER BY id DESC";
-			$result = mysql_query($query);
-			$row = mysql_num_rows($result);
-			if(!$result) die ("Table access failed: " . mysql_error());
-			if($row == 0) {
-				$statusId = 'S01';
-			} else {
-				$row++;
-				$statusId = 'S' . sprintf('%02d', $row);
-			}
-			if(isset($_POST['statusId']) && isset($_POST['statusName'])) {
-				$statusId = $_POST['statusId'];
-				$statusName = ucwords(mysql_escape_string($_POST['statusName']));
-				$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
+				// Select status lists.
+		   		mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+				$query = "SELECT * FROM status ORDER BY id DESC";
 				$result = mysql_query($query);
-				$row = mysql_fetch_array($result);
-				$time = $row['dateTime'];
-				$query = "INSERT INTO status
-								(dateTime, statusId, statusName, status)
-							VALUES
-								('$time', '$statusId', '$statusName', 'Active')";
-				$result = mysql_query($query);
+				$row = mysql_num_rows($result);
 				if(!$result) die ("Table access failed: " . mysql_error());
-				if($result) {
-					/**
-						status created and redirected to previous page.
-					**/
-					$_SESSION['STATUS'] = 29;
-					header("Location: status.php");
+				if($row == 0) {
+					$statusId = 'S01';
+				} else {
+					$row++;
+					$statusId = 'S' . sprintf('%02d', $row);
+				}
+				if(isset($_POST['statusId']) && isset($_POST['statusName'])) {
+					$statusId = $_POST['statusId'];
+					$statusName = ucwords(mysql_escape_string($_POST['statusName']));
+					$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
+					$result = mysql_query($query);
+					$row = mysql_fetch_array($result);
+					$time = $row['dateTime'];
+					$query = "INSERT INTO status(dateTime, statusId, statusName, status)
+								VALUES('$time', '$statusId', '$statusName', 'Active')";
+					$result = mysql_query($query);
+					if(!$result) die ("Table access failed: " . mysql_error());
+					if($result) {
+						// status created and redirected to previous page.
+						$_SESSION['STATUS'] = 29;
+						header("Location: status.php");
+					};
 				};
-			};
+			} else {
+				// Redirect to dashboard if not Superuser or Manager
+				$_SESSION['STATUS'] = 10;
+				header('Location: status.php');
+			}
 		} else {
-			/**
-				Redirect to dashboard if not Superuser or Manager
-			**/
-			$_SESSION['STATUS'] = 10;
+			unset($_SESSION['STATUS']);
 			header('Location: status.php');
-		}
+		};
 	} else {
 		unset($_SESSION['STATUS']);
 		header('Location: status.php');
-	};
-} else {
-	unset($_SESSION['STATUS']);
-	header('Location: status.php');
-}
+	}
 ?>
 <?php include('pages/page_menu.php'); ?>
-
 <div class="page-container">
 	<div class="page-head">
 		<div class="container">
@@ -177,64 +156,48 @@ if($sid == $_SESSION['SID']) {
 </div>
 <?php include('pages/page_jquery.php'); ?>
 <script>
-/**
-   Alertify confirm logout.
-**/
-$(function() {
-	$('.logoutAlert').click(function() {
-		alertify.confirm("[ALERT]  Are you sure you want to LOGOUT?", function(result) {
-			if(result) {
-				window.location = "logout.php";
-			}
+	// Alertify confirm logout.
+	$(function() {
+		$('.logoutAlert').click(function() {
+			alertify.confirm("[ALERT]  Are you sure you want to LOGOUT?", function(result) {
+				if(result) {
+					window.location = "logout.php";
+				}
+			})
 		})
 	})
-})
-/**
-   Bootbox alert customize.
-**/
-/*
-$(function() {
-	$('.logoutAlert').click(function(){
-		bootbox.confirm("Are you sure you want to LOGOUT?", function(result) {
-			if(result) {
-				window.location = "logout.php";
-			}
-		});
-	})
-})
-*/
-function checkStatusName() {
-	var statusName = document.getElementById("statusName").value;
-	if(statusName) {
-		$.ajax({
-			type: 'post',
-			url: 'check_data.php',
-			data: {
-				statusName: statusName,
-			},
-			success: function (response) {
-				if(response == "true") {
-					$('#statusName_status').html("");
-					return true;
-				} else {
-					$('#statusName_status').html(response);
-					return false;
-               }
-            }
-		});
-	} else {
-		$('#statusName_status').html("");
-		return false;
+	function checkStatusName() {
+		var statusName = document.getElementById("statusName").value;
+		if(statusName) {
+			$.ajax({
+				type: 'post',
+				url: 'check_data.php',
+				data: {
+					statusName: statusName,
+				},
+				success: function (response) {
+					if(response == "true") {
+						$('#statusName_status').html("");
+						return true;
+					} else {
+						$('#statusName_status').html(response);
+						return false;
+	               }
+	            }
+			});
+		} else {
+			$('#statusName_status').html("");
+			return false;
+		}
 	}
-}
-function validate() {
-	var statusName_status = document.getElementById("statusName_status").innerHTML;
-	if(statusName_status == "") {
-		return true;
-	} else {
-        return false;
+	function validate() {
+		var statusName_status = document.getElementById("statusName_status").innerHTML;
+		if(statusName_status == "") {
+			return true;
+		} else {
+	        return false;
+		}
 	}
-}
 </script>
 <?php include('pages/page_footer.php'); ?>
 </body>
