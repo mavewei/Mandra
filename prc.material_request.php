@@ -1,13 +1,13 @@
-<? include('pages/page_header.php'); ?>
+<?php include('pages/page_header.php'); ?>
 <link href="css/material-request.css" rel="stylesheet" type="text/css" />
 <link href="css/components.css" rel="stylesheet" type="text/css" />
 <link href="css/layout.css" rel="stylesheet" type="text/css" />
-<? include('pages/page_meta.php'); ?>
-<?
+<?php include('pages/page_meta.php'); ?>
+<?php
 	require_once('db/db_config.php');
 	// Check session id.
 	$login = $_SESSION['LOGIN_ID'];
-	$dbSelected = mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+	mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 	$query = "SELECT * FROM tempSession WHERE emailAdd = '$login'";
 	$result = mysql_query($query);
 	if(!$result) die ("Table access failed: " . mysql_error());
@@ -33,14 +33,12 @@
 					};
 				};
 				// Select material request form details
-				mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
+				//mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 				$query = "SELECT * FROM prcMaterialRequestForm WHERE status = 'Active' ORDER BY mrSN DESC";
 				$result = mysql_query($query);
 				$rows = mysql_num_rows($result);
 				if(!$result) die ("Table access failed: " . mysql_error());
-				/**
-					Pagination
-				**/
+				// ==Pagination== //
 				// Number of rows to show per page.
 				$rowsPerPage = 8;
 				// Find out total pages
@@ -66,13 +64,23 @@
 				// The offset of the list, based on current page
 				$offset = ($currentPage - 1) * $rowsPerPage;
 				// Get the info from the db
-				$query = "SELECT * FROM prcMaterialRequestForm WHERE status = 'Active' ORDER BY mrSN DESC LIMIT $offset, $rowsPerPage";
+				$query = "SELECT * FROM prcMaterialRequestForm
+							 WHERE status = 'Active' ORDER BY mrSN DESC LIMIT $offset, $rowsPerPage";
 				$result = mysql_query($query);
 				$rows = mysql_num_rows($result);
+			} else {
+				// Redirect to dashboard if not Superuser or Manager
+				$_SESSION['STATUS'] = 10;
+				header('Location: status.php');
 			}
-		}
-	}
-
+		} else {
+			unset($_SESSION['STATUS']);
+			header('Location: status.php');
+		};
+	} else {
+		unset($_SESSION['STATUS']);
+		header('Location: status.php');
+	};
 ?>
 <? include('pages/page_menu.php'); ?>
 <div class="page-container">
