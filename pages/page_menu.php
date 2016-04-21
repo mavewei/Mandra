@@ -44,7 +44,7 @@
 						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"><img alt class="img-circle" src="images/user_unknown.png" /><span class="username username-hide-mobile" id="firstname"> <?php echo $fname; ?> </span></a>
 						<ul class="dropdown-menu dropdown-menu-default">
 							<li>
-								<a href="javascript:;"><i class="glyphicon glyphicon-user"></i> My Profile </a>
+								<a href="usr.profile.php"><i class="glyphicon glyphicon-user"></i> My Profile </a>
 							</li>
 							<!-- <li>
 								<a href="javascript:;"><i class="glyphicon glyphicon-calendar"></i> My Calendar </a>
@@ -144,6 +144,9 @@
 							</li>
 							<li>
 								<a href="prc.material_request.php" class="nav-link">Material Request</a>
+							</li>
+							<li>
+								<a href="prc.purchase_request.php" class="nav-link">Purchase Request</a>
 							</li>
 
 							<!--
