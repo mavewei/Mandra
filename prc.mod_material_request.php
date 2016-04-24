@@ -41,18 +41,29 @@
 				// Reviewed confirm!
 				if($_GET['reviewedMrSN']) {
 					$reviewedMrSN = $_GET['reviewedMrSN'];
-					updateReviewed($reviewedMrSN, 'prcMaterialRequestForm', 'mrSN', $fname);
+					updateReviewed($reviewedMrSN, 'prcMaterialRequestForm', 'mrSN', $login);
 				}
 				// Approved confirm!
 				if($_GET['approveMrSN']) {
 					$approveMrSN = $_GET['approveMrSN'];
-					if(updateApproved($approveMrSN, 'prcMaterialRequestForm', 'mrSN', $fname)) {
+					if(updateApproved($approveMrSN, 'prcMaterialRequestForm', 'mrSN', $login)) {
 						generatePR($approveMrSN, 'mrfDetailsSN');
 					}
-
 				}
 				// Select material request form details.
-				$query = "SELECT * FROM prcMaterialRequestForm WHERE mrSn = '$mrSN'";
+				/*
+				$query = "SELECT * FROM prcMaterialRequestForm
+							 INNER JOIN userAccounts ON prcMaterialRequestForm.mrRequestBy = userAccounts.emailAdd
+							 WHERE mrSn = '$mrSN'";
+				*/
+				$query = "SELECT MRF.dateTime, mrNumber, mrDepartment, mrPurpose, mrDateReq, mrTotal, mrRemark,
+							 mrReviewStatus, mrApproveStatus, UA1.firstName AS mrRequestBy FROM prcMaterialRequestForm MRF
+							 JOIN userAccounts UA1 ON UA1.emailAdd = MRF.mrRequestBy
+							 WHERE mrSN = '$mrSN'";
+				/*
+				JOIN userAccounts UA2 ON UA2.emailAdd = MRF.mrReviewedPerson
+				JOIN userAccounts UA3 ON UA3.emailAdd = MRF.mrApprovedPerson
+				*/
 				$result = mysql_query($query);
 				$row = mysql_num_rows($result);
 				if(!$result) {
@@ -72,14 +83,26 @@
 					$mrRequestBy = $data['mrRequestBy'];
 					$mrReviewStatus = $data['mrReviewStatus'];
 					if($mrReviewStatus == "No Status") {} else {
-						$mrReviewedPerson = $data['mrReviewedPerson'];
-						$mrReviewedDateTime = $data['mrReviewedDateTime'];
+						$queryRev = "SELECT mrReviewedDateTime, UA1.firstName AS mrReviewedPerson
+										 FROM prcMaterialRequestForm MRF
+										 JOIN userAccounts UA1 ON UA1.emailAdd = MRF.mrReviewedPerson
+										 WHERE mrSN = '$mrSN'";
+						$resultRev = mysql_query($queryRev);
+						$dataRev = mysql_fetch_assoc($resultRev);
+						$mrReviewedPerson = $dataRev['mrReviewedPerson'];
+						$mrReviewedDateTime = $dataRev['mrReviewedDateTime'];
 						$mrReviewStatus = $mrReviewedDateTime . "   (" . $mrReviewedPerson . ")";
 					}
 					$mrApproveStatus = $data['mrApproveStatus'];
 					if($mrApproveStatus == "No Status") {} else {
-						$mrApprovedPerson = $data['mrApprovedPerson'];
-						$mrApprovedDateTime = $data['mrApprovedDateTime'];
+						$queryApprov = "SELECT mrApprovedDateTime, UA1.firstName AS mrApprovedPerson
+										 FROM prcMaterialRequestForm MRF
+										 JOIN userAccounts UA1 ON UA1.emailAdd = MRF.mrApprovedPerson
+										 WHERE mrSN = '$mrSN'";
+						$resultApprov = mysql_query($queryApprov);
+						$dataApprov = mysql_fetch_assoc($resultApprov);
+						$mrApprovedPerson = $dataApprov['mrApprovedPerson'];
+						$mrApprovedDateTime = $dataApprov['mrApprovedDateTime'];
 						$mrApproveStatus = $mrApprovedDateTime . "   (" . $mrApprovedPerson . ")";
 					}
 					// Material request form details
@@ -166,12 +189,12 @@
 		}
 	}
 	// Reviewed updated.
-	function updateReviewed($idx, $tables, $tableId, $fname) {
+	function updateReviewed($idx, $tables, $tableId, $login) {
 		$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
 		$result = mysql_query($query);
 		$row = mysql_fetch_array($result);
 		$time = $row['dateTime'];
-		$query = "UPDATE $tables SET mrReviewStatus = 'Reviewed', mrReviewedPerson = '$fname', mrReviewedDateTime = '$time' WHERE $tableId = '$idx'";
+		$query = "UPDATE $tables SET mrReviewStatus = 'Reviewed', mrReviewedPerson = '$login', mrReviewedDateTime = '$time' WHERE $tableId = '$idx'";
 		$result = mysql_query($query);
 		if(!$result) die ("Table access failed: " . mysql_error());
 		if($result) {
@@ -179,12 +202,12 @@
 		}
 	}
 	// Approved updated.
-	function updateApproved($idx, $tables, $tableId, $fname) {
+	function updateApproved($idx, $tables, $tableId, $login) {
 		$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
 		$result = mysql_query($query);
 		$row = mysql_fetch_array($result);
 		$time = $row['dateTime'];
-		$query = "UPDATE $tables SET mrApproveStatus = 'Approved', mrApprovedPerson = '$fname', mrApprovedDateTime = '$time' WHERE $tableId = '$idx'";
+		$query = "UPDATE $tables SET mrApproveStatus = 'Approved', mrApprovedPerson = '$login', mrApprovedDateTime = '$time' WHERE $tableId = '$idx'";
 		$result = mysql_query($query);
 		if(!$result) die ("Table access failed: " . mysql_error());
 		if($result) {

@@ -34,15 +34,18 @@
 				};
 				// Select material request form details
 				//mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
-				$query = "SELECT * FROM prcMaterialRequestForm WHERE status = 'Active' ORDER BY mrSN DESC";
-				$result = mysql_query($query);
-				$rows = mysql_num_rows($result);
-				if(!$result) die ("Table access failed: " . mysql_error());
+				//$query = "SELECT * FROM prcMaterialRequestForm WHERE status = 'Active' ORDER BY mrSN DESC";
+				$queryMRF = "SELECT * FROM prcMaterialRequestForm
+							 INNER JOIN userAccounts ON prcMaterialRequestForm.mrRequestBy = userAccounts.emailAdd
+							 WHERE prcMaterialRequestForm.status = 'Active' ORDER BY mrSN DESC";
+				$resultMRF = mysql_query($queryMRF);
+				$rowsMRF = mysql_num_rows($resultMRF);
+				if(!$resultMRF) die ("Table access failed: " . mysql_error());
 				// ==Pagination== //
 				// Number of rows to show per page.
 				$rowsPerPage = 8;
 				// Find out total pages
-				$totalPages = ceil($rows / $rowsPerPage);
+				$totalPages = ceil($rowsMRF / $rowsPerPage);
 				// Get the current page or set a default
 				if(isset($_GET['currentPage']) && is_numeric($_GET['currentPage'])) {
 					// Cast var as int
@@ -64,10 +67,12 @@
 				// The offset of the list, based on current page
 				$offset = ($currentPage - 1) * $rowsPerPage;
 				// Get the info from the db
-				$query = "SELECT * FROM prcMaterialRequestForm
-							 WHERE status = 'Active' ORDER BY mrSN DESC LIMIT $offset, $rowsPerPage";
-				$result = mysql_query($query);
-				$rows = mysql_num_rows($result);
+				$queryPG = "SELECT * FROM prcMaterialRequestForm
+							 INNER JOIN userAccounts ON prcMaterialRequestForm.mrRequestBy = userAccounts.emailAdd
+							 WHERE prcMaterialRequestForm.status = 'Active' ORDER BY mrSN DESC LIMIT $offset, $rowsPerPage";
+				//$queryPG = "SELECT * FROM prcMaterialRequestForm WHERE status = 'Active' ORDER BY mrSN DESC LIMIT $offset, $rowsPerPage";
+				$resultPG = mysql_query($queryPG);
+				$rowsPG = mysql_num_rows($resultPG);
 			} else {
 				// Redirect to dashboard if not Superuser or Manager
 				$_SESSION['STATUS'] = 10;
@@ -124,7 +129,7 @@
 							<div id="searchDiv" class="table-scrollable table-scrollable-borderless">
 								<table class="table table-hover table-light">
 									<?php
-										if($rows > 0) {
+										if($rowsPG > 0) {
 											echo "<thead><tr class='uppercase'><th style='width: 10%'>S/N</th>";
 											echo "<th class='center' style='width: 11%'>Date</th>";
 											echo "<th class='left' style='width: 12%'>MR No</th>";
@@ -136,28 +141,29 @@
 											echo "<th class='center' style='width: 12%'>Reviewed</th>";
 											echo "<th class='center' style='width: 12%'>Approved</th>";
 											echo "</tr></thead><tbody>";
-											for($j = 0; $j < $rows; ++$j) {
-												$mrSN = mysql_result($result, $j, 'mrSN');
-												$mrNumber = mysql_result($result, $j, 'mrNumber');
-												$mrDepartment = mysql_result($result, $j, 'mrDepartment');
-												$mrDateReq = mysql_result($result, $j, 'mrDateReq');
-												$mrTotal = mysql_result($result, $j, 'mrTotal');
-												$mrRequestBy = mysql_result($result, $j, 'mrRequestBy');
-												$mrReviewStatus = mysql_result($result, $j, 'mrReviewStatus');
+											for($j = 0; $j < $rowsPG; ++$j) {
+												$mrSN = mysql_result($resultPG, $j, 'mrSN');
+												$mrNumber = mysql_result($resultPG, $j, 'mrNumber');
+												$mrDepartment = mysql_result($resultPG, $j, 'mrDepartment');
+												$mrDateReq = mysql_result($resultPG, $j, 'mrDateReq');
+												$mrTotal = mysql_result($resultPG, $j, 'mrTotal');
+												$mrRequestBy = mysql_result($resultPG, $j, 'firstName');
+												//$mrRequestBy = mysql_result($result, $j, 'mrRequestBy');
+												$mrReviewStatus = mysql_result($resultPG, $j, 'mrReviewStatus');
 												if($mrReviewStatus == "No Status") {} else {
-													$string = mysql_result($result, $j, 'mrReviewedDateTime');
+													$string = mysql_result($resultPG, $j, 'mrReviewedDateTime');
 													if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
 														$mrReviewStatus = $match[1];
 													};
 												}
-												$mrApproveStatus = mysql_result($result, $j, 'mrApproveStatus');
+												$mrApproveStatus = mysql_result($resultPG, $j, 'mrApproveStatus');
 												if($mrApproveStatus == "No Status") {} else {
-													$string = mysql_result($result, $j, 'mrApprovedDateTime');
+													$string = mysql_result($resultPG, $j, 'mrApprovedDateTime');
 													if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
 														$mrApproveStatus = $match[1];
 													};
 												}
-												$string = mysql_result($result, $j, 'dateTime');
+												$string = mysql_result($resultPG, $j, 'dateTime');
 												if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
 													$dateCreated = $match[1];
 												};
@@ -180,7 +186,7 @@
 										}
 									?>
 								</table>
-								<nav style="text-align: center; <?php if($rows < 1) echo 'display: none' ?>">
+								<nav style="text-align: center; <?php if($rowsPG < 1) echo 'display: none' ?>">
 									<ul class="pagination">
 										<?php
 											// Pagination: http:\/\/www\.phpfreaks.com\/tutorial/basic-pagination
