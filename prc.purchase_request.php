@@ -33,7 +33,9 @@
 					};
 				};
 				// Select purchase request.
-				$queryPR = "SELECT * FROM purchaseRequest WHERE status = 'Active' ORDER BY prSN DESC";
+				$queryPR = "SELECT * FROM purchaseRequest
+								INNER JOIN userAccounts ON purchaseRequest.prRequestBy = userAccounts.emailAdd
+								WHERE purchaseRequest.status = 'Active' ORDER BY prSN DESC";
 				$resultPR = mysql_query($queryPR);
 				$rowsPR = mysql_num_rows($resultPR);
 				if(!$resultPR) die ("Table access failed: " . mysql_error());
@@ -64,7 +66,9 @@
 				// The offset of the list, based on current page
 				$offset = ($currentPage - 1) * $rowsPerPage;
 				// Get the info from the db
-				$queryPG = "SELECT * FROM purchaseRequest WHERE status = 'Active' ORDER BY prSN DESC LIMIT $offset, $rowsPerPage";
+				$queryPG = "SELECT * FROM purchaseRequest
+								INNER JOIN userAccounts ON purchaseRequest.prRequestBy = userAccounts.emailAdd
+								WHERE purchaseRequest.status = 'Active' ORDER BY prSN DESC LIMIT $offset, $rowsPerPage";
 				$resultPG = mysql_query($queryPG);
 				$rowsPG = mysql_num_rows($resultPG);
 			} else {
@@ -123,7 +127,7 @@
 							<div id="searchDiv" class="table-scrollable table-scrollable-borderless">
 								<table class="table table-hover table-light">
 									<?php
-										if($rowsPR > 0) {
+										if($rowsPG > 0) {
 											echo "<thead><tr class='uppercase'><th style='width: 10%'>S/N</th>";
 											echo "<th class='center' style='width: 11%'>Date</th>";
 											echo "<th class='left' style='width: 12%'>PR No</th>";
@@ -133,30 +137,32 @@
 											echo "<th class='center' style='width: 10%'>Total Req.</th>";
 											echo "<th class='center' style='width: 11%'>Requester</th>";
 											echo "<th class='center' style='width: 12%'>Reviewed</th>";
-											echo "<th class='center' style='width: 12%'>Approved</th>";
+											echo "<th class='center' style='width: 12%'><font color='blue'>Approved</font> / <font color='red'>Rejected</font></th>";
 											echo "</tr></thead><tbody>";
-											for($j = 0; $j < $rowsPR; ++$j) {
-												$prSN = mysql_result($resultPR, $j, 'prSN');
-												$prNumber = mysql_result($resultPR, $j, 'prNumber');
-												$prDepartment = mysql_result($resultPR, $j, 'prDepartment');
-												$prDateReq = mysql_result($resultPR, $j, 'prDateReq');
-												$prTotal = mysql_result($resultPR, $j, 'prTotal');
-												$prRequestBy = mysql_result($resultPR, $j, 'prRequestBy');
-												$prHeadWorkshopStatus = mysql_result($resultPR, $j, 'prHeadWorkshopStatus');
-												if($prHeadWorkshopStatus == "No Status") {} else {
-													$string = mysql_result($resultPR, $j, 'prHeadWorkshopDateTime');
+											for($j = 0; $j < $rowsPG; ++$j) {
+												$prSN = mysql_result($resultPG, $j, 'prSN');
+												$prNumber = mysql_result($resultPG, $j, 'prNumber');
+												$prDepartment = mysql_result($resultPG, $j, 'prDepartment');
+												$prDateReq = mysql_result($resultPG, $j, 'prDateReq');
+												$prTotal = mysql_result($resultPG, $j, 'prTotal');
+												$prRequestBy = mysql_result($resultPG, $j, 'firstName');
+												$prWarehouseStatus = mysql_result($resultPG, $j, 'prWarehouseStatus');
+												if($prWarehouseStatus == "No Status") {
+													// Do nothing.
+												} else {
+													$string = mysql_result($resultPG, $j, 'prWarehouseDateTime');
 													if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
-														$prHeadWorkshopStatus = $match[1];
+														$prWarehouseStatus = $match[1];
 													};
 												}
-												$prApproveStatus = mysql_result($resultPR, $j, 'prApproveStatus');
+												$prApproveStatus = mysql_result($resultPG, $j, 'prApproveStatus');
 												if($prApproveStatus == "No Status") {} else {
-													$string = mysql_result($resultPR, $j, 'prApprovedDateTime');
+													$string = mysql_result($resultPG, $j, 'prApprovedDateTime');
 													if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
-														$prApproveStatus = $match[1];
+														$prApproveStatusDT = $match[1];
 													};
 												}
-												$string = mysql_result($resultPR, $j, 'dateTime');
+												$string = mysql_result($resultPG, $j, 'dateTime');
 												if(preg_match('/(\d{4}-\d{2}-\d{2})/', $string, $match)) {
 													$dateCreated = $match[1];
 												};
@@ -168,8 +174,14 @@
 												echo "<td align='center'>$prDateReq</td>";
 												echo "<td align='center'>$prTotal</td>";
 												echo "<td align='center'>$prRequestBy</td>";
-												echo "<td align='center'>$prHeadWorkshopStatus</td>";
-												echo "<td align='center'>$prApproveStatus</td>";
+												echo "<td align='center'>$prWarehouseStatus</td>";
+												if($prApproveStatus == "Approved") {
+													echo "<td align='center'><font color='blue'>$prApproveStatusDT</font></td>";
+												} elseif($prApproveStatus == "Rejected") {
+													echo "<td align='center'><font color='red'>$prApproveStatusDT</font></td>";
+												} else {
+													echo "<td align='center'>$prApproveStatus</td>";
+												}
 												echo "</tr>";
 											};
 											echo "</tbody>";

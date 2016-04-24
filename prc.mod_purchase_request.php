@@ -30,12 +30,33 @@
 						exit(0);
 					} else {
 						// Session time out time 5min.
-						//$_SESSION['EXPIRETIME'] = time() + 300;
 						$_SESSION['EXPIRETIME'] = time() + $sessionTimeout;
 					};
 				};
+				// Warehous reviewed confirm!
+				if($_GET['warehouseRe']) {
+					$warehouseSN = $_GET['warehouseRe'];
+					warehouseReviewed($warehouseSN, $login);
+				}
+				// Head of workshop reviewed confirm!
+				if($_GET['workshopRe']) {
+					$workshopSN = $_GET['workshopRe'];
+					workshopReviewed($workshopSN, $login);
+				}
+				// Manager approved.
+				if($_GET['approvedSN']) {
+					$approvedSN = $_GET['approvedSN'];
+					managerStatus('Approved', $approvedSN, $login);
+				}
+				// Manager rejected.
+				if($_GET['rejectedSN']) {
+					$rejectedSN = $_GET['rejectedSN'];
+					managerStatus('Rejected', $rejectedSN, $login);
+				}
 				// Select purchase request.
-				$queryPR = "SELECT * FROM purchaseRequest WHERE prSn = '$prSN' AND status = 'Active'";
+				$queryPR = "SELECT * FROM purchaseRequest
+								INNER JOIN userAccounts ON purchaseRequest.prRequestBy = userAccounts.emailAdd
+								WHERE prSn = '$prSN' AND purchaseRequest.status = 'Active'";
 				$resultPR = mysql_query($queryPR);
 				$rowsPR = mysql_num_rows($resultPR);
 				if(!$resultPR) {
@@ -54,10 +75,49 @@
 					$prModeDelivery = $dataPR['prModeDelivery'];
 					$prTotal = $dataPR['prTotal'];
 					$prReasonPurchase = $dataPR['prReasonPurchase'];
-					$prRequestBy = $dataPR['prRequestBy'];
+					$prRequestBy = $dataPR['firstName'];
 					$prWarehouseStatus = $dataPR['prWarehouseStatus'];
+					if($prWarehouseStatus == "No Status") {
+						// Do nothing.
+					} else {
+						$queryWarehouse = "SELECT prWarehouseDateTime, UA1.firstName AS prWarehousePerson
+												 FROM purchaseRequest PR
+												 JOIN userAccounts UA1 ON UA1.emailAdd = PR.prWarehousePerson
+												 WHERE prSn = '$prSN' AND PR.status = 'Active'";
+						$resultWarehouse = mysql_query($queryWarehouse);
+						$dataWarehouse = mysql_fetch_assoc($resultWarehouse);
+						$prWarehousePerson = $dataWarehouse['prWarehousePerson'];
+						$prWarehouseDateTime = $dataWarehouse['prWarehouseDateTime'];
+						$prWarehouseStatus = $prWarehouseDateTime . "   (" . $prWarehousePerson . ")";
+					}
 					$prHeadWorkshopStatus = $dataPR['prHeadWorkshopStatus'];
+					if($prHeadWorkshopStatus == "No Status") {
+						// Do nothing.
+					} else {
+						$queryWorkshop = "SELECT prHeadWorkshopDateTime, UA1.firstName AS prHeadWorkshopPerson
+												FROM purchaseRequest PR
+												JOIN userAccounts UA1 ON UA1.emailAdd = PR.prHeadWorkshopPerson
+												WHERE prSn = '$prSN' AND PR.status = 'Active'";
+						$resultWorkshop = mysql_query($queryWorkshop);
+						$dataWorkshop = mysql_fetch_assoc($resultWorkshop);
+						$prHeadWorkshopDateTime = $dataWorkshop['prHeadWorkshopDateTime'];
+						$prHeadWorkshopPerson = $dataWorkshop['prHeadWorkshopPerson'];
+						$prHeadWorkshopStatus = $prHeadWorkshopDateTime . "   (" . $prHeadWorkshopPerson . ")";
+					}
 					$prApproveStatus = $dataPR['prApproveStatus'];
+					if($prApproveStatus == "No Status") {
+						// Do nothing
+					} else {
+						$queryAppr = "SELECT prApprovedDateTime, UA1.firstName AS prApprovedPerson
+										  FROM purchaseRequest PR
+										  JOIN userAccounts UA1 ON UA1.emailAdd = PR.prApprovedPerson
+										  WHERE prSn = '$prSN' AND PR.status = 'Active'";
+						$resultAppr = mysql_query($queryAppr);
+						$dataAppr = mysql_fetch_assoc($resultAppr);
+						$prApprovedDateTime = $dataAppr['prApprovedDateTime'];
+						$prApprovedPerson = $dataAppr['prApprovedPerson'];
+						$prApproveStatusDT = $prApprovedDateTime . "   (" . $prApprovedPerson . ")";
+					}
 					$prFinalize = $dataPR['prFinalize'];
 				}
 				// Purchase request details
@@ -97,6 +157,55 @@
 		unset($_SESSION['STATUS']);
 		header('Location: status.php');
 	};
+	// Reviewed updated.
+	function warehouseReviewed($warehouseSN, $login) {
+		$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
+		$result = mysql_query($query);
+		$row = mysql_fetch_array($result);
+		$time = $row['dateTime'];
+		$query = "UPDATE purchaseRequest SET prWarehouseStatus = 'Reviewed', prWarehousePerson = '$login', prWarehouseDateTime = '$time' WHERE prSN = '$warehouseSN'";
+		$result = mysql_query($query);
+		if(!$result) die ("Table access failed: " . mysql_error());
+		if($result) {
+			header('Location: prc.purchase_request.php');
+		}
+	}
+	// Head of workshop reviewed updated.
+	function workshopReviewed($workshopSN, $login) {
+		$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
+		$result = mysql_query($query);
+		$row = mysql_fetch_array($result);
+		$time = $row['dateTime'];
+		$query = "UPDATE purchaseRequest SET prHeadWorkshopStatus = 'Reviewed', prHeadWorkshopPerson = '$login', prHeadWorkshopDateTime = '$time' WHERE prSN = '$workshopSN'";
+		$result = mysql_query($query);
+		if(!$result) die ("Table access failed: " . mysql_error());
+		if($result) {
+			header('Location: prc.purchase_request.php');
+		}
+	}
+	// Manager approved or rejected.
+	function managerStatus($status, $prSN, $login) {
+		$query = "SELECT DATE_ADD(NOW(), INTERVAL 13 HOUR) AS 'dateTime'";
+		$result = mysql_query($query);
+		$row = mysql_fetch_array($result);
+		$time = $row['dateTime'];
+		if($status == "Approved") {
+			$query = "UPDATE purchaseRequest SET prApproveStatus = 'Approved', prApprovedPerson = '$login', prApprovedDateTime = '$time' WHERE prSN = '$prSN'";
+			$result = mysql_query($query);
+			if(!$result) die ("Table access failed: " . mysql_error());
+			if($result) {
+				header('Location: prc.purchase_request.php');
+			}
+		} else {
+			// Manager reject!
+			$query = "UPDATE purchaseRequest SET prApproveStatus = 'Rejected', prApprovedPerson = '$login', prApprovedDateTime = '$time' WHERE prSN = '$prSN'";
+			$result = mysql_query($query);
+			if(!$result) die ("Table access failed: " . mysql_error());
+			if($result) {
+				header('Location: prc.purchase_request.php');
+			}
+		}
+	}
 ?>
 <?php include('pages/page_menu.php'); ?>
 <div class="page-container">
@@ -120,7 +229,7 @@
 					<a href="javascript:;">Procurement</a><i class="fa fa-circle"></i>
 				</li>
 				<li>
-					<a href="javascript:;">Purchase Request</a><i class="fa fa-circle"></i>
+					<a href="prc.purchase_request.php">Purchase Request</a><i class="fa fa-circle"></i>
 				</li>
 				<li class="active">
 					Purchase Request
@@ -325,14 +434,14 @@
 														if($prWarehouseStatus == "No Status") {
 															if(in_array($position, (array("Root", "Su", "Asst Warehouse Clerk")))) {
 																$msg .= "<label style='display: block; text-align: center; margin: auto; padding-bottom: 12px;'>Warehouse</label>";
-																$msg .= "<input id='mrReviewed' type='button' value='Review' class='btn btn-success'>";
+																$msg .= "<input id='prWarehouseReview' type='button' value='Review' class='btn btn-success'>";
 															} else {
 																$msg .= "<label>Warehouse</label>";
-																$msg .= "<input type='text' class='form-control input-lg' name='mrReviewStatus' style='text-align: center' value='$prWarehouseStatus'>";
+																$msg .= "<input type='text' class='form-control input-lg' name='prWarehouseStatus' style='text-align: center' value='$prWarehouseStatus'>";
 															}
 														} else {
 															$msg .= "<label>Warehouse</label>";
-															$msg .= "<input type='text' class='form-control input-lg' name='mrReviewStatus' style='text-align: center' value='$prWarehouseStatus'>";
+															$msg .= "<input type='text' class='form-control input-lg' name='prWarehouseStatus' style='text-align: center' value='$prWarehouseStatus'>";
 														}
 													}
 													echo $msg;
@@ -349,15 +458,14 @@
 														if($prHeadWorkshopStatus == "No Status") {
 															if(in_array($position, (array("Root", "Su", "Workshop Manager")))) {
 																$msg .= "<label style='display: block; text-align: center; margin: auto; padding-bottom: 12px;'>Head of Workshop</label>";
-																$msg .= "<input id='mrfApproved' type='button' value='Approve' class='btn btn-success'>";
-																$msg .= "<input id='mrfReject' type='button' value='REJECT' class='btn btn-default'>";
+																$msg .= "<input id='prHeadWorkshopReview' type='button' value='Review' class='btn btn-success'>";
 															} else {
 																$msg .= "<label>Head of Workshop</label>";
-																$msg .= "<input type='text' class='form-control input-lg' name='mrApproveStatus' style='text-align: center' value='$mrApproveStatus'>";
+																$msg .= "<input type='text' class='form-control input-lg' name='prHeadWorkshopStatus' style='text-align: center' value='$prHeadWorkshopStatus'>";
 															}
 														} else {
 															$msg .= "<label>Head of Workshop</label>";
-															$msg .= "<input type='text' class='form-control input-lg' name='mrApproveStatus' style='text-align: center' value='$mrApproveStatus'>";
+															$msg .= "<input type='text' class='form-control input-lg' name='prHeadWorkshopStatus' style='text-align: center' value='$prHeadWorkshopStatus'>";
 														}
 													}
 													echo $msg;
@@ -374,15 +482,20 @@
 														if($prApproveStatus == "No Status") {
 															if(in_array($position, (array("Root", "Su", "Operation Manager")))) {
 																$msg .= "<label style='display: block; text-align: center; margin: auto; padding-bottom: 12px;'>Approved by</label>";
-																$msg .= "<input id='mrfApproved' type='button' value='Approve' class='btn btn-success'>";
-																$msg .= "<input id='mrfReject' type='button' value='REJECT' class='btn btn-default'>";
+																$msg .= "<input id='prApproved' type='button' value='Approve' class='btn btn-success'> ";
+																$msg .= "<input id='prRejected' type='button' value='REJECT' class='btn btn-default'>";
 															} else {
 																$msg .= "<label>Approved by</label>";
-																$msg .= "<input type='text' class='form-control input-lg' name='mrApproveStatus' style='text-align: center' value='$mrApproveStatus'>";
+																$msg .= "<input type='text' class='form-control input-lg' name='prApproveStatus' style='text-align: center' value='$prApproveStatus'>";
 															}
 														} else {
-															$msg .= "<label>Approved by</label>";
-															$msg .= "<input type='text' class='form-control input-lg' name='mrApproveStatus' style='text-align: center' value='$mrApproveStatus'>";
+															if($prApproveStatus == "Approved") {
+																$msg .= "<label>Approved by</label>";
+																$msg .= "<input type='text' class='form-control input-lg' name='prApproveStatus' style='text-align: center' value='$prApproveStatusDT'>";
+															} else {
+																$msg .= "<label>Rejected by</label>";
+																$msg .= "<input type='text' class='form-control input-lg' name='prApproveStatus' style='text-align: center' value='$prApproveStatusDT'>";
+															}
 														}
 													}
 													echo $msg;
@@ -419,6 +532,50 @@
 			alertify.confirm("[ALERT]  Are you sure you want to LOGOUT?", function(result) {
 				if(result) {
 					window.location = "logout.php";
+				}
+			})
+		})
+	})
+	// Review confirm.
+	$(function() {
+		var prSN = document.getElementById("prSN").value;
+		$('#prWarehouseReview').click(function() {
+			alertify.confirm("[REVIEW]  Are you sure you have REVIEW this purchase request?", function(result) {
+				if(result) {
+					window.location = "prc.mod_purchase_request.php?warehouseRe=" + prSN;
+				}
+			})
+		})
+	})
+	// Head of workshop Review.
+	$(function() {
+		var prSN = document.getElementById("prSN").value;
+		$('#prHeadWorkshopReview').click(function() {
+			alertify.confirm("[REVIEW]  Are you sure you have REVIEW this purchase request?", function(result) {
+				if(result) {
+					window.location = "prc.mod_purchase_request.php?workshopRe=" + prSN;
+				}
+			})
+		})
+	})
+	// Operation Manager approved.
+	$(function() {
+		var prSN = document.getElementById("prSN").value;
+		$('#prApproved').click(function() {
+			alertify.confirm("[APPROVE]  Are you sure you want to APPROVE this purchase request?", function(result) {
+				if(result) {
+					window.location = "prc.mod_purchase_request.php?approvedSN=" + prSN;
+				}
+			})
+		})
+	})
+	// Operation Manager reject.
+	$(function() {
+		var prSN = document.getElementById("prSN").value;
+		$('#prRejected').click(function() {
+			alertify.confirm("[REJECT]  Are you sure you want to REJECT this purchase request?", function(result) {
+				if(result) {
+					window.location = "prc.mod_purchase_request.php?rejectedSN=" + prSN;
 				}
 			})
 		})
