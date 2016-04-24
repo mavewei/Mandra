@@ -2,189 +2,154 @@
 <?php include("pages/page_meta.php"); ?>
 <?php
 	require_once('db/db_config.php');
-	/**
-	 Check initial setting, if not set, redirect to admin_registration page; else redirected to login page.
-	 **/
+	// Check initial setting, if not set, redirect to admin_registration page; else redirected to login page.
 	mysql_select_db($dbName) or die("Unable to select database: " . mysql_error());
 	$query = "SHOW TABLES LIKE 'initFlag'";
 	$result = mysql_query($query);
 	$status = mysql_result($result, 0);
 	if($status) {
-		/**
-			Tables exists!. Check initial setting.
-		**/
+		// Tables exists!. Check initial setting.
 		$query = 'SELECT status FROM initFlag';
 		$result = mysql_query($query);
 		if(!$result) die ("Table access failed: " . mysql_error());
 		$status = mysql_result($result, 0);
 		if($status != 1) {
-			/**
-				System was initialized. Redirect to login.php
-			**/
+			// System was initialized. Redirect to login.php
 			header('Location: login.php');
 		} else {
-			/**
-				System not yet initialized. Redirect to admin_registration.php
-			**/
+			// System not yet initialized. Redirect to admin_registration.php
 			$_SESSION['INIT'] = 1;
 			header('Location: admin_registration.php');
 		};
 	} else {
-		/**
-			Tables not found, create tables.
-		**/
-		/**
-			Create require tables
-		**/
-		/**
-			initFlag
-		**/
+		// Tables not found, create tables.
+		// initFlag
 		$query = "CREATE TABLE initFlag (
-						id INT NOT NULL AUTO_INCREMENT,
-						dateTime TIMESTAMP NULL,
-						status VARCHAR(10) NOT NULL,
-						PRIMARY KEY (id))";
+					 id INT NOT NULL AUTO_INCREMENT,
+					 dateTime TIMESTAMP NULL,
+					 status VARCHAR(10) NOT NULL,
+					 PRIMARY KEY (id))";
 		$result = mysql_query($query);
 		if(!$result) die ("Tables create failed: " . mysql_error());
-		/**
-			userAccounts
-			IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
-		**/
+		// userAccounts
+		// IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
 		$query = "CREATE TABLE userAccounts (
-						id INT NOT NULL AUTO_INCREMENT,
-						dateTime TIMESTAMP NULL,
-						gid INT NOT NULL,
-						firstName VARCHAR(50) NOT NULL,
-						lastName VARCHAR(50) NOT NULL,
-						emailAdd VARCHAR(50) NOT NULL,
-						departments VARCHAR(50) NULL,
-						position VARCHAR(50) NULL,
-						roles VARCHAR(25) NOT NULL,
-						passwd VARCHAR(100) NOT NULL,
-						status VARCHAR(15) NULL,
-						sessionTimeout INT(10) NULL,
-						PRIMARY KEY (id))";
+					 id INT NOT NULL AUTO_INCREMENT,
+					 dateTime TIMESTAMP NULL,
+					 gid INT NOT NULL,
+					 firstName VARCHAR(50) NOT NULL,
+					 lastName VARCHAR(50) NOT NULL,
+					 emailAdd VARCHAR(50) NOT NULL,
+					 departments VARCHAR(50) NULL,
+					 position VARCHAR(50) NULL,
+					 roles VARCHAR(25) NOT NULL,
+					 passwd VARCHAR(100) NOT NULL,
+					 status VARCHAR(15) NULL,
+					 sessionTimeout INT(10) NULL,
+					 PRIMARY KEY (id))";
 		$result = mysql_query($query);
 		if(!$result) die ("Tables create failed: " . mysql_error());
-		/**
-			loginDetails
-			IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
-		**/
+		// loginDetails
+		// IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
 		$query = "CREATE TABLE loginDetails (
-						id INT NOT NULL AUTO_INCREMENT,
-						dateTimeLogin TIMESTAMP NULL,
-						dateTimeLast TIMESTAMP NULL,
-						emailAdd VARCHAR(50) NOT NULL,
-						ipAdd VARCHAR(50) NOT NULL,
-						sid VARCHAR(100) NOT NULL,
-						loginStatus VARCHAR(20) NOT NULL,
-						PRIMARY KEY (id))";
+					 id INT NOT NULL AUTO_INCREMENT,
+					 dateTimeLogin TIMESTAMP NULL,
+					 dateTimeLast TIMESTAMP NULL,
+					 emailAdd VARCHAR(50) NOT NULL,
+					 ipAdd VARCHAR(50) NOT NULL,
+					 sid VARCHAR(100) NOT NULL,
+					 loginStatus VARCHAR(20) NOT NULL,
+					 PRIMARY KEY (id))";
 		$result = mysql_query($query);
 		if(!$result) die ("Tables create failed: " . mysql_error());
-		/**
-			tempSession
-			IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
-		**/
+		// tempSession
+		// IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
 		$query = "CREATE TABLE tempSession (
-						id INT NOT NULL AUTO_INCREMENT,
-						dateTime TIMESTAMP NULL,
-						emailAdd VARCHAR(50) NOT NULL,
-						sid VARCHAR(100) NOT NULL,
-						PRIMARY KEY (id))";
+					 id INT NOT NULL AUTO_INCREMENT,
+					 dateTime TIMESTAMP NULL,
+					 emailAdd VARCHAR(50) NOT NULL,
+					 sid VARCHAR(100) NOT NULL,
+					 PRIMARY KEY (id))";
 		$result = mysql_query($query);
 		if(!$result) die ("Tables create failed: " . mysql_error());
-		/**
-			departments
-			IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
-		**/
+		// departments
+		// IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
 		$query = "CREATE TABLE departments (
-						id INT NOT NULL AUTO_INCREMENT,
-						dateTime TIMESTAMP NULL,
-						deptId VARCHAR(10) NOT NULL,
-						deptCode VARCHAR(15) NOT NULL,
-						deptName VARCHAR(50) NOT NULL,
-						status VARCHAR(15) NULL,
-						createdBy INT NOT NULL,
-						PRIMARY KEY (id))";
+					 id INT NOT NULL AUTO_INCREMENT,
+					 dateTime TIMESTAMP NULL,
+					 deptId VARCHAR(10) NOT NULL,
+					 deptCode VARCHAR(15) NOT NULL,
+					 deptName VARCHAR(50) NOT NULL,
+					 status VARCHAR(15) NULL,
+					 createdBy INT NOT NULL,
+					 PRIMARY KEY (id))";
 		$result = mysql_query($query);
 		if(!$result) die ("Tables create failed: " . mysql_error());
-		/**
-			company
-			IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
-		**/
+		// company
+		// IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
 		$query = "CREATE TABLE company (
-						id INT NOT NULL AUTO_INCREMENT,
-						dateTime TIMESTAMP NULL,
-						comId VARCHAR(10) NOT NULL,
-						comCode VARCHAR(15) NOT NULL,
-						comName VARCHAR(50) NOT NULL,
-						comLocation VARCHAR(50) NOT NULL,
-						status VARCHAR(15) NULL,
-						createdBy INT NOT NULL,
-						PRIMARY KEY (id))";
+					 id INT NOT NULL AUTO_INCREMENT,
+					 dateTime TIMESTAMP NULL,
+					 comId VARCHAR(10) NOT NULL,
+					 comCode VARCHAR(15) NOT NULL,
+					 comName VARCHAR(50) NOT NULL,
+					 comLocation VARCHAR(50) NOT NULL,
+					 status VARCHAR(15) NULL,
+					 createdBy INT NOT NULL,
+					 PRIMARY KEY (id))";
 		$result = mysql_query($query);
 		if(!$result) die ("Tables create failed: " . mysql_error());
-		/**
-			nationality
-			IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
-		**/
+		// nationality
+		// IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
 		$query = "CREATE TABLE nationality (
-						id INT NOT NULL AUTO_INCREMENT,
-						dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-						nationalityName VARCHAR(50) NOT NULL,
-						PRIMARY KEY (id))";
+					 id INT NOT NULL AUTO_INCREMENT,
+					 dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+					 nationalityName VARCHAR(50) NOT NULL,
+					 PRIMARY KEY (id))";
 		$result = mysql_query($query);
 		if(!$result) die ("Tables create failed: " . mysql_error());
-		/**
-			county
-			IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
-		**/
+		// county
+		// IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
 		$query = "CREATE TABLE county (
-						id INT NOT NULL AUTO_INCREMENT,
-						dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-						countyId VARCHAR(15) NOT NULL,
-						countyCode VARCHAR(50) NOT NULL,
-						PRIMARY KEY (id))";
+					 id INT NOT NULL AUTO_INCREMENT,
+					 dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+					 countyId VARCHAR(15) NOT NULL,
+					 countyCode VARCHAR(50) NOT NULL,
+					 PRIMARY KEY (id))";
 		$result = mysql_query($query);
 		if(!$result) die ("Tables create failed: " . mysql_error());
-		/**
-			unit
-			IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
-		**/
+		// unit
+		// IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
 		$query = "CREATE TABLE unit (
-						id INT NOT NULL AUTO_INCREMENT,
-						dateTime TIMESTAMP NULL,
-						unitId VARCHAR(15) NOT NULL,
-						unitName VARCHAR(50) NOT NULL,
-						status VARCHAR(15) NULL,
-						PRIMARY KEY (id))";
+					 id INT NOT NULL AUTO_INCREMENT,
+					 dateTime TIMESTAMP NULL,
+					 unitId VARCHAR(15) NOT NULL,
+					 unitName VARCHAR(50) NOT NULL,
+					 status VARCHAR(15) NULL,
+					 PRIMARY KEY (id))";
 		$result = mysql_query($query);
 		if(!$result) die ("Tables create failed: " . mysql_error());
-		/**
-			position
-			IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
-		**/
+		// position
+		// IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
 		$query = "CREATE TABLE position (
-						id INT NOT NULL AUTO_INCREMENT,
-						dateTime TIMESTAMP NULL,
-						positionId VARCHAR(15) NOT NULL,
-						positionName VARCHAR(50) NOT NULL,
-						status VARCHAR(15) NULL,
-						PRIMARY KEY (id))";
+					 id INT NOT NULL AUTO_INCREMENT,
+					 dateTime TIMESTAMP NULL,
+					 positionId VARCHAR(15) NOT NULL,
+					 positionName VARCHAR(50) NOT NULL,
+					 status VARCHAR(15) NULL,
+					 PRIMARY KEY (id))";
 		$result = mysql_query($query);
 		if(!$result) die ("Tables create failed: " . mysql_error());
-		/**
-			status for Employee
-			IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
-		**/
+		// status for Employee
+		// IMPORTANT: Please use "dateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if timezone setting are correct.
 		/*
 		$query = "CREATE TABLE status (
-						id INT NOT NULL AUTO_INCREMENT,
-						dateTime TIMESTAMP NULL,
-						statusId VARCHAR(15) NOT NULL,
-						statusName VARCHAR(50) NOT NULL,
-						status VARCHAR(15) NULL,
-						PRIMARY KEY (id))";
+					 id INT NOT NULL AUTO_INCREMENT,
+					 dateTime TIMESTAMP NULL,
+					 statusId VARCHAR(15) NOT NULL,
+					 statusName VARCHAR(50) NOT NULL,
+					 status VARCHAR(15) NULL,
+					 PRIMARY KEY (id))";
 		$result = mysql_query($query);
 		if(!$result) die ("Tables create failed: " . mysql_error());
 		*/
@@ -363,11 +328,50 @@
 					 PRIMARY KEY(id))";
 		$result = mysql_query($query);
 		if(!$result) die ("Tables create failed: " . mysql_error());
-
-
-
-
-
+		// Purchase Request
+		$query = "CREATE TABLE purchaseRequest (
+					 id INT NOT NULL AUTO_INCREMENT,
+					 dateTime TIMESTAMP NULL,
+					 prSN VARCHAR(20) NOT NULL,
+					 prNumber VARCHAR(35) NULL,
+					 mrNumber VARCHAR(35) NULL,
+					 prDepartment VARCHAR(35) NULL,
+					 prPurpose VARCHAR(20) NULL,
+					 prDateReq VARCHAR(20) NULL,
+					 prModeDelivery VARCHAR(35) NULL,
+					 prTotal INT(10) NOT NULL,
+					 prReasonPurchase VARCHAR(100) NULL,
+					 prRequestBy VARCHAR(35) NOT NULL,
+					 prWarehouseStatus VARCHAR(20) NULL,
+					 prWarehousePerson VARCHAR(50) NULL,
+					 prWarehouseDateTime TIMESTAMP NULL,
+					 prHeadWorkshopStatus VARCHAR(20) NULL,
+					 prHeadWorkshopPerson VARCHAR(50) NULL,
+					 prHeadWorkshopDateTime TIMESTAMP NULL,
+					 prApproveStatus VARCHAR(20) NULL,
+					 prApprovedPerson VARCHAR(50) NULL,
+					 prApprovedDateTime TIMESTAMP NULL,
+					 prFinalize BOOL NULL,
+					 status VARCHAR(15) NULL,
+					 PRIMARY KEY(id))";
+		$result = mysql_query($query);
+		if(!$result) die ("Tables create failed: " . mysql_error());
+		// Purchase Request Details
+		$query = "CREATE TABLE purchaseRequestDetails (
+					 id INT NOT NULL AUTO_INCREMENT,
+					 dateTime TIMESTAMP NULL,
+					 prDetailsSN VARCHAR(20) NOT NULL,
+					 prDetailsNumber VARCHAR(10) NOT NULL,
+					 prDetailsPartsNumber VARCHAR(100) NOT NULL,
+					 prDetailsDescription VARCHAR(100) NULL,
+					 prDetailsQty VARCHAR(15) NOT NULL,
+					 prDetailsUom VARCHAR(10) NULL,
+					 prDetailsEquipType VARCHAR(50) NULL,
+					 prDetailsModel VARCHAR(50) NULL,
+					 prDetailsEquipNo VARCHAR(20) NULL,
+					 PRIMARY KEY(id))";
+		$result = mysql_query($query);
+		if(!$result) die ("Tables create failed: " . mysql_error());
 		/**
 		 supplierLISTS
 		 **/
