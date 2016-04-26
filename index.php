@@ -46,6 +46,7 @@
 					 passwd VARCHAR(100) NOT NULL,
 					 status VARCHAR(15) NULL,
 					 sessionTimeout INT(10) NULL,
+					 hash VARCHAR(100) NULL,
 					 PRIMARY KEY (id))";
 		$result = mysql_query($query);
 		if(!$result) die ("Tables create failed: " . mysql_error());

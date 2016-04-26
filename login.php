@@ -108,6 +108,9 @@
 				<h4 class="form-login-bottom" style="text-align: center">Management Information System</h4>
 				<input type="email" id="input_email" class="form-control" placeholder="User ID (email address)" name="login" required autofocus autocomplete="off">
 				<input type="password" id="input_password" class="form-control" placeholder="Password" name="passwd" required>
+				<div class="forgot">
+					<label class="forgot-passwd"><a href="forgot_passwd.php">Forgot Password?</a></label>
+				</div>
 				<button class="btn btn-lg btn-primary btn-block" type="submit" id="submit-btn">Sign in</button>
 			</form>
 		</div>
