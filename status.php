@@ -594,6 +594,38 @@
 		echo "</div></div></div></div></div>";
 		echo "<meta http-equiv='refresh' content='3;logout.php'>";
 		break;
+	case "45":
+		// User account password reseted!
+		echo "<div class='container'>";
+		echo "<div class='row vcenter'>";
+		echo "<div class='col-xs-6 col-sm-6 col-md-5'>";
+		echo "<div class='media'>";
+		echo "<div class='media-left media-middle'>";
+		echo "<a href='javascript:;'>";
+		echo "<div class='status-img'>";
+		echo "<img class='media-object image-middle-status' src='images/success.png' alt>";
+		echo "</div></a></div>";
+		echo "<div class='media-body'>";
+		echo "<h2 class='media-heading'>Reset Password Done!</h2>You'll be redirected to login page in 3 seconds.";
+		echo "</div></div></div></div></div>";
+		echo "<meta http-equiv='refresh' content='3;logout.php'>";
+		break;
+	case "46":
+		// User account password changed!
+		echo "<div class='container'>";
+		echo "<div class='row vcenter'>";
+		echo "<div class='col-xs-6 col-sm-6 col-md-5'>";
+		echo "<div class='media'>";
+		echo "<div class='media-left media-middle'>";
+		echo "<a href='javascript:;'>";
+		echo "<div class='status-img'>";
+		echo "<img class='media-object image-middle-status' src='images/success.png' alt>";
+		echo "</div></a></div>";
+		echo "<div class='media-body'>";
+		echo "<h2 class='media-heading'>Password Changed!</h2>You'll be redirected to login page in 3 seconds.";
+		echo "</div></div></div></div></div>";
+		echo "<meta http-equiv='refresh' content='3;logout.php'>";
+		break;
 	default:
 		echo "<div class='block' style='height:100%'><div class='centered-login-status'>";
 		echo "<div class='media'><div class='media-left media-middle'>";
