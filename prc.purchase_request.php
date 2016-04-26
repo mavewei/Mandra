@@ -118,9 +118,11 @@
 							<div class="caption">
 								<span class="caption-subjet font-green-sharp bold uppercase">Purchase Request</span>
 							</div>
+							<!--
 							<div class="actions btn-set">
 								<a class="btn green-haze btn-circle" href="prc.add_purchase_request.php"><i class="fa fa-plus"></i> Add </a>
 							</div>
+							-->
 							<div class="tools"></div>
 						</div>
 						<div class="portlet-body">
